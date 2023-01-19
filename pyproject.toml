@@ -1,0 +1,67 @@
+[tool.poetry]
+name = "pfs-etc-web"
+version = "0.1.0"
+description = "Web application for PFS Exposure Time Calculator and Simulator"
+authors = ["Masato Onodera <monodera@naoj.org>"]
+readme = "README.md"
+# packages = [{include = "src"},]
+packages = [{include = "pfs_etc_web"},]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+matplotlib = "^3.6.3"
+panel = "^0.14.2"
+numpy = "^1.24.1"
+astropy = "^5.2.1"
+ipython = "^8.8.0"
+pandas = "^1.5.2"
+holoviews = "^1.15.4"
+fastapi = "^0.89.1"
+jinja2 = "^3.1.2"
+uvicorn = "^0.20.0"
+jupyter = "^1.0.0"
+notebook = "^6.5.2"
+logzero = "^1.7.0"
+
+
+[tool.poetry.group.dev.dependencies]
+flake8 = "^6.0.0"
+mypy = "^0.991"
+black = "^22.12.0"
+isort = "^5.11.4"
+pyproject-flake8 = "^6.0.0.post1"
+flake8-isort = "^6.0.0"
+flake8-bugbear = "^23.1.14"
+flake8-builtins = "^2.1.0"
+flake8-unused-arguments = "^0.0.12"
+flake8-pytest-style = "^1.6.0"
+pep8-naming = "^0.13.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.black]
+# line-length = 79
+
+[tool.isort]
+profile = "black"
+# line_length = 79
+# 各ライブラリ群の説明を追記する
+import_heading_stdlib      = "Standard Library"
+import_heading_thirdparty  = "Third Party Library"
+import_heading_firstparty  = "First Party Library"
+import_heading_localfolder = "Local Library"
+# from third_party import lib1, lib2...のような記述時の改行方法の設定(https://pycqa.github.io/isort/docs/configuration/multi_line_output_modes.html)
+multi_line_output = 3
+# 最後の要素の末尾に","を付けるようにする設定
+include_trailing_comma = true
+
+[tool.flake8]
+# max-line-length = 79
+# E203: ":"の前の空白を入れないルール
+# W503: 演算子の前に改行しないようにするルール
+extend-ignore = ["E203", "W503"]
+exclude = [".venv", ".git", "__pycache__",]
+max-complexity = 10
