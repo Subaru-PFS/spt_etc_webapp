@@ -17,7 +17,11 @@ templates = Jinja2Templates(directory="pfs_etc_web/templates")
 async def bkapp_page(request: Request):
     script = server_document("http://127.0.0.1:5000/app")
     return templates.TemplateResponse(
-        "base.html", {"request": request, "script": script}
+        "base.html",
+        {
+            "request": request,
+            "script": script,
+        },
     )
 
 
