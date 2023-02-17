@@ -1,0 +1,5 @@
+{
+  "python.defaultInterpreterPath": "python3",
+  "black-formatter.importStrategy": "fromEnvironment",
+  "python.formatting.blackPath": ""
+}

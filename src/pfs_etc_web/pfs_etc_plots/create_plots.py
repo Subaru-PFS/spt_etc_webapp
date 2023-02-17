@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 # Third Party Library
-import numpy as np
 from bokeh.layouts import column
 from bokeh.palettes import Colorblind
 from bokeh.plotting import figure

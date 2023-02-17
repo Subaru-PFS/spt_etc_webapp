@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 
-# Third Party Library
+
 import panel as pn
 from bokeh.embed import server_document
-from fastapi import FastAPI
-from fastapi import Request
+from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-from pn_app import main_app
+
+from .pn_app import main_app
 
 app = FastAPI()
 
-templates = Jinja2Templates(directory="pfs_etc_web/templates")
+
+templates = Jinja2Templates(directory="src/pfs_etc_web/templates")
 
 
 @app.get("/")
 async def bkapp_page(request: Request):
     script = server_document("http://127.0.0.1:5000/app")
+
     return templates.TemplateResponse(
         "base.html",
         {
@@ -32,3 +34,15 @@ pn.serve(
     address="127.0.0.1",
     show=False,
 )
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "main:app",
+        host="127.0.0.1",
+        port=8000,
+        allow_websocket_origin=["127.0.0.1:8000"],
+        log_level="info",
+    )

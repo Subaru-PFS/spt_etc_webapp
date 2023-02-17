@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 
-
-# Third Party Library
 import panel as pn
-
-pn.extension(sizing_mode="stretch_width")
 
 
 class ExecButtonWidgets:
@@ -140,7 +136,6 @@ class EnvironmentWidgets:
                     "format": "0.00",
                 },
             },
-            # show_name=False,
             default_layout=pn.Column,
         )
 
@@ -156,8 +151,7 @@ class InstrumentWidgets:
                 "mr_mode": {"type": pn.widgets.Checkbox},
             },
             show_name=False,
-            default_layout=pn.Column
-            # expand=True,
+            default_layout=pn.Column,
         )
 
 
@@ -166,9 +160,7 @@ class TelescopeWidgets:
         self.panel = pn.Param(
             conf,
             widgets={"zenith_angle": {"type": pn.widgets.IntSlider, "step": 5}},
-            # show_name=False,
-            default_layout=pn.Column
-            # expand=True,
+            default_layout=pn.Column,
         )
 
 
@@ -180,5 +172,5 @@ class MatplotlibWidgets:
 
 class BokehWidgets:
     def __init__(self, p, visible=True):
-        self.plot = pn.pane.Bokeh(p, visible=visible)
-        self.pane = pn.Column(self.plot, sizing_mode="stretch_width")
+        self.plot = pn.pane.Bokeh(p, visible=visible, sizing_mode="stretch_width")
+        self.pane = pn.Column(self.plot)

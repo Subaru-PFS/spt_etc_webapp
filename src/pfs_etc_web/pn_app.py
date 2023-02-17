@@ -1,28 +1,27 @@
 #!/usr/bin/env python3
 
-# Standard Library
 from io import BytesIO
 
-# Third Party Library
 import pandas as pd
 import panel as pn
 from logzero import logger
-from pfs_etc_params import EnvironmentConf
-from pfs_etc_params import InstrumentConf
-from pfs_etc_params import PfsSpecParameter
-from pfs_etc_params import TargetConf
-from pfs_etc_params import TelescopeConf
-from pfs_etc_plots import create_dummy_plot
-from pfs_etc_specsim import PfsSpecSim
-from pfs_etc_widgets import BokehWidgets
-from pfs_etc_widgets import EnvironmentWidgets
-from pfs_etc_widgets import ExecButtonWidgets
-from pfs_etc_widgets import InstrumentWidgets
-from pfs_etc_widgets import TargetWidgets
-from pfs_etc_widgets import TelescopeWidgets
+
+from .pfs_etc_params import EnvironmentConf, InstrumentConf, TargetConf, TelescopeConf
+from .pfs_etc_plots import create_dummy_plot
+from .pfs_etc_specsim import PfsSpecSim
+from .pfs_etc_widgets import (
+    BokehWidgets,
+    EnvironmentWidgets,
+    ExecButtonWidgets,
+    InstrumentWidgets,
+    TargetWidgets,
+    TelescopeWidgets,
+)
+
+# bokeh.settings.settings.resources = "inline"
 
 pn.extension(
-    template="bootstrap",
+    # template="bootstrap",
     loading_spinner="dots",
     loading_color="#6A589D",
     sizing_mode="stretch_width",
@@ -56,12 +55,12 @@ def main_app():
 
     def on_click_exec(event):
 
-        logger.info(f"callback function is called")
+        logger.info("callback function is called")
 
         panel_buttons.exec.disabled = True
         panel_buttons.exec.name = "Running"
 
-        panel_plots.plot.object = None
+        panel_plots.plot.object = create_dummy_plot()
 
         print(conf_instrument.mr_mode)
 
@@ -73,15 +72,14 @@ def main_app():
         )
 
         with pn.param.set_values(panel_plots.pane, loading=True):
-            logger.info(f"Running PFS Spectrum Simulator")
-            specsim.exec(skip=True)
-            # time.sleep(1)
+            logger.info("Running PFS Spectrum Simulator")
+            specsim.exec(skip=False)
 
-        logger.info(f"Plotting simulated spectrum")
+        logger.info("Plotting simulated spectrum")
         panel_plots.plot.object = specsim.show()
         panel_buttons.exec.name = "Run"
 
-        logger.info(f"Enable the run button")
+        logger.info("Enable the run button")
         panel_buttons.exec.disabled = False
 
         print(conf_telescope.zenith_angle)
@@ -95,7 +93,7 @@ def main_app():
             print(df_content)
 
     def on_click_reset(event):
-        logger.info(f"Reset parameters")
+        logger.info("Reset parameters")
         conf_target.reset()
         conf_environment.reset()
         conf_instrument.reset()
@@ -120,5 +118,4 @@ def main_app():
 
 
 if __name__.startswith("bokeh"):
-
     main_app()
