@@ -9,15 +9,14 @@ dev = [
     "ruff>=0.0.239",
     "pyright>=1.1.291",
     "isort>=5.12.0",
+    "specutils>=1.10.0",
 ]
 
 [project]
 name = "pfs_etc_web"
 version = "0.1.0"
 description = ""
-authors = [
-    {name = "Masato Onodera", email = "monodera@naoj.org"},
-]
+authors = [{ name = "Masato Onodera", email = "monodera@naoj.org" }]
 dependencies = [
     "panel>=0.14.2",
     "numpy>=1.24.1",
@@ -30,22 +29,24 @@ dependencies = [
     "uvicorn[standard]>=0.20.0",
     "matplotlib>=3.6.3",
     "setuptools==56.1.0",
+    "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@u/monodera/20230116",
+    "synphot>=1.2.0",
 ]
 requires-python = ">=3.9"
 readme = "README.md"
-license = {text = "MIT"}
+license = { text = "MIT" }
 
-# [project.scripts]
-# pfs_etc_web = "pfs_etc_web.main:cli"
+[project.scripts]
+run_pfs_etc_web = "pfs_etc_web.cli.run_panel_server:main"
 
 [build-system]
 requires = ["pdm-pep517>=1.0"]
 build-backend = "pdm.pep517.api"
 
 [tool.setuptools]
-package-dir = {"" = "src"}
+package-dir = { "" = "src" }
+
 
 # [tool.ruff]
 # ignore-init-module-imports = true
 # unfixable = ["F401"]
-

@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 
-
 import panel as pn
 from bokeh.embed import server_document
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 
-from .pn_app import main_app
+from pfs_etc_web.pn_app import pfs_etc_app
 
-app = FastAPI()
-
+app = FastAPI(
+    title="PFS Spectral Simulator",
+)
 
 templates = Jinja2Templates(directory="src/pfs_etc_web/templates")
 
 
 @app.get("/")
 async def bkapp_page(request: Request):
-    script = server_document("http://127.0.0.1:5000/app")
+    script = server_document("http://127.0.0.1:55006/app")
 
     return templates.TemplateResponse(
-        "base.html",
+        "base_first.html",
         {
             "request": request,
             "script": script,
@@ -27,22 +27,12 @@ async def bkapp_page(request: Request):
     )
 
 
-pn.serve(
-    {"/app": main_app},
-    port=5000,
+server = pn.serve(
+    {"/app": pfs_etc_app},
+    port=55006,
     allow_websocket_origin=["127.0.0.1:8000"],
     address="127.0.0.1",
     show=False,
+    # num_procs=2,
+    # threaded=True,
 )
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(
-        "main:app",
-        host="127.0.0.1",
-        port=8000,
-        allow_websocket_origin=["127.0.0.1:8000"],
-        log_level="info",
-    )

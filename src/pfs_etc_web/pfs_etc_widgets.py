@@ -27,7 +27,7 @@ class TargetWidgets:
                             "Quiescent galaxy",
                         ],
                         "Quasar": ["Quasar"],
-                        "Star": ["O0V", "A0V", "F0V"],
+                        "Star": ["B0V", "A0V", "G2V"],
                         "Misc": ["Flat in frequency"],
                     },
                 },
@@ -61,10 +61,10 @@ class TargetWidgets:
         )
 
         # Custom input spectrum
-        _mag_file = pn.Param(
-            conf.param.mag_file,
+        _custom_input = pn.Param(
+            conf.param.custom_input,
             widgets={
-                "mag_file": {"type": pn.widgets.FileInput},
+                "custom_input": {"type": pn.widgets.FileInput},
                 "accept": ".csv",
             },
         )
@@ -96,8 +96,8 @@ class TargetWidgets:
         )
 
         _box_custom_input = pn.WidgetBox(
-            "##### Custom Input Spectrum",
-            pn.Column(_mag_file),
+            "##### Custom Input Spectrum (.csv)",
+            pn.Column(_custom_input),
         )
         _box_misc = pn.WidgetBox(
             "##### Miscellaneous Information",
@@ -174,3 +174,23 @@ class BokehWidgets:
     def __init__(self, p, visible=True):
         self.plot = pn.pane.Bokeh(p, visible=visible, sizing_mode="stretch_width")
         self.pane = pn.Column(self.plot)
+
+
+class DownloadWidgets:
+    def __init__(self, visible=True):
+        self.download_simspec_fits = pn.widgets.FileDownload(
+            file=None, label="Download simulated spectrum (.fits)", visible=visible
+        )
+        self.download_simspec_csv = pn.widgets.FileDownload(
+            file=None, label="Download simulated spectrum (.ecsv)", visible=visible
+        )
+        self.download_snline_fits = pn.widgets.FileDownload(
+            file=None, label="Download emission line S/N (.fits)", visible=visible
+        )
+        self.download_snline_csv = pn.widgets.FileDownload(
+            file=None, label="Download emission line S/N (.ecsv)", visible=visible
+        )
+        self.pane = pn.Column(
+            pn.Row(self.download_simspec_fits, self.download_simspec_csv),
+            pn.Row(self.download_snline_fits, self.download_snline_csv),
+        )

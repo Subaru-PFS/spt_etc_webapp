@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 # Standard Library
+import os
 from dataclasses import dataclass
 
 # Third Party Library
@@ -12,10 +13,11 @@ import param
 class PfsSpecParameter:
     # target
     template: str = "Flat in frequency"
-    mag: float = 22.5
+    mag: float = 20.0
+    mag_file = None
     wavelength: float = 550.0
-    redshift: float = 1.0
-    mag_file: str = None
+    redshift: float = 0.0
+    custom_input: str = None
     r_eff: float = 0.3
     galactic_extinction: float = 0.0
     line_flux: float = 1e-17
@@ -37,23 +39,18 @@ class PfsSpecParameter:
     # telescope
     zenith_angle: int = 45
 
-    # # output
-    # outfile_noise: str = None
-    # outfile_snc: str = None
-    # outfile_snl: str = None
-    # outfile_oii: str = None
-    # overwrite: str = True
-
     # misc
     noise_reused: bool = False
 
     # output for ETC
+    basedir: str = "tmp"
+    sessiondir: str = "out"
     tmpdir: str = "tmp"
-    outdir: str = "out"
     outfile_noise: str = "noise.dat"
     outfile_sn_continuum: str = "sn_continuum.dat"
     outfile_sn_line: str = "sn_line.dat"
-    outfile_sn_oii: str = "sn_oii.dat"
+    # outfile_sn_oii: str = "sn_oii.dat"
+    outfile_sn_oii: str = "-"
 
     # For Simulator
     outfile_simspec: str = "simulated_spectrum"  # ".dat" will be added by the simulator
@@ -89,6 +86,7 @@ class TargetConf(param.Parameterized):
     wavelength = param.Number(
         label="Wavelength (nm) for normalization",
         default=default_parameters.wavelength,
+        bounds=(440, 1240),
     )
 
     redshift = param.Number(
@@ -109,9 +107,9 @@ class TargetConf(param.Parameterized):
     )
 
     # Custom input spectrum
-    mag_file = param.Parameter(
+    custom_input = param.Parameter(
         label="Custom Input Spectrum (.csv)",
-        default=default_parameters.mag_file,
+        default=default_parameters.custom_input,
     )
 
     # Misc. information
@@ -211,9 +209,17 @@ class TelescopeConf(param.Parameterized):
 
 
 class OutputConf(param.Parameterized):
-    outdir = param.String(
+    basedir = param.String(
+        label="Base directory to write outputs (default: ./tmp)",
+        default=default_parameters.basedir,
+    )
+    sessiondir = param.String(
         label="Output Directory",
-        default=default_parameters.outdir,
+        default=default_parameters.sessiondir,
+    )
+    tmpdir = param.String(
+        label="Temporary Directory",
+        default=default_parameters.tmpdir,
     )
     noise = param.String(
         label="Noise spectrum",
