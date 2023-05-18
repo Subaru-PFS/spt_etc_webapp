@@ -919,7 +919,7 @@ name = "pfsspecsim"
 version = "0.1"
 git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git"
 ref = "u/monodera/20230116"
-revision = "a4afcb3d7fda7e8148ad1209c7363fccd7e34201"
+revision = "6306863b5a3a892edddaaa4e48c24141f9e2c657"
 summary = "PFS ETC and spectral simulator"
 dependencies = [
     "matplotlib",
@@ -1409,7 +1409,7 @@ summary = "Backport of pathlib-compatible object wrapper for zip files"
 lock_version = "4.2"
 cross_platform = true
 groups = ["default", "dev"]
-content_hash = "sha256:daf84ee69d4d1a49a8cc6278f17776a8e598a1d30f49439a479706ad5b7ab9e2"
+content_hash = "sha256:d716510f22ab06d948c3def50d92511df574aa23df4ef7ab4ea437719ddb6827"
 
 [metadata.files]
 "anyio 3.6.2" = [

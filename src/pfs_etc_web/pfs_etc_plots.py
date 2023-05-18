@@ -151,6 +151,7 @@ def create_simspec_plot(df, df_snline, df_sncont, aspect_ratio=2.5):
         )
         p_arm.legend.location = "top_left"
         p_arm.legend.click_policy = "mute"
+        p_arm.legend.orientation = "horizontal"
 
     p_snline.line(
         "wavelength",

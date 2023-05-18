@@ -99,6 +99,10 @@ def pfs_etc_app():
                 panel_buttons.exec.name = "Running"
 
                 panel_plots.plot.object = create_dummy_plot()
+                panel_downloads.download_simspec_fits.visible = False
+                panel_downloads.download_simspec_csv.visible = False
+                panel_downloads.download_snline_fits.visible = False
+                panel_downloads.download_snline_csv.visible = False
 
                 print(conf_instrument.mr_mode)
 
@@ -166,10 +170,14 @@ def pfs_etc_app():
                 conf_instrument.reset()
                 conf_telescope.reset()
                 panel_plots.plot.object = None
-                panel_downloads.download_fits.file = None
-                panel_downloads.download_fits.visible = False
-                panel_downloads.download_csv.file = None
-                panel_downloads.download_csv.visible = False
+                panel_downloads.download_simspec_fits.file = None
+                panel_downloads.download_simspec_fits.visible = False
+                panel_downloads.download_simspec_csv.file = None
+                panel_downloads.download_simspec_csv.visible = False
+                panel_downloads.download_snline_fits.file = None
+                panel_downloads.download_snline_fits.visible = False
+                panel_downloads.download_snline_csv.file = None
+                panel_downloads.download_snline_csv.visible = False
             queue_reset.clear()
             c_reset.release()
             time.sleep(1)
