@@ -106,7 +106,6 @@ class PfsSpecSim:
         telescope=None,
         output=OutputConf(),
         simconf=SimulationConf(),
-        # use_default=Tru,
     ):
         self.target = target
         self.environment = environment
@@ -116,9 +115,12 @@ class PfsSpecSim:
         self.output = output
         self.simconf = simconf
 
-        # if use_default:
-        # self.params = params
-        self.etc = pfsetc.Etc()
+        if os.environ.get("OMP_NUM_THREADS") is not None:
+            omp_num_threads = int(os.environ.get("OMP_NUM_THREADS"))
+        else:
+            omp_num_threads = 4
+
+        self.etc = pfsetc.Etc(omp_num_threads=omp_num_threads)
         self.sim = pfsspec.Pfsspec()
 
         self.outfile_simspec_prefix = None

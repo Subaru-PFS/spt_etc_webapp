@@ -919,7 +919,7 @@ name = "pfsspecsim"
 version = "0.1"
 git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git"
 ref = "u/monodera/20230116"
-revision = "6306863b5a3a892edddaaa4e48c24141f9e2c657"
+revision = "79f08861720262fa65ee27d72f40a0da002d0127"
 summary = "PFS ETC and spectral simulator"
 dependencies = [
     "matplotlib",

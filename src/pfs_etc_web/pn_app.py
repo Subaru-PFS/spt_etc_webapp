@@ -150,12 +150,6 @@ def pfs_etc_app():
                 print(conf_target.template)
                 print(conf_target.mag_file)
 
-                # if conf_target.custom_input is not None:
-                #     df_content = pd.read_csv(
-                #         BytesIO(conf_target.custom_input), encoding="utf8"
-                #     )
-                #     print(df_content)
-
             queue_exec.clear()
             c_exec.release()
             time.sleep(1)
@@ -213,16 +207,6 @@ def pfs_etc_app():
         ),
     ).servable(title="PFS Spectral Simulator")
 
-    # return pn.Row(
-    #     pn.Column(
-    #         panel_buttons.pane,
-    #         tab_inputs,
-    #         width=350,
-    #     ),
-    #     panel_plots.pane,
-    # ).servable(title="PFS Spectral Simulator")
-
 
 if __name__.startswith("bokeh"):
     pass
-    # main_app()
