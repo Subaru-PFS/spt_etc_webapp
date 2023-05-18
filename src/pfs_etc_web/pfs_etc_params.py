@@ -76,6 +76,7 @@ class TargetConf(param.Parameterized):
     template = param.String(
         label="Template Spectrum",
         default=default_parameters.template,
+        # doc="Template Spectrum",
     )
 
     mag = param.Number(
@@ -99,9 +100,12 @@ class TargetConf(param.Parameterized):
         label="Line flux (erg/s/cm^2)",
         default=default_parameters.line_flux,
         bounds=(0, None),
+        doc="Emission line flux in the units of erg/s/cm^2. The emission line S/N "
+        "is computed on top of the main target source spectrum. "
+        "If you wish to compute emission line only S/N, you can set very large Magnitude value.",
     )
     line_width = param.Number(
-        label="Line width (km/s)",
+        label="Line width sigma (km/s)",
         default=default_parameters.line_width,
         bounds=(0, None),
     )
@@ -110,11 +114,14 @@ class TargetConf(param.Parameterized):
     custom_input = param.Parameter(
         label="Custom Input Spectrum (.csv)",
         default=default_parameters.custom_input,
+        doc="Input spectrum must be in a CSV format with exactly two columns. "
+        "The first column must be the wavelength in [angstrom] "
+        "and the second column must be the flux in [erg/s/cm^2/AA]",
     )
 
     # Misc. information
     galactic_extinction = param.Number(
-        label="Galactic Extinction (mag)",
+        label="Galactic Extinction E(B-V) (mag)",
         default=default_parameters.galactic_extinction,
         bounds=(0.0, None),
     )

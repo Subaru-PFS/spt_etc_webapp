@@ -184,17 +184,19 @@ dependencies = [
 
 [[package]]
 name = "bokeh"
-version = "2.4.3"
-requires_python = ">=3.7"
+version = "3.1.1"
+requires_python = ">=3.8"
 summary = "Interactive plots and applications in the browser from Python"
 dependencies = [
     "Jinja2>=2.9",
     "PyYAML>=3.10",
-    "numpy>=1.11.3",
+    "contourpy>=1",
+    "numpy>=1.16",
     "packaging>=16.8",
+    "pandas>=1.2",
     "pillow>=7.1.0",
     "tornado>=5.1",
-    "typing-extensions>=3.10.0",
+    "xyzservices>=2021.09.1",
 ]
 
 [[package]]
@@ -607,6 +609,15 @@ requires_python = ">=3.7"
 summary = "A fast implementation of the Cassowary constraint solver"
 
 [[package]]
+name = "linkify-it-py"
+version = "2.0.2"
+requires_python = ">=3.7"
+summary = "Links recognition library with FULL unicode support."
+dependencies = [
+    "uc-micro-py",
+]
+
+[[package]]
 name = "logzero"
 version = "1.7.0"
 summary = "Robust and effective logging for Python 2 and 3"
@@ -621,6 +632,15 @@ requires_python = ">=3.7"
 summary = "Python implementation of Markdown."
 dependencies = [
     "importlib-metadata>=4.4; python_version < \"3.10\"",
+]
+
+[[package]]
+name = "markdown-it-py"
+version = "2.2.0"
+requires_python = ">=3.7"
+summary = "Python port of markdown-it. Markdown parsing, done right!"
+dependencies = [
+    "mdurl~=0.1",
 ]
 
 [[package]]
@@ -655,6 +675,21 @@ summary = "Inline Matplotlib backend for Jupyter"
 dependencies = [
     "traitlets",
 ]
+
+[[package]]
+name = "mdit-py-plugins"
+version = "0.3.5"
+requires_python = ">=3.7"
+summary = "Collection of plugins for markdown-it-py"
+dependencies = [
+    "markdown-it-py<3.0.0,>=1.0.0",
+]
+
+[[package]]
+name = "mdurl"
+version = "0.1.2"
+requires_python = ">=3.7"
+summary = "Markdown URL utilities"
 
 [[package]]
 name = "mistune"
@@ -833,20 +868,24 @@ summary = "Utilities for writing pandoc filters in python"
 
 [[package]]
 name = "panel"
-version = "0.14.4"
-requires_python = ">=3.7"
-summary = "A high level app and dashboarding solution for Python."
+version = "1.0.0"
+requires_python = ">=3.8"
+summary = "The powerful data exploration & web app framework for Python."
 dependencies = [
     "bleach",
-    "bokeh<2.5.0,>=2.4.0",
+    "bokeh<3.2.0,>=3.1.1",
+    "linkify-it-py",
     "markdown",
+    "markdown-it-py",
+    "mdit-py-plugins",
+    "pandas>=1.2",
     "param>=1.12.0",
-    "pyct>=0.4.4",
     "pyviz-comms>=0.7.4",
     "requests",
     "setuptools>=42",
     "tqdm>=4.48.0",
     "typing-extensions",
+    "xyzservices>=2021.09.1",
 ]
 
 [[package]]
@@ -880,7 +919,7 @@ name = "pfsspecsim"
 version = "0.1"
 git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git"
 ref = "u/monodera/20230116"
-revision = "8995b5d94301bdae7e26c414c331d9c876f2a8ba"
+revision = "a4afcb3d7fda7e8148ad1209c7363fccd7e34201"
 summary = "PFS ETC and spectral simulator"
 dependencies = [
     "matplotlib",
@@ -946,15 +985,6 @@ name = "pycparser"
 version = "2.21"
 requires_python = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 summary = "C parser in Python"
-
-[[package]]
-name = "pyct"
-version = "0.5.0"
-requires_python = ">=3.7"
-summary = "Python package common tasks for users (e.g. copy examples, fetch data, ...)"
-dependencies = [
-    "param>=1.7.0",
-]
 
 [[package]]
 name = "pydantic"
@@ -1270,6 +1300,12 @@ requires_python = ">=2"
 summary = "Provider of IANA time zone data"
 
 [[package]]
+name = "uc-micro-py"
+version = "1.0.2"
+requires_python = ">=3.7"
+summary = "Micro subset of unicode data files for linkify-it-py projects."
+
+[[package]]
 name = "uri-template"
 version = "1.2.0"
 requires_python = ">=3.6"
@@ -1356,6 +1392,12 @@ name = "widgetsnbextension"
 version = "4.0.5"
 requires_python = ">=3.7"
 summary = "Jupyter interactive widgets for Jupyter Notebook"
+
+[[package]]
+name = "xyzservices"
+version = "2023.2.0"
+requires_python = ">=3.7"
+summary = "Source of XYZ tiles providers"
 
 [[package]]
 name = "zipp"
@@ -1516,9 +1558,9 @@ content_hash = "sha256:a777f322f51e9ae51fead8123aaffb11846de17671c359e4b97f69082
     {url = "https://files.pythonhosted.org/packages/7e/e6/d5f220ca638f6a25557a611860482cb6e54b2d97f0332966b1b005742e1f/bleach-6.0.0.tar.gz", hash = "sha256:1a1a85c1595e07d8db14c5f09f09e6433502c51c595970edc090551f0db99414"},
     {url = "https://files.pythonhosted.org/packages/ac/e2/dfcab68c9b2e7800c8f06b85c76e5f978d05b195a958daa9b1dda54a1db6/bleach-6.0.0-py3-none-any.whl", hash = "sha256:33c16e3353dbd13028ab4799a0f89a83f113405c766e9c122df8a06f5b85b3f4"},
 ]
-"bokeh 2.4.3" = [
-    {url = "https://files.pythonhosted.org/packages/15/06/706a9c43436cd0c3e2f4b94e93ae837e74965e59565c596b727974a74169/bokeh-2.4.3-py3-none-any.whl", hash = "sha256:104d2f0a4ca7774ee4b11e545aa34ff76bf3e2ad6de0d33944361981b65da420"},
-    {url = "https://files.pythonhosted.org/packages/ac/01/c7622f3f8c6440f4a66ed58bfe5a2a499c2cc8551e00a298ceb94ccc3c70/bokeh-2.4.3.tar.gz", hash = "sha256:ef33801161af379665ab7a34684f2209861e3aefd5c803a21fbbb99d94874b03"},
+"bokeh 3.1.1" = [
+    {url = "https://files.pythonhosted.org/packages/03/5d/978f7a4824d26f9f729347142d01bc4bf12e49027d96163d9b428a9aabda/bokeh-3.1.1.tar.gz", hash = "sha256:ba0fc6bae4352d307541293256dee930a42d0acf92e760c72dc0e7397c3a28e9"},
+    {url = "https://files.pythonhosted.org/packages/96/f5/3d3d179f87908a4d4c8d2046014b2c6b38e92572ebb0ff2987212d0ee210/bokeh-3.1.1-py3-none-any.whl", hash = "sha256:a542a076ce326f81bf6d226355458572d39fe8fc9b547eab9728a2f1d71e4bdb"},
 ]
 "certifi 2022.12.7" = [
     {url = "https://files.pythonhosted.org/packages/37/f7/2b1b0ec44fdc30a3d31dfebe52226be9ddc40cd6c0f34ffc8923ba423b69/certifi-2022.12.7.tar.gz", hash = "sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3"},
@@ -2014,6 +2056,10 @@ content_hash = "sha256:a777f322f51e9ae51fead8123aaffb11846de17671c359e4b97f69082
     {url = "https://files.pythonhosted.org/packages/f6/e8/194a4b4eee0990a648711bfb769a7110d10fd8d8b370a0464cb3d1060381/kiwisolver-1.4.4-pp38-pypy38_pp73-win_amd64.whl", hash = "sha256:70e7c2e7b750585569564e2e5ca9845acfaa5da56ac46df68414f29fea97be9f"},
     {url = "https://files.pythonhosted.org/packages/f8/f4/724d454e95c7e9be6a05f1da3fb85251b5dbb8c3b7d06bdc61d56b16035a/kiwisolver-1.4.4-pp39-pypy39_pp73-win_amd64.whl", hash = "sha256:36dafec3d6d6088d34e2de6b85f9d8e2324eb734162fba59d2ba9ed7a2043d5b"},
 ]
+"linkify-it-py 2.0.2" = [
+    {url = "https://files.pythonhosted.org/packages/1f/1a/16b0d2f66601ba3081f1d4177087c79fd1f11d17706ee01d373e4ba8e00d/linkify_it_py-2.0.2-py3-none-any.whl", hash = "sha256:a3a24428f6c96f27370d7fe61d2ac0be09017be5190d68d8658233171f1b6541"},
+    {url = "https://files.pythonhosted.org/packages/8d/fd/73bb30ec2b3cd952fe139a79a40ce5f5fd0280dd2cc1de94c93ea6a714d2/linkify-it-py-2.0.2.tar.gz", hash = "sha256:19f3060727842c254c808e99d465c80c49d2c7306788140987a1a7a29b0d6ad2"},
+]
 "logzero 1.7.0" = [
     {url = "https://files.pythonhosted.org/packages/b3/68/aa714515d65090fcbcc9a1f3debd5a644b14aad11e59238f42f00bd4b298/logzero-1.7.0-py2.py3-none-any.whl", hash = "sha256:23eb1f717a2736f9ab91ca0d43160fd2c996ad49ae6bad34652d47aba908769d"},
     {url = "https://files.pythonhosted.org/packages/bc/9a/018883ee64df0900bde1ac314868f81d12cbc450e51b216ab55e6e4dfc7d/logzero-1.7.0.tar.gz", hash = "sha256:7f73ddd3ae393457236f081ffebd044a3aa2e423a47ae6ddb5179ab90d0ad082"},
@@ -2021,6 +2067,10 @@ content_hash = "sha256:a777f322f51e9ae51fead8123aaffb11846de17671c359e4b97f69082
 "markdown 3.4.1" = [
     {url = "https://files.pythonhosted.org/packages/85/7e/133e943e97a943d2f1d8bae0c5060f8ac50e6691754eb9dbe036b047a9bb/Markdown-3.4.1.tar.gz", hash = "sha256:3b809086bb6efad416156e00a0da66fe47618a5d6918dd688f53f40c8e4cfeff"},
     {url = "https://files.pythonhosted.org/packages/86/be/ad281f7a3686b38dd8a307fa33210cdf2130404dfef668a37a4166d737ca/Markdown-3.4.1-py3-none-any.whl", hash = "sha256:08fb8465cffd03d10b9dd34a5c3fea908e20391a2a90b88d66362cb05beed186"},
+]
+"markdown-it-py 2.2.0" = [
+    {url = "https://files.pythonhosted.org/packages/bf/25/2d88e8feee8e055d015343f9b86e370a1ccbec546f2865c98397aaef24af/markdown_it_py-2.2.0-py3-none-any.whl", hash = "sha256:5a35f8d1870171d9acc47b99612dc146129b631baf04970128b568f190d0cc30"},
+    {url = "https://files.pythonhosted.org/packages/e4/c0/59bd6d0571986f72899288a95d9d6178d0eebd70b6650f1bb3f0da90f8f7/markdown-it-py-2.2.0.tar.gz", hash = "sha256:7c9a5e412688bc771c67432cbfebcdd686c93ce6484913dccf06cb5a0bea35a1"},
 ]
 "markupsafe 2.1.2" = [
     {url = "https://files.pythonhosted.org/packages/02/2c/18d55e5df6a9ea33709d6c33e08cb2e07d39e20ad05d8c6fbf9c9bcafd54/MarkupSafe-2.1.2-cp310-cp310-win_amd64.whl", hash = "sha256:835fb5e38fd89328e9c81067fd642b3593c33e1e17e2fdbf77f5676abb14a156"},
@@ -2120,6 +2170,14 @@ content_hash = "sha256:a777f322f51e9ae51fead8123aaffb11846de17671c359e4b97f69082
 "matplotlib-inline 0.1.6" = [
     {url = "https://files.pythonhosted.org/packages/d9/50/3af8c0362f26108e54d58c7f38784a3bdae6b9a450bab48ee8482d737f44/matplotlib-inline-0.1.6.tar.gz", hash = "sha256:f887e5f10ba98e8d2b150ddcf4702c1e5f8b3a20005eb0f74bfdbd360ee6f304"},
     {url = "https://files.pythonhosted.org/packages/f2/51/c34d7a1d528efaae3d8ddb18ef45a41f284eacf9e514523b191b7d0872cc/matplotlib_inline-0.1.6-py3-none-any.whl", hash = "sha256:f1f41aab5328aa5aaea9b16d083b128102f8712542f819fe7e6a420ff581b311"},
+]
+"mdit-py-plugins 0.3.5" = [
+    {url = "https://files.pythonhosted.org/packages/49/e7/cc2720da8a32724b36d04c6dba5644154cdf883a1482b3bbb81959a642ed/mdit-py-plugins-0.3.5.tar.gz", hash = "sha256:eee0adc7195e5827e17e02d2a258a2ba159944a0748f59c5099a4a27f78fcf6a"},
+    {url = "https://files.pythonhosted.org/packages/fe/4c/a9b222f045f98775034d243198212cbea36d3524c3ee1e8ab8c0346d6953/mdit_py_plugins-0.3.5-py3-none-any.whl", hash = "sha256:ca9a0714ea59a24b2b044a1831f48d817dd0c817e84339f20e7889f392d77c4e"},
+]
+"mdurl 0.1.2" = [
+    {url = "https://files.pythonhosted.org/packages/b3/38/89ba8ad64ae25be8de66a6d463314cf1eb366222074cfda9ee839c56a4b4/mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"},
+    {url = "https://files.pythonhosted.org/packages/d6/54/cfe61301667036ec958cb99bd3efefba235e65cdeb9c84d24a8293ba1d90/mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba"},
 ]
 "mistune 2.0.4" = [
     {url = "https://files.pythonhosted.org/packages/3a/c7/b0a4413a4d9b7a4fda0d710fd90dba62375f0d0c4544e848dc7656757c0c/mistune-2.0.4-py2.py3-none-any.whl", hash = "sha256:182cc5ee6f8ed1b807de6b7bb50155df7b66495412836b9a74c8fbdfc75fe36d"},
@@ -2230,9 +2288,9 @@ content_hash = "sha256:a777f322f51e9ae51fead8123aaffb11846de17671c359e4b97f69082
     {url = "https://files.pythonhosted.org/packages/5e/a8/878258cffd53202a6cc1903c226cf09e58ae3df6b09f8ddfa98033286637/pandocfilters-1.5.0-py2.py3-none-any.whl", hash = "sha256:33aae3f25fd1a026079f5d27bdd52496f0e0803b3469282162bafdcbdf6ef14f"},
     {url = "https://files.pythonhosted.org/packages/62/42/c32476b110a2d25277be875b82b5669f2cdda7897c165bd22b78f366b3cb/pandocfilters-1.5.0.tar.gz", hash = "sha256:0b679503337d233b4339a817bfc8c50064e2eff681314376a47cb582305a7a38"},
 ]
-"panel 0.14.4" = [
-    {url = "https://files.pythonhosted.org/packages/6f/39/6b10ad4eab47c8d6aab0c3bfe5d236cf22565de4e95a0cb68955bf70ad53/panel-0.14.4.tar.gz", hash = "sha256:b853d2f53d7738ec6372525360c5bf9427a71ed990685ccac703bc9b442e9951"},
-    {url = "https://files.pythonhosted.org/packages/b6/2e/6f47d12d9cd6bf11a028f022b7839c49c8d3cc2e08131f84006b1ca4a3fa/panel-0.14.4-py2.py3-none-any.whl", hash = "sha256:dd4fcf2fc7276cd3f0df110ce7a6197ac4040d74c4efdc8c092b23771c1f514d"},
+"panel 1.0.0" = [
+    {url = "https://files.pythonhosted.org/packages/32/3b/26ea9280f594e7260aa2179e432dde5ae58d962bd45f1b4fc6f7550a473c/panel-1.0.0-py2.py3-none-any.whl", hash = "sha256:f6f9bc618cd529e7228bc9e354af5d70863a22a7662eabb7822352757cd57ce5"},
+    {url = "https://files.pythonhosted.org/packages/4b/dd/85f1cc0e2ba68270f96855cdbdc8ef8005eaf82941d856ad6c03b88e8420/panel-1.0.0.tar.gz", hash = "sha256:9af0014af22825b5908a2c3aa5bb6235a8b331c18493329a6e6411e7bc3e3be2"},
 ]
 "param 1.12.3" = [
     {url = "https://files.pythonhosted.org/packages/5a/81/87a391d444c39b08ac564667a77cef8abdcdd4105cd5509d83711fe2544c/param-1.12.3-py2.py3-none-any.whl", hash = "sha256:9a60f524aa06c2dad15a21ed59f5cdda4248c0954ed75d51b07de7a4601cd79c"},
@@ -2376,10 +2434,6 @@ content_hash = "sha256:a777f322f51e9ae51fead8123aaffb11846de17671c359e4b97f69082
 "pycparser 2.21" = [
     {url = "https://files.pythonhosted.org/packages/5e/0b/95d387f5f4433cb0f53ff7ad859bd2c6051051cebbb564f139a999ab46de/pycparser-2.21.tar.gz", hash = "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"},
     {url = "https://files.pythonhosted.org/packages/62/d5/5f610ebe421e85889f2e55e33b7f9a6795bd982198517d912eb1c76e1a53/pycparser-2.21-py2.py3-none-any.whl", hash = "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9"},
-]
-"pyct 0.5.0" = [
-    {url = "https://files.pythonhosted.org/packages/2e/3b/b5b9d4215bc98df9186a5dfb9f2b4ce6db0b33b1728f63143f1431542e20/pyct-0.5.0.tar.gz", hash = "sha256:dd9f4ac5cbd8e37c352c04036062d3c5f67efec76d404761ef16b0cbf26aa6a0"},
-    {url = "https://files.pythonhosted.org/packages/75/e7/c7c1e9e1b6b23ca1db7af3c6826d57d8da883021f751edcc9c82143b127a/pyct-0.5.0-py2.py3-none-any.whl", hash = "sha256:a4038a8885059ab8cac6f946ea30e0b5e6bdbe0b92b6723f06737035f9d65e8c"},
 ]
 "pydantic 1.10.4" = [
     {url = "https://files.pythonhosted.org/packages/02/6b/c4b5773bcc216652cc6a040eb32697f99770cf9274d8ad254e621eb3fdd1/pydantic-1.10.4-cp37-cp37m-musllinux_1_1_i686.whl", hash = "sha256:a9f2de23bec87ff306aef658384b02aa7c32389766af3c5dee9ce33e80222dfa"},
@@ -2810,6 +2864,10 @@ content_hash = "sha256:a777f322f51e9ae51fead8123aaffb11846de17671c359e4b97f69082
     {url = "https://files.pythonhosted.org/packages/70/e5/81f99b9fced59624562ab62a33df639a11b26c582be78864b339dafa420d/tzdata-2023.3.tar.gz", hash = "sha256:11ef1e08e54acb0d4f95bdb1be05da659673de4acbd21bf9c69e94cc5e907a3a"},
     {url = "https://files.pythonhosted.org/packages/d5/fb/a79efcab32b8a1f1ddca7f35109a50e4a80d42ac1c9187ab46522b2407d7/tzdata-2023.3-py2.py3-none-any.whl", hash = "sha256:7e65763eef3120314099b6939b5546db7adce1e7d6f2e179e3df563c70511eda"},
 ]
+"uc-micro-py 1.0.2" = [
+    {url = "https://files.pythonhosted.org/packages/75/db/241444fe6df6970a4c18d227193cad77fab7cec55d98e296099147de017f/uc-micro-py-1.0.2.tar.gz", hash = "sha256:30ae2ac9c49f39ac6dce743bd187fcd2b574b16ca095fa74cd9396795c954c54"},
+    {url = "https://files.pythonhosted.org/packages/d1/1c/5aeb94aa980da111e4fd0c0fbe5ad95ed5bf9bd957f8e2a6178b85ff4da8/uc_micro_py-1.0.2-py3-none-any.whl", hash = "sha256:8c9110c309db9d9e87302e2f4ad2c3152770930d88ab385cd544e7a7e75f3de0"},
+]
 "uri-template 1.2.0" = [
     {url = "https://files.pythonhosted.org/packages/40/55/9318f307d3b0a70ce5812fd2b9da286b0f58a2ffbdba5fa269d0c052ae89/uri_template-1.2.0.tar.gz", hash = "sha256:934e4d09d108b70eb8a24410af8615294d09d279ce0e7cbcdaef1bd21f932b06"},
     {url = "https://files.pythonhosted.org/packages/c0/db/d4f9c75b43541f7235daf4d13eb43f4491f9d5f5df45ce41daeed3a903f6/uri_template-1.2.0-py3-none-any.whl", hash = "sha256:f1699c77b73b925cf4937eae31ab282a86dc885c333f2e942513f08f691fc7db"},
@@ -2964,6 +3022,10 @@ content_hash = "sha256:a777f322f51e9ae51fead8123aaffb11846de17671c359e4b97f69082
 "widgetsnbextension 4.0.5" = [
     {url = "https://files.pythonhosted.org/packages/46/d0/ef509e5b74d96821b4ec170b7785449e25a89ef0e781e80562e515f84678/widgetsnbextension-4.0.5.tar.gz", hash = "sha256:003f716d930d385be3fd9de42dd9bf008e30053f73bddde235d14fbeaeff19af"},
     {url = "https://files.pythonhosted.org/packages/c2/1a/73574f7194184c8670b804171d7f43f56c586e5f8142a41f7a53f0998b6b/widgetsnbextension-4.0.5-py3-none-any.whl", hash = "sha256:eaaaf434fb9b08bd197b2a14ffe45ddb5ac3897593d43c69287091e5f3147bf7"},
+]
+"xyzservices 2023.2.0" = [
+    {url = "https://files.pythonhosted.org/packages/0d/3f/941a4e2abb9bc7d4c103d259902cd86ee9eae9914a4acdac441a6125bb69/xyzservices-2023.2.0.tar.gz", hash = "sha256:3342bba410d7941290eed0e58a2e5aadb0f7b97863ec4283b283c406ee723a28"},
+    {url = "https://files.pythonhosted.org/packages/f1/76/1d508556ee4c279841c82521aea4e12496367929d88aec6dd3959f080cfa/xyzservices-2023.2.0-py3-none-any.whl", hash = "sha256:8d29c4d7c33b0ad63f54744ec90f68c5a65d7c0d7e498b624b7c076c1d926998"},
 ]
 "zipp 3.12.0" = [
     {url = "https://files.pythonhosted.org/packages/01/3c/9d84fc1dbac1c5103bf3cd994e4895642001f75eb2139bddbc02aa1906e5/zipp-3.12.0-py3-none-any.whl", hash = "sha256:9eb0a4c5feab9b08871db0d672745b53450d7f26992fd1e4653aa43345e97b86"},

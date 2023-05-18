@@ -66,7 +66,11 @@ class TargetWidgets:
             widgets={
                 "custom_input": {"type": pn.widgets.FileInput},
                 "accept": ".csv",
+                # "name": "Custom",
             },
+            # name="test",
+            # show_name=True,
+            # show_labels=True,
         )
 
         # Misc. information
@@ -86,21 +90,21 @@ class TargetWidgets:
 
         # Put widgets into categories
         _box_template = pn.WidgetBox(
-            "##### Target Information",
+            "### Target Information",
             pn.Column(_template, _mag, _wavelength, _redshift),
         )
 
         _box_line = pn.WidgetBox(
-            "##### Emission Line Properties",
+            "### Emission Line Properties",
             pn.Column(_line_flux, _line_width),
         )
 
         _box_custom_input = pn.WidgetBox(
-            "##### Custom Input Spectrum (.csv)",
+            "### Custom Input Spectrum (.csv)",
             pn.Column(_custom_input),
         )
         _box_misc = pn.WidgetBox(
-            "##### Miscellaneous Information",
+            "### Miscellaneous Information",
             pn.Column(_r_eff, _galactic_extinction),
         )
 
@@ -122,6 +126,7 @@ class EnvironmentWidgets:
                     "type": pn.widgets.FloatSlider,
                     "step": 0.1,
                     "format": "0.0",
+                    # "tooltips": True,
                 },
                 "degrade": {
                     "type": pn.widgets.FloatSlider,
@@ -136,6 +141,7 @@ class EnvironmentWidgets:
                     "format": "0.00",
                 },
             },
+            show_name=False,
             default_layout=pn.Column,
         )
 
@@ -160,6 +166,7 @@ class TelescopeWidgets:
         self.panel = pn.Param(
             conf,
             widgets={"zenith_angle": {"type": pn.widgets.IntSlider, "step": 5}},
+            show_name=False,
             default_layout=pn.Column,
         )
 
