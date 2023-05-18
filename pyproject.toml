@@ -9,6 +9,7 @@ dev = [
     "ruff>=0.0.239",
     "pyright>=1.1.291",
     "isort>=5.12.0",
+    # "scipy>=1.9.3",
     "specutils>=1.10.0",
 ]
 
@@ -18,9 +19,8 @@ version = "0.1.0"
 description = ""
 authors = [{ name = "Masato Onodera", email = "monodera@naoj.org" }]
 dependencies = [
-    "panel>=0.14.2",
+    "panel>=1",
     "numpy>=1.24.1",
-    "scipy>=1.9.3",
     "astropy>=5.2.1",
     "pandas>=1.5.3",
     "fastapi>=0.89.1",
