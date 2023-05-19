@@ -8,13 +8,14 @@ from fastapi.templating import Jinja2Templates
 from pfs_etc_web.pn_app import pfs_etc_app
 
 app = FastAPI(
+    # root_path="/pfs_etc_app",
     title="PFS Spectral Simulator",
 )
 
 templates = Jinja2Templates(directory="src/pfs_etc_web/templates")
 
 
-@app.get("/")
+@app.get("/pfs_etc_app")
 async def bkapp_page(request: Request):
     script = server_document("http://127.0.0.1:55006/app")
 
@@ -36,3 +37,7 @@ server = pn.serve(
     # num_procs=2,
     # threaded=True,
 )
+
+# if __name__ == "__main__":
+# import uvicorn
+# uvicorn.run("main:app", host="127.0.0.1", port=8000, log_level="info")
