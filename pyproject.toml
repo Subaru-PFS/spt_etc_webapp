@@ -39,6 +39,7 @@ license = { text = "MIT" }
 
 [project.scripts]
 run_pfs_etc_web = "pfs_etc_web.cli.run_panel_server:main"
+run_test_template = "pfs_etc_web.cli.run_test_template:main"
 
 [build-system]
 requires = ["pdm-pep517>=1.0"]

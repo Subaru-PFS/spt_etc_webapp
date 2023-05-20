@@ -15,6 +15,11 @@ def create_dummy_plot(aspect_ratio=1.5, outline_line_alpha=0.0):
         aspect_ratio=aspect_ratio,
         sizing_mode="scale_width",
         outline_line_alpha=outline_line_alpha,
+        # outline_line_color="red",
+        # outline_line_width=0,
+        # border_fill_color="red"
+        # width=0,
+        # height=0,
     )
     p.toolbar.logo = None
     p.toolbar_location = None
@@ -29,12 +34,14 @@ def create_simspec_plot(df, df_snline, df_sncont, aspect_ratio=2.5):
         y_axis_label="Flux (nJy)",
         aspect_ratio=aspect_ratio,
         sizing_mode="scale_width",
+        output_backend="webgl",
     )
     kwargs_snline = dict(
         x_axis_label="Wavelength (nm)",
         y_axis_label="S/N",
         aspect_ratio=aspect_ratio,
         sizing_mode="scale_width",
+        output_backend="webgl",
     )
     extra_y_axis_label = "S/N per pixel"
 
@@ -163,7 +170,9 @@ def create_simspec_plot(df, df_snline, df_sncont, aspect_ratio=2.5):
     p_snline.legend.location = "top_left"
     p_snline.legend.click_policy = "mute"
 
-    return column(p_simspec_b, p_simspec_r, p_simspec_n, p_simspec_m, p_snline)
+    return column(
+        children=[p_simspec_b, p_simspec_r, p_simspec_n, p_simspec_m, p_snline]
+    )
 
 
 def create_simspec_files(params, df_simspec, df_snline, df_sncont):

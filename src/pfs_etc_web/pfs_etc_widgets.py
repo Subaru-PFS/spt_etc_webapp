@@ -8,10 +8,7 @@ class ExecButtonWidgets:
         self.reset = pn.widgets.Button(name="Reset")
         self.exec = pn.widgets.Button(name="Run", button_type="danger")
 
-        self.pane = pn.Row(
-            self.reset,
-            self.exec,
-        )
+        self.pane = pn.Row(self.reset, self.exec)
 
 
 class TargetWidgets:
@@ -186,18 +183,31 @@ class BokehWidgets:
 class DownloadWidgets:
     def __init__(self, visible=True):
         self.download_simspec_fits = pn.widgets.FileDownload(
-            file=None, label="Download simulated spectrum (.fits)", visible=visible
+            file=None,
+            label="Download simulated spectrum (.fits)",
+            button_type="default",
+            visible=visible,
         )
         self.download_simspec_csv = pn.widgets.FileDownload(
-            file=None, label="Download simulated spectrum (.ecsv)", visible=visible
+            file=None,
+            label="Download simulated spectrum (.ecsv)",
+            button_type="default",
+            visible=visible,
         )
         self.download_snline_fits = pn.widgets.FileDownload(
-            file=None, label="Download emission line S/N (.fits)", visible=visible
+            file=None,
+            label="Download emission line S/N (.fits)",
+            button_type="default",
+            visible=visible,
         )
         self.download_snline_csv = pn.widgets.FileDownload(
-            file=None, label="Download emission line S/N (.ecsv)", visible=visible
+            file=None,
+            label="Download emission line S/N (.ecsv)",
+            button_type="default",
+            visible=visible,
         )
         self.pane = pn.Column(
             pn.Row(self.download_simspec_fits, self.download_simspec_csv),
             pn.Row(self.download_snline_fits, self.download_snline_csv),
+            # visible=visible,
         )

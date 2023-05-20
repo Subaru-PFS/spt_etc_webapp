@@ -5,7 +5,9 @@ from pydoc import describe
 
 import panel as pn
 
-from ..pn_app import pfs_etc_app
+from ..pn_app import app
+
+# from ..pn_app import pfs_etc_app, pfs_etc_app2
 
 
 def get_arguments():
@@ -16,7 +18,8 @@ def get_arguments():
         "--allow-websocket-origin",
         dest="allow_websocket_origin",
         type=str,
-        default="127.0.0.1:55006",
+        default=None,
+        # default="127.0.0.1:55006",
         help="`--allow-websocket-origin` sent to `panel.serve` (default: ).",
     )
     parser.add_argument(
@@ -40,13 +43,22 @@ def get_arguments():
 def main():
     args = get_arguments()
 
+    if args.allow_websocket_origin is None:
+        ws = None
+    else:
+        ws = [args.allow_websocket_origin]
+
     pn.serve(
-        pfs_etc_app,
+        app,
+        # pfs_etc_app,
+        # pfs_etc_app2,
         port=args.port,
-        allow_websocket_origin=[args.allow_websocket_origin],
-        # num_procs=4,
-        # num_threads=4,
+        websocket_origin=ws,
+        # allow_websocket_origin=ws,
         autoreload=args.autoreload,
+        # basic_auth=args.basic_auth,
+        # cookie_secret="my_super_safe_cookie_secret",
+        threaded=True,
         show=False,
     )
 

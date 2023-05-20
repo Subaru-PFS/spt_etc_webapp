@@ -5,6 +5,7 @@ import pprint
 import sys
 
 import pandas as pd
+from logzero import logger
 from pfsspecsim import pfsetc, pfsspec
 
 from .pfs_etc_params import OutputConf, SimulationConf
@@ -215,7 +216,9 @@ class PfsSpecSim:
         else:
             self.etc.set_param("OUTFILE_OII", self.output.sn_oii)
 
-        pprint.pprint(self.etc.params)
+        logger.info(
+            f"""Input parameters for gsetc\n{pprint.pformat(self.etc.params)}"""
+        )
 
         # execute PFS ETC
         self.etc.run()
@@ -282,10 +285,6 @@ class PfsSpecSim:
         df_snline = load_snline(infile_snline)
         df_sncont = load_sncont(infile_sncont)
 
-        print(df_snline)
-
-        self.p_simspec = create_simspec_plot(df_simspec, df_snline, df_sncont)
-
         tb_simspec, tb_snline = create_simspec_files(
             self.etc.params, df_simspec, df_snline, df_sncont
         )
@@ -308,8 +307,11 @@ class PfsSpecSim:
             overwrite=True,
         )
 
+        self.p_simspec = create_simspec_plot(df_simspec, df_snline, df_sncont)
+
+        print(type(self.p_simspec))
+
         return self.p_simspec
-        # return None
 
 
 if __name__ == "__main__":
