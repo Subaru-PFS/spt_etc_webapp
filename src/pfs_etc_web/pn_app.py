@@ -2,14 +2,10 @@
 
 import datetime
 import os
-
-# import queue
 import secrets
 import threading
 import time
-from io import BytesIO
 
-import pandas as pd
 import panel as pn
 from logzero import logger
 
@@ -33,14 +29,24 @@ from .pfs_etc_widgets import (
 )
 
 pn.extension(
-    template="bootstrap",
+    # template="bootstrap",
     loading_spinner="dots",
     loading_color="#6A589D",
     sizing_mode="stretch_width",
+    # throttled=True,
 )
+
+__all__ = ["app"]
 
 
 def pfs_etc_app():
+    template = pn.template.VanillaTemplate(
+        title="PFS Spectral Simulator",
+        sidebar_width=400,
+        header_background="#6A589D",
+        busy_indicator=None,
+    )
+
     # set parameter objects with default parameters
     conf_target = TargetConf()
     conf_environment = EnvironmentConf()
@@ -60,17 +66,28 @@ def pfs_etc_app():
 
     # Use a tab layout for input parameters
     tab_inputs = pn.Tabs(
-        ("Target", panel_target.panel),
-        ("Condition", panel_environment.panel),
+        ("Target    ", panel_target.panel),
+        ("Condition ", panel_environment.panel),
         ("Instrument", panel_instrument.panel),
-        ("Telescope", panel_telescope.panel),
+        ("Telescope ", panel_telescope.panel),
     )
 
     # Create button to start computation
     panel_buttons = ExecButtonWidgets()
 
+    # Create a panel to show plots
+    panel_plots = BokehWidgets(create_dummy_plot())
+    # panel_plots.pane.visible = False
+
     # Create download buttons
     panel_downloads = DownloadWidgets(visible=False)
+
+    # put panels into a template
+    sidebar_column = pn.Column(panel_buttons.pane, tab_inputs)
+    template.sidebar.append(sidebar_column)
+
+    main_column = pn.Column(panel_downloads.pane, panel_plots.pane)
+    template.main.append(main_column)
 
     # setup threading
     c_exec = threading.Condition()
@@ -79,10 +96,15 @@ def pfs_etc_app():
     queue_exec = []
     queue_reset = []
 
+    print("before def callback_exec()")
+
     def callback_exec():
+        # panel_plots.visible = False
         while True:
             c_exec.acquire()
             for _ in queue_exec:
+                print("callback_exec")
+                # template.main.append(main_column)
                 logger.info("callback function is called")
 
                 session_id = (
@@ -99,6 +121,7 @@ def pfs_etc_app():
                 panel_buttons.exec.name = "Running"
 
                 panel_plots.plot.object = create_dummy_plot()
+
                 panel_downloads.download_simspec_fits.visible = False
                 panel_downloads.download_simspec_csv.visible = False
                 panel_downloads.download_snline_fits.visible = False
@@ -118,16 +141,7 @@ def pfs_etc_app():
                     logger.info("Running PFS Spectrum Simulator")
                     specsim.exec(skip=False)
 
-                logger.info("Plotting simulated spectrum")
-                panel_plots.plot.object = specsim.show()
-                panel_buttons.exec.name = "Run"
-
                 logger.info("Set download buttons")
-                panel_downloads.download_simspec_fits.visible = True
-                panel_downloads.download_simspec_csv.visible = True
-                panel_downloads.download_snline_fits.visible = True
-                panel_downloads.download_snline_csv.visible = True
-
                 panel_downloads.download_simspec_fits.file = (
                     f"{specsim.outfile_simspec_prefix}.fits"
                 )
@@ -141,14 +155,19 @@ def pfs_etc_app():
                     f"{specsim.outfile_snline_prefix}.ecsv"
                 )
 
+                panel_downloads.download_simspec_fits.visible = True
+                panel_downloads.download_simspec_csv.visible = True
+                panel_downloads.download_snline_fits.visible = True
+                panel_downloads.download_snline_csv.visible = True
+
                 logger.info("Enable the run button")
+                panel_buttons.exec.name = "Run"
                 panel_buttons.exec.disabled = False
 
-                print(conf_telescope.zenith_angle)
-                print(conf_instrument.mr_mode)
-                print(conf_target.mag)
-                print(conf_target.template)
-                print(conf_target.mag_file)
+                logger.info("Plotting simulated spectrum")
+                # panel_plots.plot.object = None
+                # panel_plots.plot.object = specsim.show()
+                panel_plots.plot.object = specsim.show()
 
             queue_exec.clear()
             c_exec.release()
@@ -176,9 +195,6 @@ def pfs_etc_app():
             c_reset.release()
             time.sleep(1)
 
-    # Create a panel to show plots
-    panel_plots = BokehWidgets(create_dummy_plot())
-
     thread_exec = threading.Thread(target=callback_exec, daemon=True)
     thread_exec.start()
 
@@ -195,18 +211,21 @@ def pfs_etc_app():
     panel_buttons.exec.on_click(on_click_exec)
     panel_buttons.reset.on_click(on_click_reset)
 
-    return pn.Row(
-        pn.Column(
-            panel_buttons.pane,
-            tab_inputs,
-            width=350,
-        ),
-        pn.Column(
-            panel_downloads.pane,
-            panel_plots.pane,
-        ),
-    ).servable(title="PFS Spectral Simulator")
+    # print("app")
+
+    return template.servable()
+
+    # return pn.Row(
+    #     pn.Column(
+    #         panel_buttons.pane,
+    #         tab_inputs,
+    #         width=350,
+    #     ),
+    #     pn.Column(
+    #         panel_downloads.pane,
+    #         panel_plots.pane,
+    #     ),
+    # ).servable()
 
 
-if __name__.startswith("bokeh"):
-    pass
+app = pfs_etc_app
