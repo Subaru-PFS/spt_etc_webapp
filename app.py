@@ -11,8 +11,7 @@ pn.extension(
     sizing_mode="stretch_width",
 )
 
-PFS_LOGO = Path(os.path.dirname(pfs_etc_web.__file__)) / "assets/logo-pfs.png"
-
-print(PFS_LOGO)
+# PFS_LOGO = Path(os.path.dirname(pfs_etc_web.__file__)) / "assets/logo-pfs.png"
+# print(PFS_LOGO)
 
 pfs_etc_app()
