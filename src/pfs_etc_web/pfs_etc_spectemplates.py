@@ -10,16 +10,15 @@ from astropy import units as u
 
 
 def prepare_spectrum(
-    infile,
-    outfile,
-    flux_col=None,
-    redshift=0.0,
-    norm_wavelength=400.0 * u.nm,
-    norm_mag=20.0 * u.ABmag,
-    norm_bandwidth=10.0 * u.nm,
-    wmin=300.0,
-    wmax=1300.0,
-):
+    infile: str,
+    outfile: str,
+    redshift: float = 0.0,
+    norm_wavelength: u.Quantity = 400.0 * u.nm,
+    norm_mag: u.Quantity = 20.0 * u.ABmag,
+    norm_bandwidth: u.Quantity = 10.0 * u.nm,
+    wmin: float = 300.0,
+    wmax: float = 1300.0,
+) -> None:
     # define a tophat filter for flux normalization
     band = synphot.SpectralElement(
         synphot.models.Box1D,
@@ -55,7 +54,7 @@ def prepare_spectrum(
             f.write(f"{wout[idx][i]}  {fout[idx][i]}\n")
 
 
-def create_template_spectrum(target, tmpdir="."):
+def create_template_spectrum(target, tmpdir: str = "."):
     pkgdir = os.path.dirname(os.path.abspath(__file__))
     datadir = os.path.join("spectemplates", "output")
     templatefiles = {

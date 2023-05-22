@@ -60,6 +60,7 @@ def main():
         # cookie_secret="my_super_safe_cookie_secret",
         threaded=True,
         show=False,
+        auth_module=None,
     )
 
 

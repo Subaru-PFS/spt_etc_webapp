@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
-# Standard Library
-import os
-from dataclasses import dataclass
 
-# Third Party Library
+from dataclasses import dataclass
+from typing import Any
+
 import numpy as np
 import param
 
@@ -14,7 +13,7 @@ class PfsSpecParameter:
     # target
     template: str = "Flat in frequency"
     mag: float = 20.0
-    mag_file = None
+    mag_file: float | str = None
     wavelength: float = 550.0
     redshift: float = 0.0
     custom_input: str = None
@@ -263,7 +262,7 @@ class SimulationConf(param.Parameterized):
     nrealize = param.Integer(label="nrealize", default=default_parameters.nrealize)
     tract = param.Integer(label="tract", default=default_parameters.tract)
     patch = param.String(
-        label="patch (causion: str value)", default=default_parameters.patch
+        label="patch (caution: str value)", default=default_parameters.patch
     )
     visit0 = param.Integer(label="visit0", default=default_parameters.visit0)
     objId = param.Integer(label="objId", default=default_parameters.objId)

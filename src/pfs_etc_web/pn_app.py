@@ -36,8 +36,6 @@ pn.extension(
     # throttled=True,
 )
 
-__all__ = ["app"]
-
 
 def pfs_etc_app():
     template = pn.template.VanillaTemplate(
@@ -70,6 +68,7 @@ def pfs_etc_app():
         ("Condition ", panel_environment.panel),
         ("Instrument", panel_instrument.panel),
         ("Telescope ", panel_telescope.panel),
+        # sizing_mode="stretch_width",
     )
 
     # Create button to start computation
@@ -83,10 +82,17 @@ def pfs_etc_app():
     panel_downloads = DownloadWidgets(visible=False)
 
     # put panels into a template
-    sidebar_column = pn.Column(panel_buttons.pane, tab_inputs)
+    sidebar_column = pn.Column(
+        panel_buttons.pane,
+        tab_inputs,
+        # sizing_mode="stretch_width",
+    )
     template.sidebar.append(sidebar_column)
 
-    main_column = pn.Column(panel_downloads.pane, panel_plots.pane)
+    main_column = pn.Column(
+        panel_downloads.pane,
+        panel_plots.pane,
+    )
     template.main.append(main_column)
 
     # setup threading
@@ -96,14 +102,12 @@ def pfs_etc_app():
     queue_exec = []
     queue_reset = []
 
-    print("before def callback_exec()")
-
     def callback_exec():
         # panel_plots.visible = False
         while True:
             c_exec.acquire()
             for _ in queue_exec:
-                print("callback_exec")
+                # print("callback_exec")
                 # template.main.append(main_column)
                 logger.info("callback function is called")
 
@@ -113,7 +117,7 @@ def pfs_etc_app():
                     + secrets.token_hex(8)
                 )
 
-                print(f"Session ID: {session_id}")
+                logger.info(f"Session ID: {session_id}")
 
                 conf_output.sessiondir = session_id
 
@@ -127,7 +131,7 @@ def pfs_etc_app():
                 panel_downloads.download_snline_fits.visible = False
                 panel_downloads.download_snline_csv.visible = False
 
-                print(conf_instrument.mr_mode)
+                # print(conf_instrument.mr_mode)
 
                 specsim = PfsSpecSim(
                     target=conf_target,
@@ -165,8 +169,6 @@ def pfs_etc_app():
                 panel_buttons.exec.disabled = False
 
                 logger.info("Plotting simulated spectrum")
-                # panel_plots.plot.object = None
-                # panel_plots.plot.object = specsim.show()
                 panel_plots.plot.object = specsim.show()
 
             queue_exec.clear()
@@ -211,8 +213,6 @@ def pfs_etc_app():
     panel_buttons.exec.on_click(on_click_exec)
     panel_buttons.reset.on_click(on_click_reset)
 
-    # print("app")
-
     return template.servable()
 
     # return pn.Row(
@@ -228,4 +228,4 @@ def pfs_etc_app():
     # ).servable()
 
 
-app = pfs_etc_app
+# app = pfs_etc_app

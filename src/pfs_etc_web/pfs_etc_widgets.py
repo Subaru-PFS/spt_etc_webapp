@@ -7,7 +7,6 @@ class ExecButtonWidgets:
     def __init__(self):
         self.reset = pn.widgets.Button(name="Reset")
         self.exec = pn.widgets.Button(name="Run", button_type="danger")
-
         self.pane = pn.Row(self.reset, self.exec)
 
 
@@ -29,32 +28,26 @@ class TargetWidgets:
                     },
                 },
             },
-            default_layout=pn.Column,
         )
         _mag = pn.Param(
             conf.param.mag,
             widgets={"mag": {"type": pn.widgets.FloatInput}},
-            default_layout=pn.Column,
         )
         _wavelength = pn.Param(
             conf.param.wavelength,
             widgets={"wavelength": {"type": pn.widgets.FloatInput}},
-            default_layout=pn.Column,
         )
         _redshift = pn.Param(
             conf.param.redshift,
             widgets={"redshift": {"type": pn.widgets.FloatInput}},
-            default_layout=pn.Column,
         )
         _line_flux = pn.Param(
             conf.param.line_flux,
             widgets={"line_flux": {"type": pn.widgets.FloatInput}},
-            default_layout=pn.Column,
         )
         _line_width = pn.Param(
             conf.param.line_width,
             widgets={"line_width": {"type": pn.widgets.FloatInput}},
-            default_layout=pn.Column,
         )
 
         # Custom input spectrum
@@ -63,21 +56,14 @@ class TargetWidgets:
             widgets={
                 "custom_input": {"type": pn.widgets.FileInput},
                 "accept": ".csv",
-                # "name": "Custom",
             },
-            # name="test",
-            # show_name=True,
-            # show_labels=True,
         )
 
         # Misc. information
         _galactic_extinction = pn.Param(
             conf.param.galactic_extinction,
             widgets={
-                "galactic_extinction": {
-                    "type": pn.widgets.FloatInput,
-                    "format": "0.0",
-                }
+                "galactic_extinction": {"type": pn.widgets.FloatInput, "format": "0.0"}
             },
         )
         _r_eff = pn.Param(
@@ -123,7 +109,6 @@ class EnvironmentWidgets:
                     "type": pn.widgets.FloatSlider,
                     "step": 0.1,
                     "format": "0.0",
-                    # "tooltips": True,
                 },
                 "degrade": {
                     "type": pn.widgets.FloatSlider,
@@ -169,19 +154,18 @@ class TelescopeWidgets:
 
 
 class MatplotlibWidgets:
-    def __init__(self, fig, dpi=144, visible=True):
+    def __init__(self, fig, dpi: int = 144, visible: bool = True):
         self.pane = pn.pane.Matplotlib(fig, dpi=dpi, visible=visible)
-        pass
 
 
 class BokehWidgets:
-    def __init__(self, p, visible=True):
+    def __init__(self, p, visible: bool = True):
         self.plot = pn.pane.Bokeh(p, visible=visible, sizing_mode="stretch_width")
         self.pane = pn.Column(self.plot)
 
 
 class DownloadWidgets:
-    def __init__(self, visible=True):
+    def __init__(self, visible: bool = True):
         self.download_simspec_fits = pn.widgets.FileDownload(
             file=None,
             label="Download simulated spectrum (.fits)",
@@ -209,5 +193,4 @@ class DownloadWidgets:
         self.pane = pn.Column(
             pn.Row(self.download_simspec_fits, self.download_simspec_csv),
             pn.Row(self.download_snline_fits, self.download_snline_csv),
-            # visible=visible,
         )

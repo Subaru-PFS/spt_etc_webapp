@@ -13,7 +13,7 @@ from .pfs_etc_plots import create_simspec_files, create_simspec_plot
 from .pfs_etc_spectemplates import create_template_spectrum
 
 
-def load_simspec(infile):
+def load_simspec(infile: str) -> pd.DataFrame:
     df = pd.read_table(
         infile,
         sep="\s+",
@@ -33,7 +33,7 @@ def load_simspec(infile):
     return df
 
 
-def load_snline(infile):
+def load_snline(infile: str) -> pd.DataFrame:
     df = pd.read_table(
         infile,
         sep="\s+",
@@ -62,7 +62,7 @@ def load_snline(infile):
     return df
 
 
-def load_sncont(infile):
+def load_sncont(infile: str) -> pd.DataFrame:
     df = pd.read_table(
         infile,
         sep="\s+",
@@ -251,12 +251,12 @@ class PfsSpecSim:
         # simulate spectrum
         self.sim.make_sim_spec()
 
-    def exec(self, skip=False):
+    def exec(self, skip: bool = False):
         if not skip:
             self.run_etc()
             self.run_sim()
 
-    def show(self, infile=None):
+    def show(self, infile: str = None):
         if infile is None:
             infile_simspec = os.path.join(
                 self.output.basedir,
@@ -309,14 +309,6 @@ class PfsSpecSim:
 
         self.p_simspec = create_simspec_plot(df_simspec, df_snline, df_sncont)
 
-        print(type(self.p_simspec))
+        # print(type(self.p_simspec))
 
         return self.p_simspec
-
-
-if __name__ == "__main__":
-    pass
-    # Third Party Library
-    # from pfs_etc_params import PfsSpecParameter
-
-    # x = PfsSpecSim(PfsSpecParameter())

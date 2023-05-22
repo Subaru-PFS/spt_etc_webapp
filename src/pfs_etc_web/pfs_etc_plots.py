@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
+import pandas as pd
 from astropy import units as u
 from astropy.table import Column, QTable, Table
 from bokeh.layouts import column
@@ -9,17 +10,15 @@ from bokeh.palettes import Colorblind
 from bokeh.plotting import ColumnDataSource, figure
 
 
-def create_dummy_plot(aspect_ratio=1.5, outline_line_alpha=0.0):
+def create_dummy_plot(
+    aspect_ratio: float = 1.5,
+    outline_line_alpha: float = 0.0,
+):
     p = None
     p = figure(
         aspect_ratio=aspect_ratio,
         sizing_mode="scale_width",
         outline_line_alpha=outline_line_alpha,
-        # outline_line_color="red",
-        # outline_line_width=0,
-        # border_fill_color="red"
-        # width=0,
-        # height=0,
     )
     p.toolbar.logo = None
     p.toolbar_location = None
@@ -28,7 +27,12 @@ def create_dummy_plot(aspect_ratio=1.5, outline_line_alpha=0.0):
     return column(p)
 
 
-def create_simspec_plot(df, df_snline, df_sncont, aspect_ratio=2.5):
+def create_simspec_plot(
+    df: pd.DataFrame,
+    df_snline: pd.DataFrame,
+    df_sncont: pd.DataFrame,
+    aspect_ratio: float = 2.5,
+):
     kwargs_simspec = dict(
         x_axis_label="Wavelength (nm)",
         y_axis_label="Flux (nJy)",
@@ -175,7 +179,12 @@ def create_simspec_plot(df, df_snline, df_sncont, aspect_ratio=2.5):
     )
 
 
-def create_simspec_files(params, df_simspec, df_snline, df_sncont):
+def create_simspec_files(
+    params,
+    df_simspec: pd.DataFrame,
+    df_snline: pd.DataFrame,
+    df_sncont: pd.DataFrame,
+):
     # initialize output table
     tb_out = QTable()
     tb_out["wavelength"] = Column(
@@ -313,16 +322,3 @@ def create_simspec_files(params, df_simspec, df_snline, df_sncont):
     )
 
     return tb_out, tb_snline
-
-    # tb_out[:10].write(sys.stdout, format="ascii.ecsv", delimiter=",")
-    # tb_out.write(
-    #     "test_download.ecsv", format="ascii.ecsv", delimiter=",", overwrite=True
-    # )
-    # tb_out.write("test_download.fits", format="fits", overwrite=True)
-
-    # tb_snline.write(
-    #     "test_download2.ecsv", format="ascii.ecsv", delimiter=",", overwrite=True
-    # )
-    # tb_snline.write("test_download2.fits", format="fits", overwrite=True)
-
-    pass
