@@ -1,0 +1,7 @@
+.git
+.gitignore
+.vscode
+.python-version
+.pdm-python
+.venv
+tmp

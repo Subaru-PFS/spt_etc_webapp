@@ -145,6 +145,10 @@ def pfs_etc_app():
                     logger.info("Running PFS Spectrum Simulator")
                     specsim.exec(skip=False)
 
+                logger.info("Plotting simulated spectrum")
+                panel_plots.pane.visible = False
+                panel_plots.plot.object = specsim.show()
+
                 logger.info("Set download buttons")
                 panel_downloads.download_simspec_fits.file = (
                     f"{specsim.outfile_simspec_prefix}.fits"
@@ -163,13 +167,11 @@ def pfs_etc_app():
                 panel_downloads.download_simspec_csv.visible = True
                 panel_downloads.download_snline_fits.visible = True
                 panel_downloads.download_snline_csv.visible = True
+                panel_plots.pane.visible = True
 
                 logger.info("Enable the run button")
                 panel_buttons.exec.name = "Run"
                 panel_buttons.exec.disabled = False
-
-                logger.info("Plotting simulated spectrum")
-                panel_plots.plot.object = specsim.show()
 
             queue_exec.clear()
             c_exec.release()
