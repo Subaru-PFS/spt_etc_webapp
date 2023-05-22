@@ -1,5 +1,6 @@
 # Use the official lightweight Python image.
 # https://hub.docker.com/_/python
+# https://pdm.fming.dev/latest/usage/advanced/#use-pdm-in-a-multi-stage-dockerfile
 
 FROM python:3.11-slim-bullseye
 
@@ -32,3 +33,7 @@ RUN mkdir tmp
 # Run the web service on container startup.
 ENV OMP_NUM_THREADS=8
 CMD panel serve app.py --address 0.0.0.0 --port 8080 --allow-websocket-origin="*"
+
+# TODO
+# - Remove temporary files in tmp directory periorically using crontab.
+#   https://www.airplane.dev/blog/docker-cron-jobs-how-to-run-cron-inside-containers

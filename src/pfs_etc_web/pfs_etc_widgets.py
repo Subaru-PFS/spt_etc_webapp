@@ -58,6 +58,16 @@ class TargetWidgets:
                 "accept": ".csv",
             },
         )
+        _custom_input_help = pn.pane.Markdown(
+            # r"$$\frac{1}{n}$$",
+            """
+            Input spectrum must be in a CSV format with exactly two columns.
+            The first column must be the wavelength in $$\mathrm{A}$$ and
+            the second column must be the flux in ($$\mathrm{erg}$$ $$\mathrm{s}^{-1}$$ $$\mathrm{cm}^2$$ $$\mathrm{A}^{-1}$$).
+            """,
+            renderer="myst"
+            # markdown-it', 'markdown', 'myst
+        )
 
         # Misc. information
         _galactic_extinction = pn.Param(
@@ -84,8 +94,18 @@ class TargetWidgets:
 
         _box_custom_input = pn.WidgetBox(
             "### Custom Input Spectrum (.csv)",
-            pn.Column(_custom_input),
+            pn.Column(
+                _custom_input_help,
+                _custom_input,
+            ),
         )
+        # _box_custom_input = pn.WidgetBox(
+        #     "### Custom Input Spectrum (.csv)",
+        #     pn.Column(
+        #         _custom_input,
+        #         _custom_input_help,
+        #     ),
+        # )
         _box_misc = pn.WidgetBox(
             "### Miscellaneous Information",
             pn.Column(_r_eff, _galactic_extinction),
