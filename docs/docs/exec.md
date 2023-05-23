@@ -1,4 +1,4 @@
-# Calculation
+# Running the app
 
 ## Run
 

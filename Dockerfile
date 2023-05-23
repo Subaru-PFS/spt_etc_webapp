@@ -30,9 +30,12 @@ RUN python3 -m pip install --no-cache-dir -e .
 # Create a temporary directory
 RUN mkdir tmp
 
+# Build documentation
+RUN cd docs && mkdocs build
+
 # Run the web service on container startup.
 ENV OMP_NUM_THREADS=8
-CMD panel serve app.py --address 0.0.0.0 --port 8080 --allow-websocket-origin="*"
+CMD panel serve ./app.py --address 0.0.0.0 --port 8080 --allow-websocket-origin="*" --static-dirs docs="./docs/site/"
 
 # TODO
 # - Remove temporary files in tmp directory periorically using crontab.

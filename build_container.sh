@@ -15,7 +15,7 @@ update_pdm_packages() {
     # update to the latest packages
     pdm update
     # export package dependencies to requirements.txt
-    pdm export -f requirements --without-hashes --prod >requirements.txt
+    pdm export -f requirements --without-hashes --prod -G mkdocs >requirements.txt
 }
 
 docker_image() {

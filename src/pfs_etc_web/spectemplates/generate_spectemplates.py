@@ -90,9 +90,34 @@ if __name__ == "__main__":
             "outfile": os.path.join(outdir, "star_a0v.fits"),
             "library": "BT-Settl",
         },
+        "F0V": {
+            "infile": os.path.join(indir, "lte072-4.5-0.0a+0.0.BT-Settl.7.dat.txt"),
+            "outfile": os.path.join(outdir, "star_f0v.fits"),
+            "library": "BT-Settl",
+        },
         "G2V": {
             "infile": os.path.join(indir, "lte059-4.5-0.0a+0.0.BT-Settl.7.dat.txt"),
             "outfile": os.path.join(outdir, "star_g2v.fits"),
+            "library": "BT-Settl",
+        },
+        "K0V": {
+            "infile": os.path.join(indir, "lte052-4.5-0.0a+0.0.BT-Settl.7.dat.txt"),
+            "outfile": os.path.join(outdir, "star_k0v.fits"),
+            "library": "BT-Settl",
+        },
+        "M0V": {
+            "infile": os.path.join(indir, "lte038-4.5-0.0a+0.0.BT-Settl.7.dat.txt"),
+            "outfile": os.path.join(outdir, "star_m0v.fits"),
+            "library": "BT-Settl",
+        },
+        "K0III": {
+            "infile": os.path.join(indir, "lte048-2.0-0.0a+0.0.BT-Settl.7.dat.txt"),
+            "outfile": os.path.join(outdir, "star_k0iii.fits"),
+            "library": "BT-Settl",
+        },
+        "M0III": {
+            "infile": os.path.join(indir, "lte037-1.5-0.0a+0.0.BT-Settl.7.dat.txt"),
+            "outfile": os.path.join(outdir, "star_m0iii.fits"),
             "library": "BT-Settl",
         },
         "Post-starburst galaxy": {

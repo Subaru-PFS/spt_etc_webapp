@@ -63,7 +63,12 @@ def create_template_spectrum(target, tmpdir: str = "."):
         "Quasar": "quasar.fits",
         "B0V": "star_b0v.fits",
         "A0V": "star_a0v.fits",
+        "F0V": "star_f0v.fits",
         "G2V": "star_g2v.fits",
+        "K0V": "star_k0v.fits",
+        "M0V": "star_m0v.fits",
+        "K0III": "star_k0iii.fits",
+        "M0III": "star_m0iii.fits",
         "Flat in frequency": None,
     }
 

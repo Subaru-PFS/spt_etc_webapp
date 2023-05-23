@@ -14,6 +14,7 @@ nav:
   #    - 'Plots': plots.md
   #    - 'Downloads': downloads.md
 
+use_directory_urls: false
 
 theme:
   name: material

@@ -23,9 +23,16 @@ Dropdown list of template spectra. Currently, the following templates are availa
 
 $T_\mathrm{eff}$ and $\log g$ are taken from Table 2 in the following [README](https://archive.stsci.edu/hlsps/reference-atlases/cdbs/grid/ck04models/AA_README)
 
-- B0V (BT-Settl (AGSS2009), $T_\mathrm{eff}=30000$K, $\log g=4.0$, $Z_\odot$)
-- A0V (BT-Settl (AGSS2009), $T_\mathrm{eff}=9600$K, $\log g=4.0$, $Z_\odot$)
-- G2V (BT-Settl (AGSS2009), $T_\mathrm{eff}=5900$K, $\log g=4.5$, $Z_\odot$)
+| Template | Library             | $T_\mathrm{eff}$ (K) | $\log g$ |       $Z$ |
+|----------|---------------------|---------------------:|---------:|----------:|
+| B0V      | BT-Settl (AGSS2009) |                30000 |      4.0 | $Z_\odot$ |
+| A0V      | BT-Settl (AGSS2009) |                 9600 |      4.0 | $Z_\odot$ |
+| F0V      | BT-Settl (AGSS2009) |                 7200 |      4.5 | $Z_\odot$ |
+| G2V      | BT-Settl (AGSS2009) |                 5900 |      4.5 | $Z_\odot$ |
+| K0V      | BT-Settl (AGSS2009) |                 5200 |      4.5 | $Z_\odot$ |
+| M0V      | BT-Settl (AGSS2009) |                 3800 |      4.5 | $Z_\odot$ |
+| K0III    | BT-Settl (AGSS2009) |                 4800 |      2.0 | $Z_\odot$ |
+| M0III    | BT-Settl (AGSS2009) |                 3700 |      1.5 | $Z_\odot$ |
 
 ##### Misc
 
