@@ -31,6 +31,12 @@ For development:
 - isort
 - specutils
 
+For documentation:
+
+- mkdocs
+- mkdocs-material
+
+
 ## Installation
 
 First of all, please clone this repository. There are several ways to install the app.
@@ -48,6 +54,24 @@ poetry install
 # if you use pdm
 pdm install
 ```
+
+If you wish to build documentation, run the following command in the `docs` directory.
+
+```sh
+cd docs
+
+# if you use pip
+mkdocs build
+cd ../
+
+# if you use poetry
+poetry run mkdocs build
+
+# if you use pdm
+pdm run mkdocs build
+```
+
+The documentation is built under `docs/site`.
 
 ### Docker container
 
@@ -73,13 +97,13 @@ You can run the app by using the `panel serve` as follows.
 
 ```sh
 # installed via pip
-panel serve ./app.py
+panel serve ./app.py --static-dirs docs="./docs/site/"
 
 # installed via poetry
-poetry run panel serve ./app.py
+poetry run panel serve ./app.py --static-dirs docs="./docs/site/"
 
 # installed via pdm
-pdm run panel serve ./app.py
+pdm run panel serve ./app.py --static-dirs docs="./docs/site/"
 ```
 
 Then open `http://localhost:5006/app` in a web browser.
