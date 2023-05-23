@@ -113,9 +113,6 @@ class TargetConf(param.Parameterized):
     custom_input = param.Parameter(
         label="Custom Input Spectrum (.csv)",
         default=default_parameters.custom_input,
-        doc="Input spectrum must be in a CSV format with exactly two columns. "
-        "The first column must be the wavelength in [$\AA$] "
-        "and the second column must be the flux in [erg/s/cm^2/AA]",
     )
 
     # Misc. information

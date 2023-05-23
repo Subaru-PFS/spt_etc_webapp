@@ -23,6 +23,7 @@ from .pfs_etc_widgets import (
     DownloadWidgets,
     EnvironmentWidgets,
     ExecButtonWidgets,
+    InitNoteWidgets,
     InstrumentWidgets,
     TargetWidgets,
     TelescopeWidgets,
@@ -85,34 +86,14 @@ def pfs_etc_app():
     panel_downloads = DownloadWidgets(visible=False)
 
     # Float panel to display some messages
-    floatpanel = pn.layout.FloatPanel(
-        pn.pane.Markdown(
-            """
-            - This is a PFS spectral simulator web app using [PFS Exposure Time Calculator and Spectrum Simulator](https://github.com/Subaru-PFS/spt_ExposureTimeCalculator/).
-            - Feedback would be appreciated. Please feel free to contact either at `obsproc` Slack channel on PFS Slack or by email to [Masato Onodera](monodera@naoj.org).
-
-            If you are using via `run.app` domain:
-            - The app is a development version running on Google Cloud Run with 4 CPUs and 2GB RAM (if you are accessing the app on `.run.app` domain).
-            - Computation takes about 30 seconds. This may vary depending on the concurrent connections by users.
-            - The app will not be responsive after 5 minutes of inactivity. Just reload the page would make the app active again.
-
-        """,
-            renderer="myst",
-        ),
-        name="Notes",
-        contained=False,
-        position="center",
-        # theme="none",
-        theme="#6A589D",
-        width=600,
-    )
+    panel_initnote = InitNoteWidgets()
 
     # put panels into a template
     sidebar_column = pn.Column(panel_buttons.pane, tab_inputs)
     template.sidebar.append(sidebar_column)
 
     main_column = pn.Column(
-        floatpanel,
+        panel_initnote.flatpanel,
         panel_downloads.pane,
         panel_plots.pane,
     )

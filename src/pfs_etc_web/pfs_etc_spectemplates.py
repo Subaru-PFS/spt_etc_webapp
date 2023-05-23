@@ -71,7 +71,10 @@ def create_template_spectrum(target, tmpdir: str = "."):
         print("Custom input spectrum detected!")
         target.mag_file = os.path.join(tmpdir, "mag_file_template.txt")
         df_custom = pd.read_csv(
-            BytesIO(target.custom_input), encoding="utf8", names=["wavelength", "flux"]
+            BytesIO(target.custom_input),
+            encoding="utf8",
+            names=["wavelength", "flux"],
+            comment="#",
         )
         wout = (df_custom["wavelength"].to_numpy() * u.AA).to(u.nm)
         fout = (df_custom["flux"].to_numpy() * (u.erg / u.s / u.cm**2 / u.AA)).to(

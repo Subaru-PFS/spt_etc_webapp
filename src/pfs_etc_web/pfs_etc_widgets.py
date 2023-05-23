@@ -3,10 +3,39 @@
 import panel as pn
 
 
+class InitNoteWidgets:
+    def __init__(self):
+        self.flatpanel = pn.layout.FloatPanel(
+            pn.pane.Markdown(
+                """
+            - This is a development version of a PFS spectral simulator web app using [PFS Exposure Time Calculator and Spectrum Simulator](https://github.com/Subaru-PFS/spt_ExposureTimeCalculator/).
+            - Updates may be deployed frequently without any notification, please reload the web site if the app freezes.
+            - Feedback would be appreciated. Please feel free to contact either at `obsproc` Slack channel on PFS Slack or by email to Masato Onodera (<monodera@naoj.org>) (Subaru Telescope).
+
+            If you are using via `run.app` domain:
+            - The app is running on Google Cloud Run
+            - Computation takes about 20-40 seconds. This may vary depending on the concurrent connections by users.
+            - The app will not be responsive after 5 minutes of inactivity. Just reload the page would make the app active again.
+        """,
+                renderer="myst",
+            ),
+            name="Notes",
+            contained=False,
+            position="center",
+            # theme="none",
+            theme="#6A589D",
+            width=600,
+        )
+
+
 class ExecButtonWidgets:
     def __init__(self):
-        self.reset = pn.widgets.Button(name="Reset")
-        self.exec = pn.widgets.Button(name="Run", button_type="danger")
+        self.reset = pn.widgets.Button(
+            name="Reset", button_style="solid", button_type="default"
+        )
+        self.exec = pn.widgets.Button(
+            name="Run", button_style="outline", button_type="primary"
+        )
         self.pane = pn.Row(self.reset, self.exec)
 
 
@@ -62,8 +91,9 @@ class TargetWidgets:
             # r"$$\frac{1}{n}$$",
             """
             Input spectrum must be in a CSV format with exactly two columns.
-            The first column must be the wavelength in $$\mathrm{A}$$ and
-            the second column must be the flux in ($$\mathrm{erg}$$ $$\mathrm{s}^{-1}$$ $$\mathrm{cm}^2$$ $$\mathrm{A}^{-1}$$).
+            The first column must be the wavelength in [$$\mathrm{A}$$] and
+            the second column must be the flux in [$$\mathrm{erg}$$ $$\mathrm{s}^{-1}$$ $$\mathrm{cm}^{-2}$$ $$\mathrm{A}^{-1}$$]
+            No header line is needed and lines starting with "#" are regarded as commment. An [example CSV file](https://gist.github.com/monodera/be48be04f376b2db268d0b14ad9cb5e1) is available.
             """,
             renderer="myst"
             # markdown-it', 'markdown', 'myst
