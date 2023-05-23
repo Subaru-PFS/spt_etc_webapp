@@ -43,6 +43,7 @@ from .pfs_etc_widgets import (
 
 def pfs_etc_app():
     template = pn.template.VanillaTemplate(
+        # title="PFS Spectral Simulator<a style='color: white; font-size: 120%;' href='/docs/index.html' target='_blank'>(Doc)</a>",
         title="PFS Spectral Simulator",
         sidebar_width=400,
         header_background="#6A589D",

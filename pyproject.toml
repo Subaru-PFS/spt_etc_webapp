@@ -36,6 +36,12 @@ license = { text = "MIT" }
 
 [project.optional-dependencies]
 fastapi = ["fastapi>=0.89.1", "uvicorn[standard]>=0.20.0", "gunicorn>=20.1.0"]
+mkdocs = [
+    "mkdocs>=1.4.3",
+    "mkdocs-material>=9.1.14",
+    "mkdocs-macros-plugin>=0.7.0",
+    "fontawesome-markdown @ https://github.com/bmcorser/fontawesome-markdown/archive/master.zip",
+]
 
 [project.scripts]
 run_pfs_etc_web = "pfs_etc_web.cli.run_panel_server:main"

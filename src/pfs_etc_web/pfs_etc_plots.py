@@ -260,7 +260,7 @@ def create_simspec_files(
     tb_snline["effective_collecting_are"] = Column(
         df_snline["effective_collecting_area"].to_numpy(),
         unit="m^2",
-        description="Fiber aperture factor",
+        description="Effective collecting area",
     )
     tb_snline["snline_b"] = Column(
         df_snline["snline_b"],

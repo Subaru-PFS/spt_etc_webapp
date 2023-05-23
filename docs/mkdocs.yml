@@ -1,0 +1,36 @@
+site_name: PFS Spectral Simulator
+site_url: https://example.com
+site_author: 'Masato Onodera'
+
+nav:
+  - 'Top': index.md
+  - 'Inputs': inputs.md
+  #    - 'Target': target.md
+  #    - 'Condition': condition.md
+  #    - 'Instrument': instrument.md
+  #    - 'Telescope': telescope.md
+  - 'Execution': exec.md
+  - 'Outputs': outputs.md
+  #    - 'Plots': plots.md
+  #    - 'Downloads': downloads.md
+
+
+theme:
+  name: material
+  palette:
+    scheme: pfs
+    # primary: custom
+  font:
+    text: Lato
+
+extra_css:
+  - stylesheets/extra.css
+
+markdown_extensions:
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
