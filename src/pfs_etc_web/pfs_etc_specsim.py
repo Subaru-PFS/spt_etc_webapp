@@ -9,93 +9,14 @@ from logzero import logger
 from pfsspecsim import pfsetc, pfsspec
 
 from .pfs_etc_params import OutputConf, SimulationConf
-from .pfs_etc_plots import create_simspec_files, create_simspec_plot
 from .pfs_etc_spectemplates import create_template_spectrum
-
-
-def load_simspec(infile: str) -> pd.DataFrame:
-    df = pd.read_table(
-        infile,
-        sep="\s+",
-        comment="#",
-        header=None,
-        # header=0,
-        names=["wavelength", "flux", "error", "mask", "sky", "arm"],
-        dtype={
-            "wavelength": float,
-            "flux": float,
-            "error": float,
-            "mask": int,
-            "sky": float,
-            "arm": int,
-        },
-    )
-    return df
-
-
-def load_snline(infile: str) -> pd.DataFrame:
-    df = pd.read_table(
-        infile,
-        sep="\s+",
-        comment="#",
-        header=None,
-        # header=0,
-        names=[
-            "wavelength",
-            "fiber_aperture_factor",
-            "effective_collecting_area",
-            "snline_b",
-            "snline_r",
-            "snline_n",
-            "snline_tot",
-        ],
-        dtype={
-            "wavelength": float,
-            "fiber_aperture_factor": float,
-            "effective_collecting_area": float,
-            "snline_b": float,
-            "snline_r": float,
-            "snline_n": float,
-            "snline_tot": float,
-        },
-    )
-    return df
-
-
-def load_sncont(infile: str) -> pd.DataFrame:
-    df = pd.read_table(
-        infile,
-        sep="\s+",
-        comment="#",
-        header=None,
-        names=[
-            "arm",
-            "pixel",
-            "wavelength",
-            "sncont",
-            "signal_per_exp",
-            "noise_wo_obj_per_exp",
-            "noise_w_obj_per_exp",
-            "input_spec",
-            "convfac_flux2e",
-            "samplefac",
-            "sky",
-        ],
-        dtype={
-            "arm": int,
-            "pixel": int,
-            "wavelength": float,
-            "sncont": float,
-            "signal_per_exp": float,
-            "noise_wo_obj_per_exp": float,
-            "noise_w_obj_per_exp": float,
-            "input_spec": float,
-            "convfac_flux2e": float,
-            "samplefac": float,
-            "sky": float,
-        },
-    )
-    return df
+from .pfs_etc_utils import (
+    create_simspec_files,
+    create_simspec_plot,
+    load_simspec,
+    load_sncont,
+    load_snline,
+)
 
 
 class PfsSpecSim:
@@ -257,36 +178,32 @@ class PfsSpecSim:
             self.run_sim()
 
     def show(self, infile: str = None):
-        if infile is None:
-            infile_simspec = os.path.join(
-                self.output.basedir,
-                self.output.sessiondir,
-                f"{self.output.simspec}.dat",
-            )
-            infile_snline = os.path.join(
-                self.output.basedir, self.output.sessiondir, f"{self.output.sn_line}"
-            )
-            infile_sncont = os.path.join(
-                self.output.basedir, self.output.sessiondir, f"{self.output.sn_cont}"
-            )
+        outdir = os.path.join(self.output.basedir, self.output.sessiondir)
 
-        self.outfile_simspec_prefix = os.path.join(
-            self.output.basedir,
-            self.output.sessiondir,
-            f"pfs_etc_simspec-{self.output.sessiondir}",
-        )
-        self.outfile_snline_prefix = os.path.join(
-            self.output.basedir,
-            self.output.sessiondir,
-            f"pfs_etc_snline-{self.output.sessiondir}",
-        )
+        if infile is None:
+            infile_simspec = os.path.join(outdir, f"{self.output.simspec}.dat")
+            infile_snline = os.path.join(outdir, f"{self.output.sn_line}")
+            infile_sncont = os.path.join(outdir, f"{self.output.sn_cont}")
 
         df_simspec = load_simspec(infile_simspec)
         df_snline = load_snline(infile_snline)
         df_sncont = load_sncont(infile_sncont)
 
+        self.outfile_simspec_prefix = os.path.join(
+            outdir, f"pfs_etc_simspec-{self.output.sessiondir}"
+        )
+        self.outfile_snline_prefix = os.path.join(
+            outdir, f"pfs_etc_snline-{self.output.sessiondir}"
+        )
+
         tb_simspec, tb_snline = create_simspec_files(
-            self.etc.params, df_simspec, df_snline, df_sncont
+            self.target,
+            self.environment,
+            self.instrument,
+            self.telescope,
+            df_simspec,
+            df_snline,
+            df_sncont,
         )
         tb_simspec.write(
             f"{self.outfile_simspec_prefix}.fits", format="fits", overwrite=True

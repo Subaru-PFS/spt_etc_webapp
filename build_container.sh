@@ -10,8 +10,7 @@ show_help() {
 }
 
 update_pdm_packages() {
-    echo "Updating package dependencies to the latest versions"
-
+    echo "Update package dependencies to the latest versions"
     # update to the latest packages
     pdm update
     # export package dependencies to requirements.txt
@@ -20,12 +19,12 @@ update_pdm_packages() {
 
 docker_image() {
     # build docker image
-    echo "Building a Docker image"
-    docker image build -t monodera/pfs_etc_web:latest .
-
+    echo "Build a Docker image and push it to Docker Hub"
+    docker buildx build --platform=linux/amd64,linux/arm64 -t monodera/pfs_etc_web:latest --push .
+    # docker image build -t monodera/pfs_etc_web:latest .
     # push docker image
-    echo "Pushing the Docker image to Docker Hub"
-    docker push monodera/pfs_etc_web:latest
+    # echo "Pushing the Docker image to Docker Hub"
+    # docker push monodera/pfs_etc_web:latest
 }
 
 gcloud_deploy() {

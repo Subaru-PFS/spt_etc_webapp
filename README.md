@@ -6,7 +6,7 @@ PFS spectral simulator web app using [PFS Exposure Time Calculator and Spectrum 
 ## Requirements
 
 For production:
-- python (>3.9)
+- python (>=3.9)
 - panel
 - astropy
 - jinja2

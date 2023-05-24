@@ -16,8 +16,8 @@ from .pfs_etc_params import (
     TargetConf,
     TelescopeConf,
 )
-from .pfs_etc_plots import create_dummy_plot
 from .pfs_etc_specsim import PfsSpecSim
+from .pfs_etc_utils import create_dummy_plot
 from .pfs_etc_widgets import (
     BokehWidgets,
     DownloadWidgets,
@@ -29,16 +29,17 @@ from .pfs_etc_widgets import (
     TelescopeWidgets,
 )
 
-# pn.extension(
-#     "floatpanel",
-#     "mathjax",
-#     # template="bootstrap",
-#     loading_spinner="dots",
-#     loading_color="#6A589D",
-#     sizing_mode="stretch_width",
-#     notifications=True,
-#     # throttled=True,
-# )
+pn.extension(
+    "floatpanel",
+    "mathjax",
+    loading_spinner="dots",
+    loading_color="#6A589D",
+    sizing_mode="stretch_width",
+    css_files=[
+        # "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css",
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css",
+    ],
+)
 
 
 def pfs_etc_app():

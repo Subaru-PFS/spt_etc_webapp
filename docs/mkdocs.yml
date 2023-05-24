@@ -3,16 +3,10 @@ site_url: https://example.com
 site_author: 'Masato Onodera'
 
 nav:
-  - 'Top': index.md
+  - 'Home': index.md
   - 'Inputs': inputs.md
-  #    - 'Target': target.md
-  #    - 'Condition': condition.md
-  #    - 'Instrument': instrument.md
-  #    - 'Telescope': telescope.md
   - 'Execution': exec.md
   - 'Outputs': outputs.md
-  #    - 'Plots': plots.md
-  #    - 'Downloads': downloads.md
 
 use_directory_urls: false
 
@@ -23,6 +17,11 @@ theme:
     # primary: custom
   font:
     text: Lato
+  features:
+    - navigation.tabs
+    - toc.follow
+    - toc.integrate
+    - search.highlight
 
 extra_css:
   - stylesheets/extra.css

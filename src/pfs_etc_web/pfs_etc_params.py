@@ -33,7 +33,7 @@ class PfsSpecParameter:
     exp_time: int = 900
     exp_num: int = 1
     field_angle: float = 0.0
-    mr_mode: str = False
+    mr_mode: bool = False
 
     # telescope
     zenith_angle: int = 45

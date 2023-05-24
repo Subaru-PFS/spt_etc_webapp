@@ -10,6 +10,91 @@ from bokeh.palettes import Colorblind
 from bokeh.plotting import ColumnDataSource, figure
 
 
+def load_simspec(infile: str) -> pd.DataFrame:
+    df = pd.read_table(
+        infile,
+        sep="\s+",
+        comment="#",
+        header=None,
+        # header=0,
+        names=["wavelength", "flux", "error", "mask", "sky", "arm"],
+        dtype={
+            "wavelength": float,
+            "flux": float,
+            "error": float,
+            "mask": int,
+            "sky": float,
+            "arm": int,
+        },
+    )
+    return df
+
+
+def load_snline(infile: str) -> pd.DataFrame:
+    df = pd.read_table(
+        infile,
+        sep="\s+",
+        comment="#",
+        header=None,
+        # header=0,
+        names=[
+            "wavelength",
+            "fiber_aperture_factor",
+            "effective_collecting_area",
+            "snline_b",
+            "snline_r",
+            "snline_n",
+            "snline_tot",
+        ],
+        dtype={
+            "wavelength": float,
+            "fiber_aperture_factor": float,
+            "effective_collecting_area": float,
+            "snline_b": float,
+            "snline_r": float,
+            "snline_n": float,
+            "snline_tot": float,
+        },
+    )
+    return df
+
+
+def load_sncont(infile: str) -> pd.DataFrame:
+    df = pd.read_table(
+        infile,
+        sep="\s+",
+        comment="#",
+        header=None,
+        names=[
+            "arm",
+            "pixel",
+            "wavelength",
+            "sncont",
+            "signal_per_exp",
+            "noise_wo_obj_per_exp",
+            "noise_w_obj_per_exp",
+            "input_spec",
+            "convfac_flux2e",
+            "samplefac",
+            "sky",
+        ],
+        dtype={
+            "arm": int,
+            "pixel": int,
+            "wavelength": float,
+            "sncont": float,
+            "signal_per_exp": float,
+            "noise_wo_obj_per_exp": float,
+            "noise_w_obj_per_exp": float,
+            "input_spec": float,
+            "convfac_flux2e": float,
+            "samplefac": float,
+            "sky": float,
+        },
+    )
+    return df
+
+
 def create_dummy_plot(
     aspect_ratio: float = 1.5,
     outline_line_alpha: float = 0.0,
@@ -180,11 +265,25 @@ def create_simspec_plot(
 
 
 def create_simspec_files(
-    params,
+    param_target,
+    param_env,
+    param_inst,
+    param_tel,
     df_simspec: pd.DataFrame,
     df_snline: pd.DataFrame,
     df_sncont: pd.DataFrame,
 ):
+    if param_target.custom_input is None:
+        template_type = param_target.template
+        template_mag = param_target.mag
+        template_wave = param_target.wavelength
+        template_redshift = param_target.redshift
+    else:
+        template_type = "Custom"
+        template_mag, template_wave, template_redshift = None, None, None
+        # template_mag, template_wave, template_redshift = np.nan, np.nan, np.nan
+        print(template_mag, template_wave, template_redshift)
+
     # initialize output table
     tb_out = QTable()
     tb_out["wavelength"] = Column(
@@ -221,29 +320,44 @@ def create_simspec_files(
     )
 
     # add meta data
-    tb_out.meta["EXPTIME"] = (params["EXP_TIME"], "[s] Single exposure time")
-    tb_out.meta["EXPNUM"] = (params["EXP_NUM"], "Number of exposures")
-    tb_out.meta["SEEING"] = (params["SEEING"], "[arcsec] Seeing FWHM")
-    tb_out.meta["ZANG"] = (params["ZENITH_ANG"], "[degree] Zenith angle")
-    tb_out.meta["MOON-ZA"] = (params["MOON_ZENITH_ANG"], "[degree] Moon zenith angle")
+    tb_out.meta["TMPLSPEC"] = (template_type, "Template type")
+    tb_out.meta["TMPL_MAG"] = (template_mag, "[mag] AB mag to normalize template")
+    tb_out.meta["TMPL_WAV"] = (
+        template_wave,
+        "[nm] Wavelength for normalizing template",
+    )
+    tb_out.meta["TMPL_Z"] = (template_redshift, "Reshift of the template")
+    tb_out.meta["R_EFF"] = (
+        param_target.r_eff,
+        "[arcsec] Effective radius of the target",
+    )
+    tb_out.meta["EXPTIME"] = (
+        param_inst.exp_time * param_inst.exp_num,
+        "[s] Total exposure time",
+    )
+    tb_out.meta["EXPTIME1"] = (param_inst.exp_time, "[s] Single exposure time")
+    tb_out.meta["EXPNUM"] = (param_inst.exp_num, "Number of exposures")
+    tb_out.meta["SEEING"] = (param_env.seeing, "[arcsec] Seeing FWHM")
+    tb_out.meta["ZANG"] = (param_tel.zenith_angle, "[degree] Zenith angle")
+    tb_out.meta["MOON-ZA"] = (param_env.moon_zenith_angle, "[degree] Moon zenith angle")
     tb_out.meta["MOON-SEP"] = (
-        params["MOON_TARGET_ANG"],
+        param_env.moon_target_angle,
         "[degree] Moon-target separation",
     )
     tb_out.meta["MOON-PH"] = (
-        params["MOON_PHASE"],
+        param_env.moon_phase,
         "Moon phase (0=new, 0.25=quater, 1=new)",
     )
     tb_out.meta["FLDANG"] = (
-        params["FIELD_ANG"],
+        param_inst.field_angle,
         "[degree] PFS field angle (center=0, edge=0.675)",
     )
-    tb_out.meta["DEGRADE"] = (params["degrade"], "Throughput degradation factor")
-    tb_out.meta["R_EFF"] = (params["REFF"], "[arcsec] Effective radius of the target")
+    tb_out.meta["DEGRADE"] = (param_env.degrade, "Throughput degradation factor")
     tb_out.meta["GAL_EXT"] = (
-        params["GALACTIC_EXT"],
+        param_target.galactic_extinction,
         "[mag] E(B-V) of Galactive extinction",
     )
+    tb_out.meta["MED_RES"] = (param_inst.mr_mode, "True if medium resolution mode")
 
     # initialize a table for emission line S/N
     tb_snline = QTable()
@@ -284,41 +398,56 @@ def create_simspec_files(
     )
     # add meta data
     tb_snline.meta["EL_FLUX"] = (
-        params["LINE_FLUX"],
+        param_target.line_flux,
         "[erg/s^(-1)/cm^(-2)] Emission line flux",
     )
     tb_snline.meta["EL_SIG"] = (
-        params["LINE_WIDTH"],
+        param_target.line_width,
         "[km/s] Emission line width sigma",
     )
-    tb_snline.meta["EXPTIME"] = (params["EXP_TIME"], "[s] Single exposure time")
-    tb_snline.meta["EXPNUM"] = (params["EXP_NUM"], "Number of exposures")
-    tb_snline.meta["SEEING"] = (params["SEEING"], "[arcsec] Seeing FWHM")
-    tb_snline.meta["ZANG"] = (params["ZENITH_ANG"], "[degree] Zenith angle")
+    tb_snline.meta["TMPLSPEC"] = (template_type, "Template type")
+    tb_snline.meta["TMPL_MAG"] = (
+        template_mag,
+        "[mag] AB mag to normalize template",
+    )
+    tb_snline.meta["TMPL_WAV"] = (
+        template_wave,
+        "[nm] Wavelength for normalizing template",
+    )
+    tb_snline.meta["TMPL_Z"] = (template_redshift, "Reshift of the template")
+    tb_snline.meta["R_EFF"] = (
+        param_target.r_eff,
+        "[arcsec] Effective radius of the target",
+    )
+    tb_snline.meta["EXPTIME"] = (
+        param_inst.exp_time * param_inst.exp_num,
+        "[s] Total exposure time",
+    )
+    tb_snline.meta["EXPTIME1"] = (param_inst.exp_time, "[s] Single exposure time")
+    tb_snline.meta["EXPNUM"] = (param_inst.exp_num, "Number of exposures")
+    tb_snline.meta["SEEING"] = (param_env.seeing, "[arcsec] Seeing FWHM")
+    tb_snline.meta["ZANG"] = (param_tel.zenith_angle, "[degree] Zenith angle")
     tb_snline.meta["MOON-ZA"] = (
-        params["MOON_ZENITH_ANG"],
+        param_env.moon_zenith_angle,
         "[degree] Moon zenith angle",
     )
     tb_snline.meta["MOON-SEP"] = (
-        params["MOON_TARGET_ANG"],
+        param_env.moon_target_angle,
         "[degree] Moon-target separation",
     )
     tb_snline.meta["MOON-PH"] = (
-        params["MOON_PHASE"],
+        param_env.moon_phase,
         "Moon phase (0=new, 0.25=quater, 1=new)",
     )
     tb_snline.meta["FLDANG"] = (
-        params["FIELD_ANG"],
+        param_inst.field_angle,
         "[degree] PFS field angle (center=0, edge=0.675)",
     )
-    tb_snline.meta["DEGRADE"] = (params["degrade"], "Throughput degradation factor")
-    tb_snline.meta["R_EFF"] = (
-        params["REFF"],
-        "[arcsec] Effective radius of the target",
-    )
+    tb_snline.meta["DEGRADE"] = (param_env.degrade, "Throughput degradation factor")
     tb_snline.meta["GAL_EXT"] = (
-        params["GALACTIC_EXT"],
+        param_target.galactic_extinction,
         "[mag] E(B-V) of Galactive extinction",
     )
+    tb_snline.meta["MED_RES"] = (param_inst.mr_mode, "True if medium resolution mode")
 
     return tb_out, tb_snline

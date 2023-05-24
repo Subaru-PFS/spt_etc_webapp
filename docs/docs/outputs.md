@@ -3,7 +3,7 @@
 ## Downloads
 
 Once the calculation is finished. Four buttons will be shown at the right panel for two categories as follows.
-The file formats are FITS and [ECSV](https://github.com/astropy/astropy-APEs/blob/main/APE6.rst) formats which can be easily read by astropy.
+The files are in FITS binary table format and [Enhanced Character-Separated Values (ECSV) format](https://github.com/astropy/astropy-APEs/blob/main/APE6.rst) which can be easily read by astropy or other common libraries.
 
 For the detail of the content, please refer the `README` of [PFS Exposure Time Calculator and Spectrum Simulator](https://github.com/Subaru-PFS/spt_ExposureTimeCalculator/) as well.
 
@@ -25,19 +25,25 @@ Files for the simulated spectrum contain the following columns.
 
 The following metadata from the inputs are also included.
 
-| name     | description                            |
-|----------|----------------------------------------|
-| EXPTIME  | Single exposure time                   |
-| EXPNUM   | Number of exposures                    |
-| SEEING   | Seeing FWHM                            |
-| ZANG     | Zenith angle                           |
-| MOON-ZA  | Moon zenith angle                      |
-| MOON-SEP | Moon-target separation                 |
-| MOON-PH  | Moon phase (0=new, 0.25=quater, 1=new) |
-| FLDANG   | PFS field angle (center=0, edge=0.675) |
-| DEGRADE  | Throughput degradation factor          |
-| R_EFF    | Effective radius of the target         |
-| GAL_EXT  | E(B-V) of Galactive extinction         |
+| name     | description                                                    |
+|----------|----------------------------------------------------------------|
+| TMPLSPEC | Template type                                                  |
+| TMPL_MAG | AB mag to normalize template (`None` for custom input)         |
+| TMPL_WAV | Wavelength for normalizing template  (`None` for custom input) |
+| TMPL_Z   | Reshift of the template   (`None` for custom input)            |
+| R_EFF    | Effective radius of the target                                 |
+| EXPTIME  | Total exposure time                                            |
+| EXPTIME1 | Single exposure time                                           |
+| EXPNUM   | Number of exposures                                            |
+| SEEING   | Seeing FWHM                                                    |
+| ZANG     | Zenith angle                                                   |
+| MOON-ZA  | Moon zenith angle                                              |
+| MOON-SEP | Moon-target separation                                         |
+| MOON-PH  | Moon phase (0=new, 0.25=quater, 1=new)                         |
+| FLDANG   | PFS field angle (center=0, edge=0.675)                         |
+| DEGRADE  | Throughput degradation factor                                  |
+| GAL_EXT  | E(B-V) of Galactive extinction                                 |
+| MED_RES  | `True` if medium resolution mode                               |
 
 ### Emission line S/N
 
@@ -52,6 +58,30 @@ Files for the emission line S/N contain the following columns.
 | snline_r                  |      | float64  | Emission line S/N in the red arm     |
 | snline_n                  |      | float64  | Emission line S/N in the near-IR arm |
 | snline_tot                |      | float64  | Total emission line S/N              |
+
+The following metadata from the inputs are also included.
+
+| name     | description                                                    |
+|----------|----------------------------------------------------------------|
+| EL_FLUX  | Emission line flux (erg/s/cm^2/A)                              |
+| EL_SIG   | Emission line velocity dispersion sigma (km/s)                 |
+| TMPLSPEC | Template type                                                  |
+| TMPL_MAG | AB mag to normalize template (`None` for custom input)         |
+| TMPL_WAV | Wavelength for normalizing template  (`None` for custom input) |
+| TMPL_Z   | Reshift of the template   (`None` for custom input)            |
+| R_EFF    | Effective radius of the target                                 |
+| EXPTIME  | Total exposure time                                            |
+| EXPTIME1 | Single exposure time                                           |
+| EXPNUM   | Number of exposures                                            |
+| SEEING   | Seeing FWHM                                                    |
+| ZANG     | Zenith angle                                                   |
+| MOON-ZA  | Moon zenith angle                                              |
+| MOON-SEP | Moon-target separation                                         |
+| MOON-PH  | Moon phase (0=new, 0.25=quater, 1=new)                         |
+| FLDANG   | PFS field angle (center=0, edge=0.675)                         |
+| DEGRADE  | Throughput degradation factor                                  |
+| GAL_EXT  | E(B-V) of Galactive extinction                                 |
+| MED_RES  | `True` if medium resolution mode                               |
 
 ## Plots
 
