@@ -87,5 +87,9 @@ The following metadata from the inputs are also included.
 
 Five panels will be shown for blue arm, red arm, near-IR arm, medium-resolution arm, and emission line S/N.
 You can click the legend to highlight or mute lines of your interest.
+
+
 You can also zoom, pan, etc. by using the Bokeh tooltips located at the right side of each plot.
+
+![Mute legends](images/legend_mute.gif)
 
