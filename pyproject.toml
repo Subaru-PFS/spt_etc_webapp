@@ -47,6 +47,7 @@ mkdocs = [
     "mkdocs-material>=9.1.14",
     "mkdocs-macros-plugin>=0.7.0",
     "fontawesome-markdown @ https://github.com/bmcorser/fontawesome-markdown/archive/master.zip",
+    "mkdocs-video>=1.5.0",
 ]
 
 [project.scripts]

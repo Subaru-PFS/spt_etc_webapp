@@ -27,6 +27,12 @@ theme:
     - toc.integrate
     - search.highlight
 
+plugins:
+  - mkdocs-video:
+      is_video: True
+      video_autoplay: True
+      video_muted: True
+
 markdown_extensions:
   - pymdownx.arithmatex:
       generic: true

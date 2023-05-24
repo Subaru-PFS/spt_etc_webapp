@@ -52,6 +52,7 @@ def pfs_etc_app():
         busy_indicator=None,
         favicon="docs/site/assets/images/favicon.png",
         # logo="docs/site/assets/images/favicon.png",
+        # logo="src/pfs_etc_web/assets/logo-pfs.png",
     )
 
     # set parameter objects with default parameters

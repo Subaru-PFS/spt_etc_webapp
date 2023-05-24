@@ -91,5 +91,7 @@ You can click the legend to highlight or mute lines of your interest.
 
 You can also zoom, pan, etc. by using the Bokeh tooltips located at the right side of each plot.
 
-![Mute legends](images/legend_mute.gif)
+<!-- ![Mute legends](images/legend_mute.gif) -->
+
+![type:video](videos/legend_mute.mp4)
 
