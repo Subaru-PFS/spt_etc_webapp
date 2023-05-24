@@ -7,6 +7,7 @@ import threading
 import time
 
 import panel as pn
+import param
 from logzero import logger
 
 from .pfs_etc_params import (
@@ -226,6 +227,13 @@ def pfs_etc_app():
     panel_buttons.reset.on_click(on_click_reset)
 
     # pn.state.notifications.info("This is a info notification.")
+
+    # line_sn = conf_target.line_sn
+    # print(line_sn)
+
+    # @param.depends("line_sn", watch=True)
+    # def toggle_line_box():
+    #     print("Pressed")
 
     return template.servable()
 

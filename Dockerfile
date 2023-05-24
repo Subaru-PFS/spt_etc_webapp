@@ -12,7 +12,8 @@ RUN apt-get -y update
 # Upgrade already installed packages:
 RUN apt-get -y upgrade
 # Install new packages:
-RUN apt-get -y install git libomp-dev build-essential
+# RUN apt-get -y install git libomp-dev build-essential
+RUN apt-get -y install git libomp-dev make gcc
 
 # install PDM
 RUN pip install -U pip setuptools wheel

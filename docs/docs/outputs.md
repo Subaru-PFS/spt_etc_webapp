@@ -1,15 +1,50 @@
 # Outputs
 
-## Downloads
+## Files
 
-Once the calculation is finished. Four buttons will be shown at the right panel for two categories as follows.
-The files are in FITS binary table format and [Enhanced Character-Separated Values (ECSV) format](https://github.com/astropy/astropy-APEs/blob/main/APE6.rst) which can be easily read by astropy or other common libraries.
+Once the calculation is finished, four buttons will show up in the right panel for two categories as follows.
+The files are in FITS binary table format and [Enhanced Character-Separated Values (ECSV) format](https://github.com/astropy/astropy-APEs/blob/main/APE6.rst) which can be easily read by astropy or other common libraries and softwares. For example, both FITS binary table and ECSV files are also supported by TOPCAT.
+
+
 
 For the detail of the content, please refer the `README` of [PFS Exposure Time Calculator and Spectrum Simulator](https://github.com/Subaru-PFS/spt_ExposureTimeCalculator/) as well.
 
+### Read the output files
+
+A few Python examples are shown below.
+
+```py
+# with astropy
+
+from astropy.table import Table
+
+simspec_from_fits = Table.read("pfs_etc_simspec-YYYYMMDD-HHMMSS_################.fits")
+simspec_from_ecsv = Table.read("pfs_etc_simspec-YYYYMMDD-HHMMSS_################.ecsv")
+
+print(simspec_from_fits)  # show table content
+print(simspec_from_fits.meta)  # show metadata
+
+df_from_astropy = simspec_from_fits.to_pandas()  # convert to pandas.DataFrame
+
+print(df_from_astropy)
+```
+
+```py
+# with pandas
+
+import pandas as pd
+
+df = pd.read_csv("pfs_etc_simspec-YYYYMMDD-HHMMSS_################.ecsv", comment="#")
+
+print(df)
+```
+
+
+
+
 ### Simulated spectrum
 
-Files for the simulated spectrum contain the following columns.
+Files for the simulated spectrum (`pfs_simspec*`) contain the following columns.
 
 | name       | unit    | datatype | description                      |
 |------------|---------|----------|----------------------------------|
@@ -47,7 +82,7 @@ The following metadata from the inputs are also included.
 
 ### Emission line S/N
 
-Files for the emission line S/N contain the following columns.
+Files for the emission line S/N (`pfs_snline*`) contain the following columns.
 
 | name                      | unit | datatype | description                          |
 |---------------------------|------|----------|--------------------------------------|
@@ -88,10 +123,8 @@ The following metadata from the inputs are also included.
 Five panels will be shown for blue arm, red arm, near-IR arm, medium-resolution arm, and emission line S/N.
 You can click the legend to highlight or mute lines of your interest.
 
+![type:video](videos/legend_mute.mp4)
 
 You can also zoom, pan, etc. by using the Bokeh tooltips located at the right side of each plot.
 
-<!-- ![Mute legends](images/legend_mute.gif) -->
-
-![type:video](videos/legend_mute.mp4)
 

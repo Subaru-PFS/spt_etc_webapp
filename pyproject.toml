@@ -54,7 +54,7 @@ mkdocs = [
 run_pfs_etc_web = "pfs_etc_web.cli.run_panel_server:main"
 
 [tool.pdm.scripts]
-doc = { shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview" }
+serve-doc = { shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview" }
 build-doc = { shell = "cd docs && mkdocs build", help = "Build documentation" }
 
 [build-system]

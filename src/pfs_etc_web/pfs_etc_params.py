@@ -21,6 +21,7 @@ class PfsSpecParameter:
     galactic_extinction: float = 0.0
     line_flux: float = 1e-17
     line_width: float = 70.0
+    line_sn: bool = True
 
     # observing condition
     seeing: float = 0.8
@@ -108,6 +109,10 @@ class TargetConf(param.Parameterized):
         default=default_parameters.line_width,
         bounds=(0, None),
     )
+    line_sn = param.Boolean(
+        label="Calculate emission line S/N on the target spectrum",
+        default=default_parameters.line_sn,
+    )
 
     # Custom input spectrum
     custom_input = param.Parameter(
@@ -135,6 +140,9 @@ class TargetConf(param.Parameterized):
         self.mag_file = default_parameters.mag_file
         self.galactic_extinction = default_parameters.galactic_extinction
         self.r_eff = default_parameters.r_eff
+        self.line_flux = default_parameters.line_flux
+        self.line_width = default_parameters.line_width
+        self.line_sn = default_parameters.line_sn
 
 
 class EnvironmentConf(param.Parameterized):

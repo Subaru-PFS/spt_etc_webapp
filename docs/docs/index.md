@@ -1,5 +1,7 @@
 # Welcome
 
+The PFS Spectral Simulator is a web app to run the exposure time calculator and spectram simulator. The actual app can be found [here](/app).
+
 ## [Inputs](inputs.md)
 
 - [Target tab](inputs.md#target-tab) : Configure target properties
@@ -14,9 +16,9 @@
 
 ## [Outputs](outputs.md)
 
-- [Download results](outputs.md#downloads)
+- [Download results](outputs.md#files)
 - [Plots](outputs.md#plots)
 
-## Contact
+## [Contact](contact.md)
 
-If you have any questions, suggestions, comments, etc., please feel free to contact Masato Onodera (Subaru Telescope, NAOJ) via PFS Slack and/or email (<monodera@naoj.org>).
+Any feedback is welcome. Please contact Masato Onodera (Subaru Telescope, NAOJ) via PFS Slack and/or email (<monodera@naoj.org>).

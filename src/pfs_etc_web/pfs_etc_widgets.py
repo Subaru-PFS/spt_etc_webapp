@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import numpy as np
 import panel as pn
 
 
@@ -40,17 +41,18 @@ class ExecButtonWidgets:
         # self.doc = pn.pane.Markdown("[Manual](/docs/index.html)")
         self.doc = pn.pane.HTML(
             "<i class='fa-sharp fa-solid fa-book' ></i> <a href='/docs/index.html' target='_blank'>Manual</a>",
-            width=70,
-            height=25,
+            width=100,
+            height=26,
             styles={
                 "display": "inline-block",
-                # "padding": "1px 0px",
+                "padding": "0px 0px 0px 15px",
+                "margin": "4px -4px 0px 6px",
                 # "background-color": "#4CAF50",
                 # "background-color": "#f3f3f3",
-                "border-radius": "5px",
+                # "border-radius": "5px",
                 # "border-style": "solid",
-                # "border-color": "#ffffff",
-                "text-align": "center",
+                # "border-color": "#000000",
+                "text-align": "left",
                 "text-decoration": "none",
                 "font-size": "110%",
             },
@@ -60,7 +62,7 @@ class ExecButtonWidgets:
 
 class TargetWidgets:
     def __init__(self, conf):
-        _template = pn.Param(
+        self.template = pn.Param(
             conf.param.template,
             widgets={
                 "template": {
@@ -86,37 +88,40 @@ class TargetWidgets:
                 },
             },
         )
-        _mag = pn.Param(
+        self.mag = pn.Param(
             conf.param.mag,
             widgets={"mag": {"type": pn.widgets.FloatInput}},
         )
-        _wavelength = pn.Param(
+        self.wavelength = pn.Param(
             conf.param.wavelength,
             widgets={"wavelength": {"type": pn.widgets.FloatInput}},
         )
-        _redshift = pn.Param(
+        self.redshift = pn.Param(
             conf.param.redshift,
             widgets={"redshift": {"type": pn.widgets.FloatInput}},
         )
-        _line_flux = pn.Param(
+        self.line_sn = pn.Param(
+            conf.param.line_sn,
+            widgets={"line_sn": {"type": pn.widgets.Checkbox}},
+        )
+        self.line_flux = pn.Param(
             conf.param.line_flux,
             widgets={"line_flux": {"type": pn.widgets.FloatInput}},
         )
-        _line_width = pn.Param(
+        self.line_width = pn.Param(
             conf.param.line_width,
             widgets={"line_width": {"type": pn.widgets.FloatInput}},
         )
 
         # Custom input spectrum
-        _custom_input = pn.Param(
+        self.custom_input = pn.Param(
             conf.param.custom_input,
             widgets={
                 "custom_input": {"type": pn.widgets.FileInput},
                 "accept": ".csv",
             },
         )
-        _custom_input_help = pn.pane.Markdown(
-            # r"$$\frac{1}{n}$$",
+        self.custom_input_help = pn.pane.Markdown(
             """
             Input spectrum must be in a CSV format with exactly two columns.
             The first column must be the wavelength in [Å] and
@@ -128,53 +133,50 @@ class TargetWidgets:
         )
 
         # Misc. information
-        _galactic_extinction = pn.Param(
+        self.galactic_extinction = pn.Param(
             conf.param.galactic_extinction,
             widgets={
                 "galactic_extinction": {"type": pn.widgets.FloatInput, "format": "0.0"}
             },
         )
-        _r_eff = pn.Param(
+        self.r_eff = pn.Param(
             conf.param.r_eff,
             widgets={"r_eff": {"type": pn.widgets.FloatInput}},
         )
 
         # Put widgets into categories
-        _box_template = pn.WidgetBox(
+        self.box_template = pn.WidgetBox(
             "### Target Information",
-            pn.Column(_template, _mag, _wavelength, _redshift),
+            pn.Column(self.template, self.mag, self.wavelength, self.redshift),
         )
 
-        _box_line = pn.WidgetBox(
+        self.box_line = pn.WidgetBox(
             "### Emission Line Properties",
-            pn.Column(_line_flux, _line_width),
-        )
-
-        _box_custom_input = pn.WidgetBox(
-            "### Custom Input Spectrum (.csv)",
             pn.Column(
-                _custom_input_help,
-                _custom_input,
+                # self.line_sn,
+                self.line_flux,
+                self.line_width,
             ),
         )
-        # _box_custom_input = pn.WidgetBox(
-        #     "### Custom Input Spectrum (.csv)",
-        #     pn.Column(
-        #         _custom_input,
-        #         _custom_input_help,
-        #     ),
-        # )
-        _box_misc = pn.WidgetBox(
+
+        self.box_custom_input = pn.WidgetBox(
+            "### Custom Input Spectrum (.csv)",
+            pn.Column(
+                self.custom_input_help,
+                self.custom_input,
+            ),
+        )
+        self.box_misc = pn.WidgetBox(
             "### Miscellaneous Information",
-            pn.Column(_r_eff, _galactic_extinction),
+            pn.Column(self.r_eff, self.galactic_extinction),
         )
 
         # Arrange into a layout
         self.panel = pn.Column(
-            _box_template,
-            _box_line,
-            _box_custom_input,
-            _box_misc,
+            self.box_template,
+            self.box_line,
+            self.box_custom_input,
+            self.box_misc,
         )
 
 
