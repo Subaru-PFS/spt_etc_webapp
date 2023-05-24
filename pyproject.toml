@@ -14,11 +14,11 @@ dev = [
 
 [project]
 name = "pfs_etc_web"
-version = "0.1.0"
+dynamic = ["version"]
 description = ""
 authors = [{ name = "Masato Onodera", email = "monodera@naoj.org" }]
 dependencies = [
-    "panel>=1",
+    "panel>=1.0.2",
     "astropy>=5.2.1",
     "jinja2>=3.1.2",
     "logzero>=1.7.0",
@@ -33,6 +33,12 @@ dependencies = [
 requires-python = ">=3.9"
 readme = "README.md"
 license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
 
 [project.optional-dependencies]
 fastapi = ["fastapi>=0.89.1", "uvicorn[standard]>=0.20.0", "gunicorn>=20.1.0"]
@@ -46,14 +52,25 @@ mkdocs = [
 [project.scripts]
 run_pfs_etc_web = "pfs_etc_web.cli.run_panel_server:main"
 
+[tool.pdm.scripts]
+doc = { shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview" }
+build-doc = { shell = "cd docs && mkdocs build", help = "Build documentation" }
+
 [build-system]
-requires = ["pdm-pep517>=1.0"]
-build-backend = "pdm.pep517.api"
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
+include-package-data = true
 
+[tool.setuptools.dynamic]
+version = { attr = "pfs_etc_web.__version__" }
 
 # [tool.ruff]
 # ignore-init-module-imports = true
 # unfixable = ["F401"]
+
+[tool.black]
+# line-length = 120
+target-version = ["py39", "py310", "py311"]
