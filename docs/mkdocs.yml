@@ -15,6 +15,8 @@ theme:
   palette:
     scheme: pfs
     # primary: custom
+  icon:
+    logo: material/library
   font:
     text: Lato
     code: Fira Code

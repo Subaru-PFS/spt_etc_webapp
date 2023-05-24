@@ -29,26 +29,29 @@ from .pfs_etc_widgets import (
     TelescopeWidgets,
 )
 
-pn.extension(
-    "floatpanel",
-    "mathjax",
-    loading_spinner="dots",
-    loading_color="#6A589D",
-    sizing_mode="stretch_width",
-    css_files=[
-        # "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css",
-        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css",
-    ],
-)
+# pn.extension(
+#     "floatpanel",
+#     "mathjax",
+#     loading_spinner="dots",
+#     loading_color="#6A589D",
+#     sizing_mode="stretch_width",
+#     css_files=[
+#         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+#     ],
+#     js_files={
+#         "font-awesome": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
+#     },
+# )
 
 
 def pfs_etc_app():
     template = pn.template.VanillaTemplate(
-        # title="PFS Spectral Simulator<a style='color: white; font-size: 120%;' href='/docs/index.html' target='_blank'>(Doc)</a>",
         title="PFS Spectral Simulator",
         sidebar_width=400,
         header_background="#6A589D",
         busy_indicator=None,
+        favicon="docs/site/assets/images/favicon.png",
+        # logo="docs/site/assets/images/favicon.png",
     )
 
     # set parameter objects with default parameters
