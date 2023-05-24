@@ -10,6 +10,13 @@ nav:
 
 use_directory_urls: false
 
+plugins:
+  - search
+  - mkdocs-video:
+      is_video: True
+      video_autoplay: True
+      video_muted: True
+
 theme:
   name: material
   palette:
@@ -23,15 +30,12 @@ theme:
   features:
     - navigation.tabs
     - navigation.tabs.sticky
+    - navigation.top
     - toc.follow
     - toc.integrate
     - search.highlight
+    - search.suggest
 
-plugins:
-  - mkdocs-video:
-      is_video: True
-      video_autoplay: True
-      video_muted: True
 
 markdown_extensions:
   - pymdownx.arithmatex:

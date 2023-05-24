@@ -16,3 +16,7 @@
 
 - [Download results](outputs.md#downloads)
 - [Plots](outputs.md#plots)
+
+## Contact
+
+If you have any questions, suggestions, comments, etc., please feel free to contact Masato Onodera (Subaru Telescope, NAOJ) via PFS Slack and/or email (<monodera@naoj.org>).
