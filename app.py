@@ -11,11 +11,17 @@ pn.extension(
     loading_color="#6A589D",
     sizing_mode="stretch_width",
     css_files=[
-        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+        "http://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext",
     ],
     js_files={
         "font-awesome": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
     },
+    raw_css=[
+        """
+    * {font-family: Lato;}
+    """
+    ],
 )
 
 

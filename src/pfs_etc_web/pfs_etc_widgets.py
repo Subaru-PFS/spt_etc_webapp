@@ -41,12 +41,12 @@ class ExecButtonWidgets:
         # self.doc = pn.pane.Markdown("[Manual](/docs/index.html)")
         self.doc = pn.pane.HTML(
             "<i class='fa-sharp fa-solid fa-book' ></i> <a href='/docs/index.html' target='_blank'>Manual</a>",
-            width=100,
+            width=80,
             height=26,
             styles={
                 "display": "inline-block",
                 "padding": "0px 0px 0px 15px",
-                "margin": "4px -4px 0px 6px",
+                "margin": "4px 0px 0px 6px",
                 # "background-color": "#4CAF50",
                 # "background-color": "#f3f3f3",
                 # "border-radius": "5px",
