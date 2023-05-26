@@ -31,6 +31,13 @@ gcloud_deploy() {
     # deploy to Google Cloud Run
     echo "Deploy the container to Google Cloud Run"
     gcloud run deploy pfsetcweb --source .
+
+    # delete old revisions
+    # gcloud run revisions list --filter="status.conditions.type:Active AND status.conditions.status:'False'" --format='value(metadata.name)' | xargs -r -L1 gcloud run revisions delete --quiet
+
+    # setup cleanup policy (not working, though)
+    # gcloud artifacts repositories set-cleanup-policies cloud-run-source-deploy --location=us-west4 --project=friendly-folio-387106 --policy=google_articaft_registry_policy.json --overwrite
+
 }
 
 while getopts pdg flag; do

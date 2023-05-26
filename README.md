@@ -7,7 +7,7 @@ PFS spectral simulator web app using [PFS Exposure Time Calculator and Spectrum 
 
 For production:
 - python (>=3.9)
-- panel
+- panel (>=1.0)
 - astropy
 - jinja2
 - logzero
@@ -35,6 +35,9 @@ For documentation:
 
 - mkdocs
 - mkdocs-material
+- mkdocs-macros-plugin
+- mkdocs-video
+- fontawesome-markdown
 
 
 ## Installation
