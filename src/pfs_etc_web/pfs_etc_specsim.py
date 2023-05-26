@@ -189,6 +189,10 @@ class PfsSpecSim:
         df_snline = load_snline(infile_snline)
         df_sncont = load_sncont(infile_sncont)
 
+        self.outfile_pfsobject = os.path.join(
+            outdir, f"pfsObject-{self.output.sessiondir}.fits"
+        )
+
         self.outfile_simspec_prefix = os.path.join(
             outdir, f"pfs_etc_simspec-{self.output.sessiondir}"
         )
@@ -222,6 +226,11 @@ class PfsSpecSim:
             format="ascii.ecsv",
             delimiter=",",
             overwrite=True,
+        )
+
+        os.rename(
+            os.path.join(outdir, self.output.pfsobject),
+            self.outfile_pfsobject,
         )
 
         self.p_simspec = create_simspec_plot(df_simspec, df_snline, df_sncont)

@@ -2,8 +2,17 @@
 
 ## Files
 
-Once the calculation is finished, four buttons will show up in the right panel for two categories as follows.
-The files are in FITS binary table format and [Enhanced Character-Separated Values (ECSV) format](https://github.com/astropy/astropy-APEs/blob/main/APE6.rst) which can be easily read by astropy or other common libraries and softwares. For example, both FITS binary table and ECSV files are also supported by TOPCAT.
+Once the calculation is finished, five buttons will show up in the upper part of the right panel.
+Four of them correspond to the simulated spectrum before merging different arms in to `pfsObject` file and
+emission line S/N in two file formats.
+These files are in FITS binary table format and [Enhanced Character-Separated Values (ECSV) format](https://github.com/astropy/astropy-APEs/blob/main/APE6.rst) which can be easily read by astropy or other common libraries and softwares. For example, both FITS binary table and ECSV files are also supported by TOPCAT.
+
+The other file is a `pfsObject` file which stores the arm-merged spectrum as well as various information
+defined in the [PFS datamodel](https://github.com/Subaru-PFS/datamodel/blob/37d0bda305ea3fb5c86bc88aaa77581975540112/datamodel.txt).
+Note that the file name in the app does not conform the datamodel.
+If you have any difficulty handling the `pfsObject` file,
+please use the original file name `pfsObject-000-00000-0,0-0000000000000001-001-0x8cf7641568bdb4ab.fits`.
+Note also that the datamodel adopted in the current ETC is not the latest one.
 
 
 
@@ -117,6 +126,38 @@ The following metadata from the inputs are also included.
 | DEGRADE  | Throughput degradation factor                                  |
 | GAL_EXT  | E(B-V) of Galactive extinction                                 |
 | MED_RES  | `True` if medium resolution mode                               |
+
+### pfsObject
+
+The following information is just a copy of the  [PFS datamodel](https://github.com/Subaru-PFS/datamodel/blob/37d0bda305ea3fb5c86bc88aaa77581975540112/datamodel.txt).
+
+```
+HDU #0 PDU
+HDU #1 FLUX        Flux in units of nJy                       [FLOAT]        NROW
+HDU #2 MASK        Pixel mask                                 [32-bit INT]   NROW
+HDU #3 TARGET      Binary table                                [FITS BINARY TABLE] NFILTER
+               Columns for:
+               filterName                              [STRING]
+               fiberMag                                [FLOAT]
+HDU #4 SKY         Sky flux in same units as FLUX             [FLOAT]        NROW
+HDU #5 COVAR       Near-diagonal part of FLUX's covariance    [FLOAT]        NROW*3
+HDU #6 COVAR2      Low-resolution non-sparse estimate covariance [FLOAT]      NCOARSE*NCOARSE
+HDU #7 OBSERVATIONS    Binary table                            [FITS BINARY TABLE] NOBS
+               Columns for:
+               visit                                   [32-bit INT]
+               arm                                     [STRING]
+               spectrograph                            [32-bit INT]
+               pfsDesignId                             [64-bit INT]
+               fiberId                                 [32-bit INT]
+               nominal PFI position (microns)          [FLOAT]*2
+               actual PFI position (microns)           [FLOAT]*2
+HDU #8 FLUXTABLE   Binary table                                [FITS BINARY TABLE] NOBS*NROW
+               Columns for:
+		       wavelength in units of nm (vacuum)          [FLOAT]
+		       intensity in units of nJy                   [FLOAT]
+		       intensity error in same units as intensity  [FLOAT]
+		       mask                                        [32-bit INT]
+```
 
 ## Plots
 

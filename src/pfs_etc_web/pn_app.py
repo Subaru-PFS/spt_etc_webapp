@@ -137,6 +137,7 @@ def pfs_etc_app():
 
                 panel_plots.plot.object = create_dummy_plot()
 
+                panel_downloads.download_pfsobject_fits.visible = False
                 panel_downloads.download_simspec_fits.visible = False
                 panel_downloads.download_simspec_csv.visible = False
                 panel_downloads.download_snline_fits.visible = False
@@ -161,6 +162,9 @@ def pfs_etc_app():
                 panel_plots.plot.object = specsim.show()
 
                 logger.info("Set download buttons")
+                panel_downloads.download_pfsobject_fits.file = (
+                    f"{specsim.outfile_pfsobject}"
+                )
                 panel_downloads.download_simspec_fits.file = (
                     f"{specsim.outfile_simspec_prefix}.fits"
                 )
@@ -174,6 +178,7 @@ def pfs_etc_app():
                     f"{specsim.outfile_snline_prefix}.ecsv"
                 )
 
+                panel_downloads.download_pfsobject_fits.visible = True
                 panel_downloads.download_simspec_fits.visible = True
                 panel_downloads.download_simspec_csv.visible = True
                 panel_downloads.download_snline_fits.visible = True
@@ -198,6 +203,8 @@ def pfs_etc_app():
                 conf_instrument.reset()
                 conf_telescope.reset()
                 panel_plots.plot.object = None
+                panel_downloads.download_pfsobject_fits.file = None
+                panel_downloads.download_pfsobject_fits.visible = False
                 panel_downloads.download_simspec_fits.file = None
                 panel_downloads.download_simspec_fits.visible = False
                 panel_downloads.download_simspec_csv.file = None

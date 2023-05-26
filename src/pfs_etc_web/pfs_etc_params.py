@@ -6,6 +6,7 @@ from typing import Any
 
 import numpy as np
 import param
+from traitlets import default
 
 
 @dataclass(frozen=True)
@@ -55,8 +56,11 @@ class PfsSpecParameter:
     # For Simulator
     outfile_simspec: str = "simulated_spectrum"  # ".dat" will be added by the simulator
     nrealize: int = 1
-    write_fits: str = "False"
+    write_fits: str = "True"
     write_pfs_arm: str = "False"
+    outfile_pfsobject: str = (
+        "pfsObject-000-00000-0,0-0000000000000001-001-0x8cf7641568bdb4ab.fits"
+    )
 
     tract: int = 0
     patch: str = "0,0"
@@ -260,6 +264,9 @@ class OutputConf(param.Parameterized):
     write_pfs_arm = param.String(
         label='Flag to write a FITS file for each arm (caution: "True" or "False" in string)',
         default=default_parameters.write_pfs_arm,
+    )
+    pfsobject = param.String(
+        label="pfsObject file", default=default_parameters.outfile_pfsobject
     )
 
 

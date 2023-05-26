@@ -45,7 +45,7 @@ class ExecButtonWidgets:
             height=26,
             styles={
                 "display": "inline-block",
-                "padding": "0px 0px 0px 15px",
+                "padding": "3px 0px 0px 5px",
                 "margin": "4px 0px 0px 6px",
                 # "background-color": "#4CAF50",
                 # "background-color": "#f3f3f3",
@@ -246,6 +246,13 @@ class BokehWidgets:
 
 class DownloadWidgets:
     def __init__(self, visible: bool = True):
+        self.download_pfsobject_fits = pn.widgets.FileDownload(
+            file=None,
+            label="Download pfsObject file (.fits)",
+            button_type="default",
+            visible=visible,
+            sizing_mode="stretch_height",
+        )
         self.download_simspec_fits = pn.widgets.FileDownload(
             file=None,
             label="Download simulated spectrum (.fits)",
@@ -270,7 +277,10 @@ class DownloadWidgets:
             button_type="default",
             visible=visible,
         )
-        self.pane = pn.Column(
-            pn.Row(self.download_simspec_fits, self.download_simspec_csv),
-            pn.Row(self.download_snline_fits, self.download_snline_csv),
+        self.pane = pn.Row(
+            pn.Column(
+                pn.Row(self.download_simspec_fits, self.download_simspec_csv),
+                pn.Row(self.download_snline_fits, self.download_snline_csv),
+            ),
+            pn.Column(self.download_pfsobject_fits),
         )
