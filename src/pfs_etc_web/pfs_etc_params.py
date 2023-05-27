@@ -59,9 +59,7 @@ class PfsSpecParameter:
     nrealize: int = 1
     write_fits: str = "True"
     write_pfs_arm: str = "False"
-    outfile_pfsobject: str = (
-        "pfsObject-000-00000-0,0-0000000000000001-001-0x8cf7641568bdb4ab.fits"
-    )
+    outfile_pfsobject: str = None
 
     tract: int = 0
     patch: str = "0,0"

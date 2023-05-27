@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import glob
 import os
 import pprint
 import sys
@@ -228,8 +229,14 @@ class PfsSpecSim:
             overwrite=True,
         )
 
+        list_pfsobject_files = glob.glob(os.path.join(outdir, "pfsObject*.fits"))
+        if len(list_pfsobject_files) != 1:
+            logger.error(
+                f"something wrong for pfsObject generation: {list_pfsobject_files}"
+            )
+        self.output.pfsobject = list_pfsobject_files[0]
         os.rename(
-            os.path.join(outdir, self.output.pfsobject),
+            self.output.pfsobject,
             self.outfile_pfsobject,
         )
 
