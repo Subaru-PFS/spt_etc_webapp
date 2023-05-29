@@ -11,7 +11,7 @@ The other file is a `pfsObject` file which stores the arm-merged spectrum as wel
 defined in the [PFS datamodel](https://github.com/Subaru-PFS/datamodel/blob/37d0bda305ea3fb5c86bc88aaa77581975540112/datamodel.txt).
 Note that the file name in the app does not conform the datamodel.
 If you have any difficulty handling the `pfsObject` file,
-please use the original file name `pfsObject-000-00000-0,0-0000000000000001-001-0x8cf7641568bdb4ab.fits`.
+you can use the original file name `pfsObject-000-00000-0,0-0000000000000001-001-0x8cf7641568bdb4ab.fits` (for the case of the number of visits of 1).
 Note also that the datamodel adopted in the current ETC is not the latest one.
 
 

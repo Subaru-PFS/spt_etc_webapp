@@ -44,12 +44,20 @@ For documentation:
 
 First of all, please clone this repository. There are several ways to install the app.
 
+
+### Create a virtual environment
+
+```sh
+python3 -m venv .
+source .venv/bin/activate
+```
+
 ### Local installation
 
 ```sh
 # if you use pip
-pip install -r requirements.txt
-pip install -e .
+python3 -m pip install -r requirements.txt
+python3 -m pip install -e .
 
 # if you use poetry
 poetry install
@@ -111,6 +119,19 @@ pdm run panel serve ./app.py --static-dirs docs="./docs/site/"
 
 Then open `http://localhost:5006/app` in a web browser.
 
+You can specify the number of threads used by the ETC using `OMP_NUM_THREADS` environment variable. A larger number of threads will enable to achieve faster running time, but reduce the per-thread efficiency of the computation. My experiment with AMD EPYC 7542 is summarized as follows.
+
+| OMP_NUM_THREADS | time (s) |
+|----------------:|---------:|
+|               1 |   274.09 |
+|               2 |   158.04 |
+|               4 |    82.05 |
+|               8 |    45.94 |
+|              16 |    23.91 |
+|              32 |    13.17 |
+|              64 |     7.99 |
+|             128 |     4.83 |
+
 ### Docker container
 
 Open `http://localhost:8080/app` in a web browser.
@@ -121,4 +142,4 @@ Open your app URL in a web browser.
 
 ## License
 
-[MIT](LICENSE) © [monodera](https://github.com/monodera).
+[MIT](LICENSE.txt) © [monodera](https://github.com/monodera).
