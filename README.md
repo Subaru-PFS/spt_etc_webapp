@@ -142,4 +142,4 @@ Open your app URL in a web browser.
 
 ## License
 
-[MIT](LICENSE.txt) © [monodera](https://github.com/monodera).
+[MIT](LICENSE) © [monodera](https://github.com/monodera).
