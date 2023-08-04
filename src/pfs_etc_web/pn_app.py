@@ -87,7 +87,7 @@ def pfs_etc_app():
 
     # Create a panel to show plots
     panel_plots = BokehWidgets(create_dummy_plot())
-    # panel_plots.pane.visible = False
+    panel_plots.pane.visible = False
 
     # Create download buttons
     panel_downloads = DownloadWidgets(visible=False)
