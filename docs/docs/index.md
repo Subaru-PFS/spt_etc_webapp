@@ -1,6 +1,6 @@
 # Welcome
 
-The PFS Spectral Simulator is a web app to run the exposure time calculator and spectram simulator. The actual app can be found [here](/app).
+The PFS Spectral Simulator is a web app to run the exposure time calculator and spectram simulator. The actual app can be found [here](/etc).
 
 ## [Inputs](inputs.md)
 
