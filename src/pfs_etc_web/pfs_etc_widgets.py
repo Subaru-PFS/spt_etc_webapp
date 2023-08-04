@@ -177,6 +177,8 @@ class TargetWidgets:
             self.box_line,
             self.box_custom_input,
             self.box_misc,
+            # width=400,
+            # sizing_mode="stretch_width",
         )
 
 
@@ -239,9 +241,17 @@ class MatplotlibWidgets:
 
 
 class BokehWidgets:
-    def __init__(self, p, visible: bool = True):
-        self.plot = pn.pane.Bokeh(p, visible=visible, sizing_mode="stretch_width")
-        self.pane = pn.Column(self.plot)
+    def __init__(self, p, visible: bool = True, max_height: int = 1080):
+        self.plot = pn.pane.Bokeh(
+            p,
+            visible=visible,
+            sizing_mode="scale_width",
+        )
+        self.pane = pn.Column(
+            self.plot,
+            min_width=700,
+            sizing_mode="scale_width",
+        )
 
 
 class DownloadWidgets:
@@ -251,7 +261,8 @@ class DownloadWidgets:
             label="Download pfsObject file (.fits)",
             button_type="default",
             visible=visible,
-            sizing_mode="stretch_height",
+            # width=200,
+            # height=70,
         )
         self.download_simspec_fits = pn.widgets.FileDownload(
             file=None,
@@ -279,8 +290,31 @@ class DownloadWidgets:
         )
         self.pane = pn.Row(
             pn.Column(
-                pn.Row(self.download_simspec_fits, self.download_simspec_csv),
-                pn.Row(self.download_snline_fits, self.download_snline_csv),
+                pn.Row(
+                    self.download_simspec_fits,
+                    self.download_simspec_csv,
+                    min_width=500,
+                ),
+                pn.Row(
+                    self.download_snline_fits,
+                    self.download_snline_csv,
+                    min_width=500,
+                ),
             ),
-            pn.Column(self.download_pfsobject_fits),
+            pn.Row(
+                self.download_pfsobject_fits,
+                min_width=200,
+                max_width=300,
+                # max_height=300,
+                sizing_mode="stretch_width",
+            ),
+            # pn.Column(
+            #     pn.Row(
+            #         self.download_pfsobject_fits,
+            #         min_width=200,
+            #     ),
+            # ),
+            min_width=700,
+            # min_height=100,
+            sizing_mode="stretch_width",
         )
