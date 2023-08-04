@@ -10,13 +10,12 @@ pn.extension(
     loading_spinner="dots",
     loading_color="#6A589D",
     sizing_mode="stretch_width",
-    # sizing_mode="scale_width",
     js_files={
         "font-awesome": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
     },
     css_files=[
         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
-        # "https://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext",
+        "https://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext",
     ],
     # raw_css=[
     #     """
@@ -25,7 +24,6 @@ pn.extension(
     #     }
     #     """
     # ],
-    layout_compatibility="error",
 )
 
 

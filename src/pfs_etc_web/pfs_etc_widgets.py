@@ -13,11 +13,6 @@ class InitNoteWidgets:
             - Documentation is available [here](/docs/index.html)
             - Updates may be deployed frequently without any notification, please reload the web site if the app freezes.
             - Feedback would be appreciated. Please feel free to contact either at `obsproc` Slack channel on PFS Slack or by email to Masato Onodera (<monodera@naoj.org>) (Subaru Telescope).
-
-            If you are using via `run.app` domain:
-            - The app is running on Google Cloud Run
-            - Computation takes about 20-40 seconds. This may vary depending on the concurrent connections by users.
-            - The app will not be responsive after 5 minutes of inactivity. Just reload the page would make the app active again.
         """,
                 renderer="myst",
             ),
@@ -40,7 +35,7 @@ class ExecButtonWidgets:
         )
         # self.doc = pn.pane.Markdown("[Manual](/docs/index.html)")
         self.doc = pn.pane.HTML(
-            "<i class='fa-sharp fa-solid fa-book' ></i> <a href='/docs/index.html' target='_blank'>Manual</a>",
+            "<i class='fa-sharp fa-solid fa-book' ></i> <a href='/etc-docs/index.html' target='_blank'>Manual</a>",
             width=80,
             height=26,
             styles={

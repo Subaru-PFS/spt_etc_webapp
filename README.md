@@ -108,16 +108,16 @@ You can run the app by using the `panel serve` as follows.
 
 ```sh
 # installed via pip
-panel serve ./app.py --static-dirs docs="./docs/site/"
+panel serve ./etc.py --static-dirs etc-docs="./docs/site/"
 
 # installed via poetry
-poetry run panel serve ./app.py --static-dirs docs="./docs/site/"
+poetry run panel serve ./etc.py --static-dirs etc-docs="./docs/site/"
 
 # installed via pdm
-pdm run panel serve ./app.py --static-dirs docs="./docs/site/"
+pdm run panel serve ./etc.py --static-dirs etc-docs="./docs/site/"
 ```
 
-Then open `http://localhost:5006/app` in a web browser.
+Then open `http://localhost:5006/etc` in a web browser.
 
 You can specify the number of threads used by the ETC using `OMP_NUM_THREADS` environment variable. A larger number of threads will enable to achieve faster running time, but reduce the per-thread efficiency of the computation. My experiment with AMD EPYC 7542 is summarized as follows.
 
@@ -134,7 +134,7 @@ You can specify the number of threads used by the ETC using `OMP_NUM_THREADS` en
 
 ### Docker container
 
-Open `http://localhost:8080/app` in a web browser.
+Open `http://localhost:8080/etc` in a web browser.
 
 ### Google Cloud Run
 

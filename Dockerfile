@@ -36,7 +36,7 @@ RUN cd docs && mkdocs build
 
 # Run the web service on container startup.
 ENV OMP_NUM_THREADS=8
-CMD panel serve ./app.py --address 0.0.0.0 --port 8080 --allow-websocket-origin="*" --static-dirs docs="./docs/site/"
+CMD panel serve ./etc.py --address 0.0.0.0 --port 8080 --allow-websocket-origin="*" --static-dirs etc-docs="./docs/site/"
 
 # TODO
 # - Remove temporary files in tmp directory periorically using crontab.
