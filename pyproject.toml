@@ -30,7 +30,7 @@ dependencies = [
     "synphot>=1.2.0",
     "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@u/monodera/20230116",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 readme = "README.md"
 license = { text = "MIT" }
 classifiers = [

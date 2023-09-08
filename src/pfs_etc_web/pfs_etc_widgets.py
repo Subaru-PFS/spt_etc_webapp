@@ -14,7 +14,7 @@ class InitNoteWidgets:
             - Updates may be deployed frequently without any notification, please reload the web site if the app freezes.
             - Feedback would be appreciated. Please feel free to contact either at `obsproc` Slack channel on PFS Slack or by email to Masato Onodera (<monodera@naoj.org>) (Subaru Telescope).
         """,
-                renderer="myst",
+                # renderer="myst",
             ),
             name="Notes",
             contained=False,
@@ -123,7 +123,7 @@ class TargetWidgets:
             the second column must be the flux in [$$\mathrm{erg}$$ $$\mathrm{s}^{-1}$$ $$\mathrm{cm}^{-2}$$ $$\mathrm{Å}^{\ \ \ -1}$$]
             No header line is needed and lines starting with "#" are regarded as commment. An [example CSV file](https://gist.github.com/monodera/be48be04f376b2db268d0b14ad9cb5e1) is available.
             """,
-            renderer="myst"
+            # renderer="myst"
             # markdown-it', 'markdown', 'myst
         )
 
