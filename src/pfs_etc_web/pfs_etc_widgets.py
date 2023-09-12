@@ -10,7 +10,7 @@ class InitNoteWidgets:
             pn.pane.Markdown(
                 """
             - This is a development version of a PFS spectral simulator web app using [PFS Exposure Time Calculator and Spectrum Simulator](https://github.com/Subaru-PFS/spt_ExposureTimeCalculator/).
-            - Documentation is available [here](/etc-docs/index.html)
+            - Documentation is available [here](doc/index.html)
             - Updates may be deployed frequently without any notification, please reload the web site if the app freezes.
             - Feedback would be appreciated. Please feel free to contact either at `obsproc` Slack channel on PFS Slack or by email to Masato Onodera (<monodera@naoj.org>) (Subaru Telescope).
         """,
@@ -35,7 +35,7 @@ class ExecButtonWidgets:
         )
         # self.doc = pn.pane.Markdown("[Manual](/docs/index.html)")
         self.doc = pn.pane.HTML(
-            "<i class='fa-sharp fa-solid fa-book' ></i> <a href='/etc-docs/index.html' target='_blank'>Manual</a>",
+            "<i class='fa-sharp fa-solid fa-book' ></i> <a href='doc/index.html' target='_blank'>Manual</a>",
             width=80,
             height=26,
             styles={
