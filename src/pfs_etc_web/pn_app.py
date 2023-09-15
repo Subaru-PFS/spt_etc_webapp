@@ -201,6 +201,10 @@ def pfs_etc_app():
                         # https://github.com/holoviz/panel/issues/5090
                         pn.state.notifications.error(f"{str(e)}", duration=0)
 
+                        logger.info("Enable the run button")
+                        panel_buttons.exec.name = "Run"
+                        panel_buttons.exec.disabled = False
+
             queue_exec.clear()
             c_exec.release()
             time.sleep(1)
