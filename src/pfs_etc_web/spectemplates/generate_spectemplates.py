@@ -6,9 +6,22 @@ import numpy as np
 import synphot
 from astropy import units as u
 from astropy.io import fits
+from astropy.table import Table
 from scipy.interpolate import interp1d
 from specutils import Spectrum1D
+from specutils.io.registers import custom_writer
 from specutils.manipulation import FluxConservingResampler, LinearInterpolatedResampler
+
+
+@custom_writer("fits-table-writer")
+def generic_fits_table(spectrum, file_name, **kwargs):
+    flux = spectrum.flux
+    disp = spectrum.spectral_axis
+    meta = spectrum.meta
+
+    tab = Table([disp, flux], names=("wavelength", "flux"), meta=meta)
+
+    tab.write(file_name, format="fits", overwrite=kwargs["overwrite"])
 
 
 def read_bt_settl(file_dict):
@@ -20,6 +33,16 @@ def read_bt_settl(file_dict):
     input_spec = Spectrum1D(
         spectral_axis=spec0["wavelength"] * u.AA,
         flux=spec0["flux"] * (u.erg / u.s / u.cm**2 / u.AA),
+        meta={
+            "WAVE_MIN": (
+                (spec0["wavelength"][0] * u.AA).value,
+                "Min original wavelength [angstrom]",
+            ),
+            "WAVE_MAX": (
+                (spec0["wavelength"][-1] * u.AA).value,
+                "Max original wavelength [angstrom]",
+            ),
+        },
     )
     return input_spec
 
@@ -32,6 +55,10 @@ def read_miles(file_dict):
     spec0 = Spectrum1D(
         spectral_axis=w * u.AA,
         flux=hdu[0].data * (u.erg / u.s / u.cm**2 / u.AA),
+        meta={
+            "WAVE_MIN": ((w[0] * u.AA).value, "Min original wavelength [angstrom]"),
+            "WAVE_MAX": ((w[-1] * u.AA).value, "Max original wavelength [angstrom]"),
+        },
     )
     return spec0
 
@@ -41,6 +68,16 @@ def read_stsci(file_dict):
     input_spec = Spectrum1D(
         spectral_axis=hdu[1].data["WAVELENGTH"] * u.AA,
         flux=hdu[1].data["FLUX"] * (u.erg / u.s / u.cm**2 / u.AA),
+        meta={
+            "WAVE_MIN": (
+                (hdu[1].data["WAVELENGTH"][0] * u.AA).value,
+                "Min original wavelength [angstrom]",
+            ),
+            "WAVE_MAX": (
+                (hdu[1].data["WAVELENGTH"][-1] * u.AA).value,
+                "Max original wavelength [angstrom]",
+            ),
+        },
     )
     print(input_spec.spectral_axis, input_spec.flux)
     return input_spec
@@ -55,6 +92,7 @@ def resample_spec(input_spec, wmin=900 * u.AA, wmax=13000 * u.AA, dw=0.5 * u.AA)
     # resampler = FluxConservingResampler()
     resampler = LinearInterpolatedResampler(extrapolation_treatment="zero_fill")
     new_spec = resampler(input_spec, new_disp_grid)
+    new_spec.meta = input_spec.meta
     return new_spec
 
 
@@ -70,7 +108,10 @@ def main(k, v):
 
     new_spec = resample_spec(input_spec)
 
-    new_spec.write(v["outfile"], overwrite=True, format="tabular-fits")
+    print(new_spec.meta)
+
+    # new_spec.write(v["outfile"], overwrite=True, format="tabular-fits")
+    new_spec.write(v["outfile"], overwrite=True, format="fits-table-writer")
 
     # print(wave_new, flux_new)
 
