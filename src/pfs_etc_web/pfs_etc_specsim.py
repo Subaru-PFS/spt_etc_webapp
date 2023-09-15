@@ -85,9 +85,15 @@ class PfsSpecSim:
         # target
         self.etc.set_param("GALACTIC_EXT", self.target.galactic_extinction)
 
-        self.target = create_template_spectrum(
+        self.target, flag_good_lamnorm = create_template_spectrum(
             self.target, tmpdir=self.etc.params["TMPDIR"]
         )
+
+        if flag_good_lamnorm is False:
+            raise ValueError(
+                "Failed at normalizing the template. Check the wavelength range of the template and wavelength to normalize."
+            )
+
         # self.etc.set_param("MAG_FILE", f"{self.target.mag}")
         self.etc.set_param("MAG_FILE", f"{self.target.mag_file}")
         # self.target.mag_file = mag_file
