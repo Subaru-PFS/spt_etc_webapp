@@ -13,15 +13,19 @@ Dropdown list of template spectra. Currently, the following templates are availa
 ##### Galaxy
 
 - Star-forming galaxy (E-MILES SSP, 100Myr, $Z_\odot$, Chabrier IMF)
+    - Valid wavelength range is 168 nm to 5000 nm.
 - Quiescent galaxy (E-MILES SSP, 1Gyr, $Z_\odot$, Chabrier IMF)
+    - Valid wavelength range is 168 nm to 5000 nm.
 
 ##### Quasar
 
 - Composite ([Vanden Berk+2001 and Glikman+2006](https://www.stsci.edu/hst/instrumentation/reference-data-for-calibration-and-tools/astronomical-catalogs/composite-qso-spectra-for-nir))
+    - Valid wavelength range is 86nm and 3520 nm
 
 ##### Star
 
-$T_\mathrm{eff}$ and $\log g$ are taken from Table 2 in the following [README](https://archive.stsci.edu/hlsps/reference-atlases/cdbs/grid/ck04models/AA_README)
+$T_\mathrm{eff}$ and $\log g$ are taken from Table 2 in the following [README](https://archive.stsci.edu/hlsps/reference-atlases/cdbs/grid/ck04models/AA_README).
+Valid wavelength range is 100 nm to 10000 nm.
 
 | Template | Library             | $T_\mathrm{eff}$ (K) | $\log g$ |       $Z$ |
 |----------|---------------------|---------------------:|---------:|----------:|
@@ -44,7 +48,8 @@ AB magnitude to be normalized to.
 
 #### Wavelength
 
-Wavelength in nm to be normalized at.
+_Observed-frame_ wavelength in nm where the template is normalized.
+Note that the value must be within the valid wavelength ranges mentioned above _after_ applying the redshift.
 
 #### Redshift
 
