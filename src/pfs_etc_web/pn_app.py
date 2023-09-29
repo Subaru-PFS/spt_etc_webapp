@@ -122,6 +122,11 @@ def pfs_etc_app():
 
                     panel_buttons.reset.disabled = True
 
+                    panel_target.disabled(disabled=True)
+                    panel_environment.disabled(disabled=True)
+                    panel_instrument.disabled(disabled=True)
+                    panel_telescope.disabled(disabled=True)
+
                     panel_plots.plot.object = create_dummy_plot()
 
                     panel_downloads.download_pfsobject_fits.visible = False
@@ -174,6 +179,10 @@ def pfs_etc_app():
                         logger.info("Enable the run button")
                         panel_buttons.exec.name = "Run"
                         panel_buttons.exec.disabled = False
+                        panel_target.disabled(disabled=False)
+                        panel_environment.disabled(disabled=False)
+                        panel_instrument.disabled(disabled=False)
+                        panel_telescope.disabled(disabled=False)
 
                     except ValueError as e:
                         # pass
