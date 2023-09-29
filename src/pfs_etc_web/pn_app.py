@@ -31,6 +31,8 @@ from .pfs_etc_widgets import (
     TelescopeWidgets,
 )
 
+# pn.param.ParamMethod.loading_indicator = True
+
 # pn.extension(
 #     "floatpanel",
 #     "mathjax",
@@ -88,7 +90,7 @@ def pfs_etc_app():
 
     # Create a panel to show plots
     panel_plots = BokehWidgets(create_dummy_plot())
-    panel_plots.pane.visible = False
+    # panel_plots.pane.visible = False
 
     # Create download buttons
     panel_downloads = DownloadWidgets(visible=False)
@@ -139,6 +141,8 @@ def pfs_etc_app():
 
                     panel_buttons.exec.disabled = True
                     panel_buttons.exec.name = "Running"
+
+                    panel_buttons.reset.disabled = True
 
                     panel_plots.plot.object = create_dummy_plot()
 
@@ -204,6 +208,7 @@ def pfs_etc_app():
                         logger.info("Enable the run button")
                         panel_buttons.exec.name = "Run"
                         panel_buttons.exec.disabled = False
+                        panel_buttons.reset.disabled = False
 
             queue_exec.clear()
             c_exec.release()
