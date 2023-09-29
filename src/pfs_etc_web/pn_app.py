@@ -31,20 +31,6 @@ from .pfs_etc_widgets import (
     TelescopeWidgets,
 )
 
-# pn.extension(
-#     "floatpanel",
-#     "mathjax",
-#     loading_spinner="dots",
-#     loading_color="#6A589D",
-#     sizing_mode="stretch_width",
-#     css_files=[
-#         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-#     ],
-#     js_files={
-#         "font-awesome": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"
-#     },
-# )
-
 
 def pfs_etc_app():
     template = pn.template.VanillaTemplate(
@@ -53,8 +39,6 @@ def pfs_etc_app():
         header_background="#6A589D",
         busy_indicator=None,
         favicon="docs/site/assets/images/favicon.png",
-        # logo="docs/site/assets/images/favicon.png",
-        # logo="src/pfs_etc_web/assets/logo-pfs.png",
     )
 
     # set parameter objects with default parameters
@@ -80,7 +64,6 @@ def pfs_etc_app():
         ("Condition ", panel_environment.panel),
         ("Instrument", panel_instrument.panel),
         ("Telescope ", panel_telescope.panel),
-        # sizing_mode="stretch_width",
     )
 
     # Create button to start computation
@@ -88,7 +71,7 @@ def pfs_etc_app():
 
     # Create a panel to show plots
     panel_plots = BokehWidgets(create_dummy_plot())
-    panel_plots.pane.visible = False
+    # panel_plots.pane.visible = False
 
     # Create download buttons
     panel_downloads = DownloadWidgets(visible=False)
@@ -118,13 +101,10 @@ def pfs_etc_app():
     curdoc = pn.state.curdoc
 
     def callback_exec():
-        # panel_plots.visible = False
         while True:
             c_exec.acquire()
             for _ in queue_exec:
                 with set_curdoc(curdoc):
-                    # print("callback_exec")
-                    # template.main.append(main_column)
                     logger.info("callback function is called")
 
                     session_id = (
@@ -140,6 +120,13 @@ def pfs_etc_app():
                     panel_buttons.exec.disabled = True
                     panel_buttons.exec.name = "Running"
 
+                    panel_buttons.reset.disabled = True
+
+                    panel_target.disabled(disabled=True)
+                    panel_environment.disabled(disabled=True)
+                    panel_instrument.disabled(disabled=True)
+                    panel_telescope.disabled(disabled=True)
+
                     panel_plots.plot.object = create_dummy_plot()
 
                     panel_downloads.download_pfsobject_fits.visible = False
@@ -147,8 +134,6 @@ def pfs_etc_app():
                     panel_downloads.download_simspec_csv.visible = False
                     panel_downloads.download_snline_fits.visible = False
                     panel_downloads.download_snline_csv.visible = False
-
-                    # print(conf_instrument.mr_mode)
 
                     specsim = PfsSpecSim(
                         target=conf_target,
@@ -194,6 +179,10 @@ def pfs_etc_app():
                         logger.info("Enable the run button")
                         panel_buttons.exec.name = "Run"
                         panel_buttons.exec.disabled = False
+                        panel_target.disabled(disabled=False)
+                        panel_environment.disabled(disabled=False)
+                        panel_instrument.disabled(disabled=False)
+                        panel_telescope.disabled(disabled=False)
 
                     except ValueError as e:
                         # pass
@@ -204,6 +193,7 @@ def pfs_etc_app():
                         logger.info("Enable the run button")
                         panel_buttons.exec.name = "Run"
                         panel_buttons.exec.disabled = False
+                        panel_buttons.reset.disabled = False
 
             queue_exec.clear()
             c_exec.release()
@@ -249,29 +239,4 @@ def pfs_etc_app():
     panel_buttons.exec.on_click(on_click_exec)
     panel_buttons.reset.on_click(on_click_reset)
 
-    # print("info note")
-    # pn.state.notifications.info("This is a info notification.", duration=0)
-
-    # line_sn = conf_target.line_sn
-    # print(line_sn)
-
-    # @param.depends("line_sn", watch=True)
-    # def toggle_line_box():
-    #     print("Pressed")
-
     return template.servable()
-
-    # return pn.Row(
-    #     pn.Column(
-    #         panel_buttons.pane,
-    #         tab_inputs,
-    #         width=350,
-    #     ),
-    #     pn.Column(
-    #         panel_downloads.pane,
-    #         panel_plots.pane,
-    #     ),
-    # ).servable()
-
-
-# app = pfs_etc_app

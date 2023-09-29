@@ -2,6 +2,7 @@
 
 import numpy as np
 import panel as pn
+import param
 
 
 class InitNoteWidgets:
@@ -55,7 +56,7 @@ class ExecButtonWidgets:
         self.pane = pn.Row(self.doc, self.reset, self.exec, height=40)
 
 
-class TargetWidgets:
+class TargetWidgets(param.Parameterized):
     def __init__(self, conf):
         self.template = pn.Param(
             conf.param.template,
@@ -176,9 +177,20 @@ class TargetWidgets:
             # sizing_mode="stretch_width",
         )
 
+    def disabled(self, disabled=True):
+        for w in [
+            self.box_template,
+            self.box_line,
+            self.box_custom_input,
+            self.box_misc,
+        ]:
+            w.disabled = disabled
 
-class EnvironmentWidgets:
+
+class EnvironmentWidgets(param.Parameterized):
     def __init__(self, conf):
+        # super().__init__()
+        self.conf = conf
         self.panel = pn.Param(
             conf,
             widgets={
@@ -204,9 +216,14 @@ class EnvironmentWidgets:
             default_layout=pn.Column,
         )
 
+    def disabled(self, disabled=True):
+        for p in self.panel.parameters:
+            self.conf.param[p].constant = disabled
 
-class InstrumentWidgets:
+
+class InstrumentWidgets(param.Parameterized):
     def __init__(self, conf):
+        self.conf = conf
         self.panel = pn.Param(
             conf,
             widgets={
@@ -219,15 +236,24 @@ class InstrumentWidgets:
             default_layout=pn.Column,
         )
 
+    def disabled(self, disabled=True):
+        for p in self.panel.parameters:
+            self.conf.param[p].constant = disabled
 
-class TelescopeWidgets:
+
+class TelescopeWidgets(param.Parameterized):
     def __init__(self, conf):
+        self.conf = conf
         self.panel = pn.Param(
             conf,
             widgets={"zenith_angle": {"type": pn.widgets.IntSlider, "step": 5}},
             show_name=False,
             default_layout=pn.Column,
         )
+
+    def disabled(self, disabled=True):
+        for p in self.panel.parameters:
+            self.conf.param[p].constant = disabled
 
 
 class MatplotlibWidgets:

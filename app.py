@@ -15,7 +15,6 @@ pn.extension(
     },
     css_files=[
         "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
-        # "https://fonts.googleapis.com/css?family=Lato&subset=latin,latin-ext",
     ],
     layout_compatibility="error",
 )
