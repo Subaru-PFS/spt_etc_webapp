@@ -64,6 +64,8 @@ gen-requirements = { cmd = [
     "--without-hashes",
     "--pyproject",
     "--dev",
+    "--group",
+    "mkdocs",
     "--output",
     "requirements.txt",
     "--verbose",
