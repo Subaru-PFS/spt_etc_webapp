@@ -28,7 +28,7 @@ dependencies = [
     "pandas>=1.5.3",
     "setuptools>=56.1.0",
     "synphot>=1.2.0",
-    "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@u/monodera/20230116",
+    "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -56,6 +56,18 @@ run_pfs_etc_web = "pfs_etc_web.cli.run_panel_server:main"
 [tool.pdm.scripts]
 serve-doc = { shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview" }
 build-doc = { shell = "cd docs && mkdocs build", help = "Build documentation" }
+gen-requirements = { cmd = [
+    "pdm",
+    "export",
+    "--format",
+    "requirements",
+    "--without-hashes",
+    "--pyproject",
+    "--dev",
+    "--output",
+    "requirements.txt",
+    "--verbose",
+], help = "Generate requirements.txt" }
 
 [build-system]
 requires = ["setuptools", "wheel"]
