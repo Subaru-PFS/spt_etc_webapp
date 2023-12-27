@@ -1,24 +1,49 @@
 # Welcome
 
-The PFS Spectral Simulator is a web app to run the exposure time calculator and spectram simulator. The actual app can be found [here](/etc/app).
+The PFS Spectral Simulator is a web app to run the exposure time calculator and to simulate PFS spectrum.
 
-## [Inputs](inputs.md)
+## Contents
 
-- [Target tab](inputs.md#target-tab) : Configure target properties
-- [Condition tab](inputs.md#condition-tab) : Configure observing condition
-- [Instrument tab](inputs.md#instrument-tab) : Configure exposure setup
-- [Telescope tab](inputs.md#telescope-tab) : Configure telescope setup
+<div class="grid cards" markdown>
 
-## [Running the app](exec.md)
+- :material-list-box-outline:{ .lg .middle } [__Set the Input Parameters__](inputs.md)
 
-- [Run](exec.md#run)
-- [Reset](exec.md#reset)
+    ---
 
-## [Outputs](outputs.md)
+    Understand various parameters to simulate PFS spectra.
 
-- [Download results](outputs.md#files)
-- [Plots](outputs.md#plots)
+    [:octicons-arrow-right-24: Inputs](inputs.md)
 
-## [Contact](contact.md)
+- :material-calculator:{ .lg .middle } [__Simulate PFS Spectra__](exec.md)
 
-Any feedback is welcome. Please contact Masato Onodera (Subaru Telescope, NAOJ) via PFS Slack and/or email (<monodera@naoj.org>).
+    ---
+
+    Simulate PFS spectra for your input parameters.
+
+    [:octicons-arrow-right-24: Run Simulation](exec.md)
+
+- :material-lightbulb-on-outline:{ .lg .middle } [__Understand the Results__](outputs.md)
+
+    ---
+
+    Understand the outputs from the simulation.
+
+    [:octicons-arrow-right-24: Outputs](outputs.md)
+
+-   :material-chat-question-outline:{ .lg .middle } [__FAQ & Known Issues__](issues.md)
+
+    ---
+
+    Check frequently asked questions and known issues first when you have any troubles with the app.
+
+    [:octicons-arrow-right-24: FAQ & Known Issues](issues.md)
+
+-   :material-account-box-outline:{ .lg .middle } [__Contact__](contact.md)
+
+    ---
+
+    If you have any questions, comments, or suggestions on the app, please feel free to contact us.
+
+    [:octicons-arrow-right-24: Contact Us](contact.md)
+
+</div>

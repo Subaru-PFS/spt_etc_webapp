@@ -1,10 +1,9 @@
-# Running the app
+# Simulating PFS Spectra
 
 ## Run
 
 Pressing the `Run` button triggers the calculation. The computational time depends on the number of threads and CPU frequency.
 Typical computational time would be 20-40 seconds. Be patient.
-
 
 ## Reset
 
