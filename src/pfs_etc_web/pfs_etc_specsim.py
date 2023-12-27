@@ -6,7 +6,7 @@ import pprint
 import sys
 
 import pandas as pd
-from logzero import logger
+from loguru import logger
 from pfsspecsim import pfsetc, pfsspec
 
 from .pfs_etc_params import OutputConf, SimulationConf

@@ -7,8 +7,7 @@ import threading
 import time
 
 import panel as pn
-import param
-from logzero import logger
+from loguru import logger
 from panel.io.state import set_curdoc
 
 from .pfs_etc_params import (
