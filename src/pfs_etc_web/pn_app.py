@@ -80,14 +80,14 @@ def pfs_etc_app():
     panel_downloads = DownloadWidgets(visible=False)
 
     # Float panel to display some messages
-    panel_initnote = InitNoteWidgets()
+    # panel_initnote = InitNoteWidgets()
 
     # put panels into a template
     sidebar_column = pn.Column(panel_buttons.pane, tab_inputs)
     template.sidebar.append(sidebar_column)
 
     main_column = pn.Column(
-        panel_initnote.flatpanel,
+        # panel_initnote.flatpanel,
         panel_downloads.pane,
         panel_plots.pane,
     )
