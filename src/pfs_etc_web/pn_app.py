@@ -33,10 +33,13 @@ from .pfs_etc_widgets import (
 
 
 def pfs_etc_app():
-    template = pn.template.VanillaTemplate(
+    template = pn.template.MaterialTemplate(
+        # template = pn.template.BootstrapTemplate(
         title="PFS Spectral Simulator",
-        sidebar_width=400,
+        # sidebar_width=400,
+        sidebar_width=420,
         header_background="#6A589D",
+        # header_background="#3A7D7E",
         busy_indicator=None,
         favicon="docs/site/assets/images/favicon.png",
     )
