@@ -33,10 +33,13 @@ from .pfs_etc_widgets import (
 
 
 def pfs_etc_app():
-    template = pn.template.VanillaTemplate(
+    template = pn.template.MaterialTemplate(
+        # template = pn.template.BootstrapTemplate(
         title="PFS Spectral Simulator",
-        sidebar_width=400,
+        # sidebar_width=400,
+        sidebar_width=420,
         header_background="#6A589D",
+        # header_background="#3A7D7E",
         busy_indicator=None,
         favicon="docs/site/assets/images/favicon.png",
     )
@@ -77,14 +80,14 @@ def pfs_etc_app():
     panel_downloads = DownloadWidgets(visible=False)
 
     # Float panel to display some messages
-    panel_initnote = InitNoteWidgets()
+    # panel_initnote = InitNoteWidgets()
 
     # put panels into a template
     sidebar_column = pn.Column(panel_buttons.pane, tab_inputs)
     template.sidebar.append(sidebar_column)
 
     main_column = pn.Column(
-        panel_initnote.flatpanel,
+        # panel_initnote.flatpanel,
         panel_downloads.pane,
         panel_plots.pane,
     )
@@ -179,6 +182,7 @@ def pfs_etc_app():
                         logger.info("Enable the run button")
                         panel_buttons.exec.name = "Run"
                         panel_buttons.exec.disabled = False
+                        panel_buttons.reset.disabled = False
                         panel_target.disabled(disabled=False)
                         panel_environment.disabled(disabled=False)
                         panel_instrument.disabled(disabled=False)

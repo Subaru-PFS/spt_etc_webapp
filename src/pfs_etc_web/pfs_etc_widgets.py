@@ -34,26 +34,10 @@ class ExecButtonWidgets:
         self.exec = pn.widgets.Button(
             name="Run", button_style="outline", button_type="primary"
         )
-        # self.doc = pn.pane.Markdown("[Manual](/docs/index.html)")
-        self.doc = pn.pane.HTML(
-            "<i class='fa-sharp fa-solid fa-book' ></i> <a href='doc/index.html' target='_blank'>Manual</a>",
-            width=80,
-            height=26,
-            styles={
-                "display": "inline-block",
-                "padding": "3px 0px 0px 5px",
-                "margin": "4px 0px 0px 6px",
-                # "background-color": "#4CAF50",
-                # "background-color": "#f3f3f3",
-                # "border-radius": "5px",
-                # "border-style": "solid",
-                # "border-color": "#000000",
-                "text-align": "left",
-                "text-decoration": "none",
-                "font-size": "110%",
-            },
+        self.doc = pn.pane.Markdown(
+            "<font size='3'><i class='fa-solid fa-circle-info fa-lg' style='color: #6A589D;'></i> <a href='doc/index.html' target='_blank'>User Guide</a></font>",
         )
-        self.pane = pn.Row(self.doc, self.reset, self.exec, height=40)
+        self.pane = pn.Column(self.doc, pn.Row(self.reset, self.exec, height=50))
 
 
 class TargetWidgets(param.Parameterized):
@@ -102,7 +86,8 @@ class TargetWidgets(param.Parameterized):
         )
         self.line_help = pn.pane.Markdown(
             "Emission line S/N is computed at each wavelength pixel based on the noise vector including continuum. "
-            "Set the input magnitude to a large value, if you want to know continuum-free, emission line-only S/N.")
+            "Set the input magnitude to a large value, if you want to know continuum-free, emission line-only S/N."
+        )
 
         self.line_flux = pn.Param(
             conf.param.line_flux,
@@ -125,7 +110,7 @@ class TargetWidgets(param.Parameterized):
             "Input spectrum must be in a CSV format with exactly two columns. "
             "The first column must be the wavelength in [Å] and "
             "the second column must be the flux in [$$\mathrm{erg}$$ $$\mathrm{s}^{-1}$$ $$\mathrm{cm}^{-2}$$ $$\mathrm{Å}^{\ \ \ -1}$$]. "
-            "No header line is needed and lines starting with \"#\" are regarded as commment. An [example CSV file](https://gist.github.com/monodera/be48be04f376b2db268d0b14ad9cb5e1) is available.",
+            'No header line is needed and lines starting with "#" are regarded as commment. An [example CSV file](https://gist.github.com/monodera/be48be04f376b2db268d0b14ad9cb5e1) is available.',
             # renderer="myst"
             # markdown-it', 'markdown', 'myst
         )
