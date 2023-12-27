@@ -103,9 +103,9 @@ class TargetConf(param.Parameterized):
         label="Line flux (erg/s/cm^2)",
         default=default_parameters.line_flux,
         bounds=(0, None),
-        doc="Emission line flux in the units of erg/s/cm^2. The emission line S/N "
-        "is computed on top of the main target source spectrum. "
-        "If you wish to compute emission line only S/N, you can set very large Magnitude value.",
+        # doc="Emission line flux in the units of erg/s/cm^2. The emission line S/N "
+        # "is computed on top of the main target source spectrum. "
+        # "If you wish to compute emission line only S/N, you can set very large Magnitude value.",
     )
     line_width = param.Number(
         label="Line width sigma (km/s)",
