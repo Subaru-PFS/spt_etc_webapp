@@ -100,6 +100,10 @@ class TargetWidgets(param.Parameterized):
             conf.param.line_sn,
             widgets={"line_sn": {"type": pn.widgets.Checkbox}},
         )
+        self.line_help = pn.pane.Markdown(
+            "Emission line S/N is computed at each wavelength pixel based on the noise vector including continuum. "
+            "Set the input magnitude to a large value, if you want to know continuum-free, emission line-only S/N.")
+
         self.line_flux = pn.Param(
             conf.param.line_flux,
             widgets={"line_flux": {"type": pn.widgets.FloatInput}},
@@ -118,12 +122,10 @@ class TargetWidgets(param.Parameterized):
             },
         )
         self.custom_input_help = pn.pane.Markdown(
-            """
-            Input spectrum must be in a CSV format with exactly two columns.
-            The first column must be the wavelength in [Å] and
-            the second column must be the flux in [$$\mathrm{erg}$$ $$\mathrm{s}^{-1}$$ $$\mathrm{cm}^{-2}$$ $$\mathrm{Å}^{\ \ \ -1}$$]
-            No header line is needed and lines starting with "#" are regarded as commment. An [example CSV file](https://gist.github.com/monodera/be48be04f376b2db268d0b14ad9cb5e1) is available.
-            """,
+            "Input spectrum must be in a CSV format with exactly two columns. "
+            "The first column must be the wavelength in [Å] and "
+            "the second column must be the flux in [$$\mathrm{erg}$$ $$\mathrm{s}^{-1}$$ $$\mathrm{cm}^{-2}$$ $$\mathrm{Å}^{\ \ \ -1}$$]. "
+            "No header line is needed and lines starting with \"#\" are regarded as commment. An [example CSV file](https://gist.github.com/monodera/be48be04f376b2db268d0b14ad9cb5e1) is available.",
             # renderer="myst"
             # markdown-it', 'markdown', 'myst
         )
@@ -150,6 +152,7 @@ class TargetWidgets(param.Parameterized):
             "### Emission Line Properties",
             pn.Column(
                 # self.line_sn,
+                self.line_help,
                 self.line_flux,
                 self.line_width,
             ),
