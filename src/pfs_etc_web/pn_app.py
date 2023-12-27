@@ -182,6 +182,7 @@ def pfs_etc_app():
                         logger.info("Enable the run button")
                         panel_buttons.exec.name = "Run"
                         panel_buttons.exec.disabled = False
+                        panel_buttons.reset.disabled = False
                         panel_target.disabled(disabled=False)
                         panel_environment.disabled(disabled=False)
                         panel_instrument.disabled(disabled=False)
