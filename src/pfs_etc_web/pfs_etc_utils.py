@@ -124,6 +124,7 @@ def create_simspec_plot(
         aspect_ratio=aspect_ratio,
         sizing_mode="scale_width",
         output_backend="webgl",
+        active_drag="box_zoom",
     )
     kwargs_snline = dict(
         x_axis_label="Wavelength (nm)",
@@ -131,6 +132,7 @@ def create_simspec_plot(
         aspect_ratio=aspect_ratio,
         sizing_mode="scale_width",
         output_backend="webgl",
+        active_drag="box_zoom",
     )
     extra_y_axis_label = "S/N per pixel"
 
