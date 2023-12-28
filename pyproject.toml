@@ -70,6 +70,19 @@ gen-requirements = { cmd = [
     "requirements.txt",
     "--verbose",
 ], help = "Generate requirements.txt" }
+serve-app = { cmd = [
+    "pdm",
+    "run",
+    "panel",
+    "serve",
+    "./app.py",
+    "--static-dirs",
+    "doc=docs/site",
+    "--prefix=etc",
+    "--websocket-max-message-size=104857600",
+    "--port=5007",
+    "--autoreload",
+] }
 
 [build-system]
 requires = ["setuptools", "wheel"]
