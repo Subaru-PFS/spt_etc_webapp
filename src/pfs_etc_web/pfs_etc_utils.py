@@ -142,6 +142,7 @@ def create_simspec_plot(
     ymin2, ymax2 = 0.0, np.nanmax(df_sncont["sncont"]) * 1.5
 
     df["sncont"] = df_sncont["sncont"]
+    df["input_spec"] = input_spec
 
     dict_df_arm = dict(
         b=df.loc[df["arm"] == 0, :],
@@ -166,6 +167,7 @@ def create_simspec_plot(
 
     tooltips = [
         ("Wavelength", "@wavelength"),
+        ("Input", "@input_spec"),
         ("Flux", "@flux"),
         ("Error", "@error"),
         ("S/N", "@sncont"),
@@ -220,7 +222,18 @@ def create_simspec_plot(
             "flux",
             source=dict_source_arm[arm],
             color=dict_line_color[arm],
+            alpha=0.8,
             legend_label="Flux",
+        )
+        # plot input spectrum
+        p_arm.line(
+            "wavelength",
+            "input_spec",
+            source=dict_source_arm[arm],
+            color=dict_line_color[arm],
+            # color="black",
+            line_width=2,
+            legend_label="Input",
         )
         # plot error
         p_arm.line(
@@ -228,6 +241,7 @@ def create_simspec_plot(
             "error",
             source=dict_source_arm[arm],
             color="gray",
+            alpha=0.8,
             legend_label="Error",
         )
         # plot S/N using the right-side axis
@@ -240,8 +254,9 @@ def create_simspec_plot(
             "wavelength",
             "sncont",
             source=dict_source_arm[arm],
-            color=Colorblind[7][5],
-            alpha=0.75,
+            # color=Colorblind[7][5],
+            color=Colorblind[7][6],
+            alpha=0.8,
             y_range_name="sncont",
             legend_label="S/N",
         )
@@ -253,7 +268,8 @@ def create_simspec_plot(
         "wavelength",
         "snline_tot",
         source=df_snline,
-        color=Colorblind[7][4],
+        # color=Colorblind[7][4],
+        color=Colorblind[7][6],
         legend_label="S/N",
     )
     p_snline.legend.location = "top_left"
