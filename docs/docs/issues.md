@@ -11,6 +11,8 @@ We are planning to replace them with models with sufficient wavelength coverage,
 
 Please send a request for [us](contact.md). In the meantime, please use a custom input.
 
-
 ## Known Issues
 
+### Texts in boxes do not appear nicely
+
+It is a known bug of the Panel Python package that the box heights do not follow the font sizes properly. When you set the font size in the browser larger than a recommended one, a part of texts would be hidden. We will update the app once the issue of the package is fixed.
