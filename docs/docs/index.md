@@ -2,6 +2,11 @@
 
 [The PFS Spectral Simulator](../app) is a web app to run the exposure time calculator and to simulate PFS spectrum.
 
+## Demo
+
+
+![type:video](videos/demo.mp4)
+
 ## Contents
 
 <div class="grid cards" markdown>

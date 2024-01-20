@@ -21,8 +21,8 @@ plugins:
   - social
   - mkdocs-video:
       is_video: True
-      video_autoplay: True
-      video_muted: True
+      video_autoplay: False
+      video_muted: False
 
 theme:
   name: material
