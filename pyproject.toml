@@ -29,6 +29,7 @@ dependencies = [
     "synphot>=1.2.0",
     "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git",
     "loguru>=0.7.2",
+    "mkdocs-video>=1.5.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
