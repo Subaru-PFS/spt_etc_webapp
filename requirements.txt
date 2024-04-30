@@ -26,3 +26,5 @@ ruff>=0.0.239
 setuptools>=56.1.0
 specutils>=1.10.0
 synphot>=1.2.0
+watchfiles>=0.21.0
+-e .  # this package
