@@ -30,6 +30,7 @@ dependencies = [
     "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git",
     "loguru>=0.7.2",
     "mkdocs-video>=1.5.0",
+    "watchfiles>=0.21.0",
 ]
 requires-python = ">=3.10"
 readme = "README.md"
@@ -69,6 +70,8 @@ gen-requirements = { cmd = [
     "mkdocs",
     "--output",
     "requirements.txt",
+    "--pyproject",
+    "--editable-self",
     "--verbose",
 ], help = "Generate requirements.txt" }
 serve-app = { cmd = [
