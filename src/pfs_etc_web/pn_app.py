@@ -40,7 +40,7 @@ def pfs_etc_app():
         header_background="#6A589D",
         # header_background="#3A7D7E",
         busy_indicator=None,
-        favicon="docs/site/assets/images/favicon.png",
+        favicon="doc/assets/images/favicon.png",
     )
 
     # set parameter objects with default parameters
