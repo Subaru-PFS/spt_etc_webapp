@@ -268,6 +268,9 @@ class OutputConf(param.Parameterized):
         label="pfsObject file", default=default_parameters.outfile_pfsobject
     )
 
+    def __init__(self, **params):
+        super().__init__(**params)
+
 
 class SimulationConf(param.Parameterized):
     nrealize = param.Integer(label="nrealize", default=default_parameters.nrealize)

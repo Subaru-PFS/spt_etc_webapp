@@ -5,7 +5,6 @@ import os
 import pprint
 import sys
 
-import pandas as pd
 from loguru import logger
 from pfsspecsim import pfsetc, pfsspec
 
@@ -247,6 +246,10 @@ class PfsSpecSim:
         )
 
         self.p_simspec = create_simspec_plot(df_simspec, df_snline, df_sncont)
+
+        self.outfile_plot = os.path.join(
+            outdir, f"pfs_etc_plot-{self.output.sessiondir}.html"
+        )
 
         # print(type(self.p_simspec))
 
