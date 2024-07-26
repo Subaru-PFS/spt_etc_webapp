@@ -7,6 +7,8 @@ import threading
 import time
 
 import panel as pn
+from bokeh.resources import INLINE
+from dotenv import dotenv_values
 from loguru import logger
 from panel.io.state import set_curdoc
 
@@ -43,13 +45,27 @@ def pfs_etc_app():
         favicon="doc/assets/images/favicon.png",
     )
 
+    if os.path.exists(".env"):
+        config = dotenv_values(".env")
+    else:
+        config = {}
+
+    logger.info(f"Configuration: {config}")
+
+    if "OUTPUT_DIR" in config.keys():
+        basedir = config["OUTPUT_DIR"]
+    else:
+        basedir = "tmp"
+
+    logger.info(f"Output directory: {basedir}")
+
     # set parameter objects with default parameters
     conf_target = TargetConf()
     conf_environment = EnvironmentConf()
     conf_instrument = InstrumentConf()
     conf_telescope = TelescopeConf()
 
-    conf_output = OutputConf()
+    conf_output = OutputConf(basedir=basedir)
 
     if not os.path.exists(conf_output.basedir):
         os.mkdir(conf_output.basedir)
@@ -186,6 +202,12 @@ def pfs_etc_app():
                         panel_environment.disabled(disabled=False)
                         panel_instrument.disabled(disabled=False)
                         panel_telescope.disabled(disabled=False)
+
+                        panel_plots.pane.save(
+                            specsim.outfile_plot,
+                            resources=INLINE,
+                            title="Simulated PFS Spectrum",
+                        )
 
                     except ValueError as e:
                         # pass
