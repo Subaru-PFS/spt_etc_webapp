@@ -254,12 +254,12 @@ class BokehWidgets:
         self.plot = pn.pane.Bokeh(
             p,
             visible=visible,
-            sizing_mode="scale_width",
+            width=1200,
         )
         self.pane = pn.Column(
             self.plot,
             min_width=700,
-            sizing_mode="scale_width",
+            width=1200,
         )
 
 
@@ -270,8 +270,6 @@ class DownloadWidgets:
             label="Download pfsObject file (.fits)",
             button_type="default",
             visible=visible,
-            # width=200,
-            # height=70,
         )
         self.download_simspec_fits = pn.widgets.FileDownload(
             file=None,
@@ -314,16 +312,7 @@ class DownloadWidgets:
                 self.download_pfsobject_fits,
                 min_width=200,
                 max_width=300,
-                # max_height=300,
-                sizing_mode="stretch_width",
             ),
-            # pn.Column(
-            #     pn.Row(
-            #         self.download_pfsobject_fits,
-            #         min_width=200,
-            #     ),
-            # ),
             min_width=700,
-            # min_height=100,
-            sizing_mode="stretch_width",
+            max_width=1200,
         )
