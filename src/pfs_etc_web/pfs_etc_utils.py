@@ -468,4 +468,22 @@ def create_simspec_files(
     )
     tb_snline.meta["MED_RES"] = (param_inst.mr_mode, "True if medium resolution mode")
 
-    return tb_out, tb_snline
+    tj_text = f"""The following parameters are used with the PFS spectral simulator:
+[1] Template spectrum: {template_type};
+[2] AB mag: {template_mag};
+[3] Wavelength: {template_wave};
+[4] Redshift: {template_redshift};
+[5] (1) Emission line flux: {param_target.line_flux}, (2) Emission line width {param_target.line_width};
+[6] (1) Galactic extinction: {param_target.galactic_extinction}, (2) Effective radius: {param_target.r_eff};
+[7] Seeing FWHM: {param_env.seeing};
+[8] Throughput degradation factor: {param_env.degrade};
+[9] Moon zenith angle: {param_env.moon_zenith_angle};
+[10] Moon-target separation: {param_env.moon_target_angle};
+[11] Moon phase: {param_env.moon_phase};
+[12] Exposure time: {param_inst.exp_time};
+[13] Number of exposures: {param_inst.exp_num};
+[14] Distance from FoV center: {param_inst.field_angle};
+[15] Zenith angle: {param_tel.zenith_angle};
+"""
+
+    return tb_out, tb_snline, tj_text
