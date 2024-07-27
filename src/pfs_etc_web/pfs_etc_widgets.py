@@ -295,24 +295,24 @@ class DownloadWidgets:
             button_type="default",
             visible=visible,
         )
-        self.pane = pn.Row(
-            pn.Column(
-                pn.Row(
-                    self.download_simspec_fits,
-                    self.download_simspec_csv,
-                    min_width=500,
-                ),
-                pn.Row(
-                    self.download_snline_fits,
-                    self.download_snline_csv,
-                    min_width=500,
-                ),
+        self.download_tjtext = pn.widgets.FileDownload(
+            file=None,
+            label="Download TJ template (.txt)",
+            button_type="default",
+            # button_type="primary",
+            # button_style="outline",
+            visible=visible,
+        )
+        self.pane = pn.Column(
+            pn.Row(
+                self.download_simspec_fits,
+                self.download_simspec_csv,
+                self.download_pfsobject_fits,
             ),
             pn.Row(
-                self.download_pfsobject_fits,
-                min_width=200,
-                max_width=300,
+                self.download_snline_fits,
+                self.download_snline_csv,
+                self.download_tjtext,
             ),
-            min_width=700,
-            max_width=1200,
+            width=1200,
         )

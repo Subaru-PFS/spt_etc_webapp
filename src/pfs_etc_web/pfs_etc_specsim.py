@@ -206,7 +206,7 @@ class PfsSpecSim:
             outdir, f"pfs_etc_snline-{self.output.sessiondir}"
         )
 
-        tb_simspec, tb_snline = create_simspec_files(
+        tb_simspec, tb_snline, text_tj = create_simspec_files(
             self.target,
             self.environment,
             self.instrument,
@@ -245,11 +245,18 @@ class PfsSpecSim:
             self.outfile_pfsobject,
         )
 
+        self.outfile_tjtext = os.path.join(
+            outdir, f"pfs_etc_tjtext-{self.output.sessiondir}.txt"
+        )
+        text_tj += f"[16] Simulation ID: {self.output.sessiondir}"
+        with open(self.outfile_tjtext, "w") as f:
+            f.write(text_tj)
+
         self.p_simspec = create_simspec_plot(df_simspec, df_snline, df_sncont)
 
-        self.outfile_plot = os.path.join(
-            outdir, f"pfs_etc_plot-{self.output.sessiondir}.html"
-        )
+        # self.outfile_plot = os.path.join(
+        #     outdir, f"pfs_etc_plot-{self.output.sessiondir}.html"
+        # )
 
         # print(type(self.p_simspec))
 

@@ -186,12 +186,16 @@ def pfs_etc_app():
                         panel_downloads.download_snline_csv.file = (
                             f"{specsim.outfile_snline_prefix}.ecsv"
                         )
+                        panel_downloads.download_tjtext.file = (
+                            f"{specsim.outfile_tjtext}"
+                        )
 
                         panel_downloads.download_pfsobject_fits.visible = True
                         panel_downloads.download_simspec_fits.visible = True
                         panel_downloads.download_simspec_csv.visible = True
                         panel_downloads.download_snline_fits.visible = True
                         panel_downloads.download_snline_csv.visible = True
+                        panel_downloads.download_tjtext.visible = True
                         panel_plots.pane.visible = True
 
                         logger.info("Enable the run button")
@@ -203,11 +207,11 @@ def pfs_etc_app():
                         panel_instrument.disabled(disabled=False)
                         panel_telescope.disabled(disabled=False)
 
-                        panel_plots.pane.save(
-                            specsim.outfile_plot,
-                            resources=INLINE,
-                            title="Simulated PFS Spectrum",
-                        )
+                        # panel_plots.pane.save(
+                        #     specsim.outfile_plot,
+                        #     resources=INLINE,
+                        #     title="Simulated PFS Spectrum",
+                        # )
 
                     except ValueError as e:
                         # pass
