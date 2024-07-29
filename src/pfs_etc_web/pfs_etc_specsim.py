@@ -248,7 +248,7 @@ class PfsSpecSim:
         self.outfile_tjtext = os.path.join(
             outdir, f"pfs_etc_tjtext-{self.output.sessiondir}.txt"
         )
-        text_tj += f"[16] Simulation ID: {self.output.sessiondir}"
+        text_tj += f"[16] Simulation ID: {self.output.sessiondir}\n"
         with open(self.outfile_tjtext, "w") as f:
             f.write(text_tj)
 

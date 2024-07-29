@@ -2,19 +2,18 @@
 
 ## Files
 
-Once the calculation is finished, five buttons will show up in the upper part of the right panel.
+Once the calculation is finished, six buttons will show up in the upper part of the right panel.
 Four of them correspond to the simulated spectrum before merging different arms in to `pfsObject` file and
 emission line S/N in two file formats.
 These files are in FITS binary table format and [Enhanced Character-Separated Values (ECSV) format](https://github.com/astropy/astropy-APEs/blob/main/APE6.rst) which can be easily read by astropy or other common libraries and softwares. For example, both FITS binary table and ECSV files are also supported by TOPCAT.
 
-The other file is a `pfsObject` file which stores the arm-merged spectrum as well as various information
-defined in the [PFS datamodel](https://github.com/Subaru-PFS/datamodel/blob/37d0bda305ea3fb5c86bc88aaa77581975540112/datamodel.txt).
-Note that the file name in the app does not conform the datamodel.
+The other files are a `pfsObject` file which stores the arm-merged spectrum as well as various information
+defined in the [PFS datamodel](https://github.com/Subaru-PFS/datamodel/blob/37d0bda305ea3fb5c86bc88aaa77581975540112/datamodel.txt)
+and a text file containing a pre-filled template file for the technical justification of the Subaru Proposal form.
+Note that the file name of the `pfsObject` file in the app does not conform the datamodel.
 If you have any difficulty handling the `pfsObject` file,
 you can use the original file name `pfsObject-000-00000-0,0-0000000000000001-001-0x8cf7641568bdb4ab.fits` (for the case of the number of visits of 1).
 Note also that the datamodel adopted in the current ETC is not the latest one.
-
-
 
 For the detail of the content, please refer the `README` of [PFS Exposure Time Calculator and Spectrum Simulator](https://github.com/Subaru-PFS/spt_ExposureTimeCalculator/) as well.
 
@@ -158,6 +157,35 @@ HDU #8 FLUXTABLE   Binary table                                [FITS BINARY TABL
 		       intensity error in same units as intensity  [FLOAT]
 		       mask                                        [32-bit INT]
 ```
+
+### TJ template
+
+Input paramters can be downloaded as a TJ template file.
+One can copy-and-paste them to the Technical Justification section in the proposal form.
+The `Simulation ID` can be used to contact the observatory on any issues and is also useful
+for reviewers to look-up the simulations.
+
+```
+The following parameters are used with the PFS spectral simulator:
+[1] Template spectrum: Flat in frequency;
+[2] AB mag: 20.0;
+[3] Wavelength: 550.0;
+[4] Redshift: 0.0;
+[5] (1) Emission line flux: 1e-17, (2) Emission line width 70.0;
+[6] (1) Galactic extinction: 0.0, (2) Effective radius: 0.3;
+[7] Seeing FWHM: 0.8;
+[8] Throughput degradation factor: 1.0;
+[9] Moon zenith angle: 30;
+[10] Moon-target separation: 60;
+[11] Moon phase: 0.0;
+[12] Exposure time: 900;
+[13] Number of exposures: 1;
+[14] Distance from FoV center: 0.0;
+[15] Zenith angle: 45;
+[16] Simulation ID: 20240729-114543_135195277db7c5c7
+```
+
+
 
 ## Plots
 
