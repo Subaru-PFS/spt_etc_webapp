@@ -21,12 +21,13 @@ Dropdown list of template spectra. Currently, the following templates are availa
 
 ###### SWIRE Template Library
 
-Templates for elliptical and spiral galaxies from [the SWIRE Template Library](http://www.iasf-milano.inaf.it/~polletta/templates/swire_templates.html) are available. The templates are downloaded from [the STScI Catalog website](https://www.stsci.edu/hst/instrumentation/reference-data-for-calibration-and-tools/astronomical-catalogs/swire-galaxies).
+Templates for elliptical and spiral galaxies from [the SWIRE Template Library](http://www.iasf-milano.inaf.it/~polletta/templates/swire_templates.html) are available. The templates are downloaded from [the STScI Catalog website](https://www.stsci.edu/hst/instrumentation/reference-data-for-calibration-and-tools/astronomical-catalogs/swire-galaxies). Note that the spectral resolution of the templates are much lower than the PFS resolution.
 
 The following galaxy types ara available.
 
 - Elliptical galaxies: 2 Gyr, 5 Gyr, and 13 Gyr
 - Spiral galaxies: S0, Sa, Sb, Sc, Sd, Sdm
+
 
 ##### Quasar
 
