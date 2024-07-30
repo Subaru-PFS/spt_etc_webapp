@@ -89,7 +89,7 @@ def pfs_etc_app():
 
     # Create a panel to show plots
     panel_plots = BokehWidgets(create_dummy_plot())
-    # panel_plots.pane.visible = False
+    panel_plots.plot_heading.visible = False
 
     # Create download buttons
     panel_downloads = DownloadWidgets(visible=False)
@@ -146,7 +146,9 @@ def pfs_etc_app():
                     panel_telescope.disabled(disabled=True)
 
                     panel_plots.plot.object = create_dummy_plot()
+                    panel_plots.plot_heading.visible = False
 
+                    panel_downloads.download_heading.visible = False
                     panel_downloads.download_pfsobject_fits.visible = False
                     panel_downloads.download_simspec_fits.visible = False
                     panel_downloads.download_simspec_csv.visible = False
@@ -191,12 +193,15 @@ def pfs_etc_app():
                             f"{specsim.outfile_tjtext}"
                         )
 
+                        panel_downloads.download_heading.visible = True
                         panel_downloads.download_pfsobject_fits.visible = True
                         panel_downloads.download_simspec_fits.visible = True
                         panel_downloads.download_simspec_csv.visible = True
                         panel_downloads.download_snline_fits.visible = True
                         panel_downloads.download_snline_csv.visible = True
                         panel_downloads.download_tjtext.visible = True
+
+                        panel_plots.plot_heading.visible = True
                         panel_plots.pane.visible = True
 
                         logger.info("Enable the run button")
@@ -242,7 +247,11 @@ def pfs_etc_app():
                 conf_environment.reset()
                 conf_instrument.reset()
                 conf_telescope.reset()
+
                 panel_plots.plot.object = None
+                panel_plots.plot_heading.visible = False
+
+                panel_downloads.download_heading.visible = False
                 panel_downloads.download_pfsobject_fits.file = None
                 panel_downloads.download_pfsobject_fits.visible = False
                 panel_downloads.download_simspec_fits.file = None

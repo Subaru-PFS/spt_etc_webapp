@@ -265,7 +265,11 @@ class BokehWidgets:
             visible=visible,
             width=1200,
         )
+        self.plot_heading = pn.pane.Markdown(
+            "<font size=4>**Simulated PFS Spectrum**</font>", visible=visible
+        )
         self.pane = pn.Column(
+            self.plot_heading,
             self.plot,
             min_width=700,
             width=1200,
@@ -276,43 +280,48 @@ class DownloadWidgets:
     def __init__(self, visible: bool = True):
         self.download_pfsobject_fits = pn.widgets.FileDownload(
             file=None,
-            label="Download pfsObject file (.fits)",
+            label="pfsObject file (.fits)",
             button_type="default",
             visible=visible,
         )
         self.download_simspec_fits = pn.widgets.FileDownload(
             file=None,
-            label="Download simulated spectrum (.fits)",
+            label="Simulated spectrum (.fits)",
             button_type="default",
             visible=visible,
         )
         self.download_simspec_csv = pn.widgets.FileDownload(
             file=None,
-            label="Download simulated spectrum (.ecsv)",
+            label="Simulated spectrum (.ecsv)",
             button_type="default",
             visible=visible,
         )
         self.download_snline_fits = pn.widgets.FileDownload(
             file=None,
-            label="Download emission line S/N (.fits)",
+            label="Emission line S/N (.fits)",
             button_type="default",
             visible=visible,
         )
         self.download_snline_csv = pn.widgets.FileDownload(
             file=None,
-            label="Download emission line S/N (.ecsv)",
+            label="Emission line S/N (.ecsv)",
             button_type="default",
             visible=visible,
         )
         self.download_tjtext = pn.widgets.FileDownload(
             file=None,
-            label="Download TJ template (.txt)",
+            label="TJ template (.txt)",
             button_type="default",
             # button_type="primary",
             # button_style="outline",
             visible=visible,
         )
+        # self.download_heading = pn.pane.Markdown("## Download Results", visible=visible)
+        self.download_heading = pn.pane.Markdown(
+            "<font size=4>**Download Results**</font>", visible=visible
+        )
         self.pane = pn.Column(
+            self.download_heading,
             pn.Row(
                 self.download_simspec_fits,
                 self.download_simspec_csv,
