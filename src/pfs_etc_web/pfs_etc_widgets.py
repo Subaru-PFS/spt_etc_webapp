@@ -49,8 +49,17 @@ class TargetWidgets(param.Parameterized):
                     "type": pn.widgets.Select,
                     "groups": {
                         "Galaxy": [
-                            "Star-forming galaxy",
-                            "Quiescent galaxy",
+                            "SSP (100 Myr, [M/H]=0, Chabrier IMF)",
+                            "SSP (1 Gyr, [M/H]=0, Chabrier IMF)",
+                            "Elliptical 2 Gyr",
+                            "Elliptical 5 Gyr",
+                            "Elliptical 13 Gyr",
+                            "S0",
+                            "Sa",
+                            "Sb",
+                            "Sc",
+                            "Sd",
+                            "Sdm",
                         ],
                         "Quasar": ["Quasar"],
                         "Star": [

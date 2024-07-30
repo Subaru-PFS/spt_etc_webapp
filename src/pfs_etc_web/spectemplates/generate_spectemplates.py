@@ -105,6 +105,8 @@ def main(k, v):
         input_spec = read_miles(v)
     elif v["library"] == "STScI":
         input_spec = read_stsci(v)
+    elif v["library"] == "SWIRE":
+        input_spec = read_bt_settl(v)
 
     new_spec = resample_spec(input_spec)
 
@@ -182,6 +184,108 @@ if __name__ == "__main__":
             "library": "STScI",
         },
     }
-    for k, v in infile_dict.items():
+
+    infile_stsci_swire = {
+        "Elliptical 2 Gyr": {
+            "infile": os.path.join(indir, "elliptical_swire_2gyr.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_elliptical_2gyr.fits"),
+            "library": "STScI",
+        },
+        "Elliptical 5 Gyr": {
+            "infile": os.path.join(indir, "elliptical_swire_5gyr.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_elliptical_5gyr.fits"),
+            "library": "STScI",
+        },
+        "Elliptical 13 Gyr": {
+            "infile": os.path.join(indir, "elliptical_swire_13gyr.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_elliptical_13gyr.fits"),
+            "library": "STScI",
+        },
+        "S0": {
+            "infile": os.path.join(indir, "spiral_swire_s0.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_s0.fits"),
+            "library": "STScI",
+        },
+        "Sa": {
+            "infile": os.path.join(indir, "spiral_swire_sa.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sa.fits"),
+            "library": "STScI",
+        },
+        "Sb": {
+            "infile": os.path.join(indir, "spiral_swire_sb.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sb.fits"),
+            "library": "STScI",
+        },
+        "Sc": {
+            "infile": os.path.join(indir, "spiral_swire_sc.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sc.fits"),
+            "library": "STScI",
+        },
+        "Sd": {
+            "infile": os.path.join(indir, "spiral_swire_sd.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sd.fits"),
+            "library": "STScI",
+        },
+        "Sdm": {
+            "infile": os.path.join(indir, "spiral_swire_sdm.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sdm.fits"),
+            "library": "STScI",
+        },
+    }
+
+    indir_swire_original = "input/swire_original"
+    infile_swire_original = {
+        "Elliptical 2 Gyr": {
+            "infile": os.path.join(indir_swire_original, "Ell2_template_norm.sed"),
+            "outfile": os.path.join(outdir, "galaxy_swire_elliptical_2gyr.fits"),
+            "library": "SWIRE",
+        },
+        "Elliptical 5 Gyr": {
+            "infile": os.path.join(indir_swire_original, "Ell5_template_norm.sed"),
+            "outfile": os.path.join(outdir, "galaxy_swire_elliptical_5gyr.fits"),
+            "library": "SWIRE",
+        },
+        "Elliptical 13 Gyr": {
+            "infile": os.path.join(indir_swire_original, "Ell13_template_norm.sed"),
+            "outfile": os.path.join(outdir, "galaxy_swire_elliptical_13gyr.fits"),
+            "library": "SWIRE",
+        },
+        "S0": {
+            "infile": os.path.join(indir_swire_original, "S0_template_norm.sed"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_s0.fits"),
+            "library": "SWIRE",
+        },
+        "Sa": {
+            "infile": os.path.join(indir_swire_original, "Sa_template_norm.sed"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sa.fits"),
+            "library": "SWIRE",
+        },
+        "Sb": {
+            "infile": os.path.join(indir_swire_original, "Sb_template_norm.sed"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sb.fits"),
+            "library": "SWIRE",
+        },
+        "Sc": {
+            "infile": os.path.join(indir_swire_original, "Sc_template_norm.sed"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sc.fits"),
+            "library": "SWIRE",
+        },
+        "Sd": {
+            "infile": os.path.join(indir_swire_original, "Sd_template_norm.sed"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sd.fits"),
+            "library": "SWIRE",
+        },
+        "Sdm": {
+            "infile": os.path.join(indir_swire_original, "Sdm_template_norm.sed"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sdm.fits"),
+            "library": "SWIRE",
+        },
+    }
+
+    # for k, v in infile_dict.items():
+    #     print(k, v)
+    #     main(k, v)
+
+    for k, v in infile_swire_original.items():
         print(k, v)
         main(k, v)

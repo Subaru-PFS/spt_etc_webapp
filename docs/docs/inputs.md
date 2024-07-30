@@ -12,10 +12,22 @@ Dropdown list of template spectra. Currently, the following templates are availa
 
 ##### Galaxy
 
+###### SSP
+
 - Star-forming galaxy (E-MILES SSP, 100Myr, $Z_\odot$, Chabrier IMF)
     - Valid wavelength range is 168 nm to 5000 nm.
 - Quiescent galaxy (E-MILES SSP, 1Gyr, $Z_\odot$, Chabrier IMF)
     - Valid wavelength range is 168 nm to 5000 nm.
+
+###### SWIRE Template Library
+
+Templates for elliptical and spiral galaxies from [the SWIRE Template Library](http://www.iasf-milano.inaf.it/~polletta/templates/swire_templates.html) are available. The templates are downloaded from [the STScI Catalog website](https://www.stsci.edu/hst/instrumentation/reference-data-for-calibration-and-tools/astronomical-catalogs/swire-galaxies). Note that the spectral resolution of the templates are much lower than the PFS resolution.
+
+The following galaxy types ara available.
+
+- Elliptical galaxies: 2 Gyr, 5 Gyr, and 13 Gyr
+- Spiral galaxies: S0, Sa, Sb, Sc, Sd, Sdm
+
 
 ##### Quasar
 
@@ -41,6 +53,12 @@ Valid wavelength range is 100 nm to 10000 nm.
 ##### Misc
 
 - Flat $F_\nu$
+
+<figure markdown="span">
+![test](images/template_spectra.png)
+<figcaption>Template spectra: (Upper Left) SSP; (Upper Right) SWIRE templates; (Lower Left) Quasar; (Lower Right) Stars</figcaption>
+</figure>
+
 
 #### Magnitude
 

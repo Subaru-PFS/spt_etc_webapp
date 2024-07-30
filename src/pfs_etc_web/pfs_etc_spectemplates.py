@@ -72,8 +72,19 @@ def create_template_spectrum(target, tmpdir: str = "."):
     pkgdir = os.path.dirname(os.path.abspath(__file__))
     datadir = os.path.join("spectemplates", "output")
     templatefiles = {
-        "Star-forming galaxy": "galaxy_starforming.fits",
-        "Quiescent galaxy": "galaxy_quiescent.fits",
+        # "Star-forming galaxy": "galaxy_starforming.fits",
+        # "Quiescent galaxy": "galaxy_quiescent.fits",
+        "SSP (100 Myr, [M/H]=0, Chabrier IMF)": "galaxy_starforming.fits",
+        "SSP (1 Gyr, [M/H]=0, Chabrier IMF)": "galaxy_quiescent.fits",
+        "Elliptical 2 Gyr": "galaxy_swire_elliptical_2gyr.fits",
+        "Elliptical 5 Gyr": "galaxy_swire_elliptical_5gyr.fits",
+        "Elliptical 13 Gyr": "galaxy_swire_elliptical_13gyr.fits",
+        "S0": "galaxy_swire_spiral_s0.fits",
+        "Sa": "galaxy_swire_spiral_sa.fits",
+        "Sb": "galaxy_swire_spiral_sb.fits",
+        "Sc": "galaxy_swire_spiral_sc.fits",
+        "Sd": "galaxy_swire_spiral_sd.fits",
+        "Sdm": "galaxy_swire_spiral_sdm.fits",
         "Quasar": "quasar.fits",
         "B0V": "star_b0v.fits",
         "A0V": "star_a0v.fits",

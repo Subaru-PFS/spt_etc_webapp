@@ -1,0 +1,27 @@
+These model spectra are part of the SWIRE template library, and were downloaded from iasf-milano.inaf.it/~polletta/templates/swire_templates.html in June, 2020. The wavelengths are in Angstroms, and the fluxes are tablulated in units of erg/s/cm^2/A. For more information, please refer to the SWIRE template library URL previously mentioned, and the reference given below.
+
+The templates correspond to galaxy models generated with the GRASIL code (Silva et al., 1998), and cover a wavelength range between 1000 Angstroms and 1000 microns; the spectral range was modified to cover 0.2 - 30 microns. For the spiral galaxy models, the 5-12 micron region was replaced with observed IR spectra from ISO/PHT-S and Spitzer/IRS.
+
+============================+====================+
+FILENAME                    |         TYPE       |
+============================+====================|
+elliptical_swire_2gyr.fits  |  Elliptical 2 Gyr  |
+----------------------------+--------------------|
+elliptical_swire_5gyr.fits  |  Elliptical 5 Gyr  |
+----------------------------+--------------------|
+elliptical_swire_13gyr.fits |  Elliptical 13 Gyr |
+----------------------------+--------------------|
+spiral_swire_s0.fits        |          S0        |
+----------------------------+--------------------|
+spiral_swire_sa.fits        |          Sa        |
+----------------------------+--------------------|
+spiral_swire_sb.fits        |          Sb        |
+----------------------------+--------------------|
+spiral_swire_sc.fits        |          Sc  #1    |
+----------------------------+--------------------|
+spiral_swire_sd.fits        |          Sd        |
+----------------------------+--------------------|
+spiral_swire_sdm.fits       |          Sdm       |
+----------------------------+--------------------|
+spiral_swire_spi4.fits      |          Sc  #2    |
+============================+====================|
