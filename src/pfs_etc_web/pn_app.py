@@ -152,6 +152,7 @@ def pfs_etc_app():
                     panel_downloads.download_simspec_csv.visible = False
                     panel_downloads.download_snline_fits.visible = False
                     panel_downloads.download_snline_csv.visible = False
+                    panel_downloads.download_tjtext.visible = False
 
                     specsim = PfsSpecSim(
                         target=conf_target,
@@ -248,6 +249,8 @@ def pfs_etc_app():
                 panel_downloads.download_snline_fits.visible = False
                 panel_downloads.download_snline_csv.file = None
                 panel_downloads.download_snline_csv.visible = False
+                panel_downloads.download_tjtext.file = None
+                panel_downloads.download_tjtext.visible = False
             queue_reset.clear()
             c_reset.release()
             time.sleep(1)

@@ -182,6 +182,59 @@ if __name__ == "__main__":
             "library": "STScI",
         },
     }
-    for k, v in infile_dict.items():
+
+    infile_stsci_swire = {
+        "Elliptical 2 Gyr": {
+            "infile": os.path.join(indir, "elliptical_swire_2gyr.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_elliptical_2gyr.fits"),
+            "library": "STScI",
+        },
+        "Elliptical 5 Gyr": {
+            "infile": os.path.join(indir, "elliptical_swire_5gyr.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_elliptical_5gyr.fits"),
+            "library": "STScI",
+        },
+        "Elliptical 13 Gyr": {
+            "infile": os.path.join(indir, "elliptical_swire_13gyr.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_elliptical_13gyr.fits"),
+            "library": "STScI",
+        },
+        "S0": {
+            "infile": os.path.join(indir, "spiral_swire_s0.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_s0.fits"),
+            "library": "STScI",
+        },
+        "Sa": {
+            "infile": os.path.join(indir, "spiral_swire_sa.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sa.fits"),
+            "library": "STScI",
+        },
+        "Sb": {
+            "infile": os.path.join(indir, "spiral_swire_sb.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sb.fits"),
+            "library": "STScI",
+        },
+        "Sc": {
+            "infile": os.path.join(indir, "spiral_swire_sc.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sc.fits"),
+            "library": "STScI",
+        },
+        "Sd": {
+            "infile": os.path.join(indir, "spiral_swire_sd.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sd.fits"),
+            "library": "STScI",
+        },
+        "Sdm": {
+            "infile": os.path.join(indir, "spiral_swire_sdm.fits"),
+            "outfile": os.path.join(outdir, "galaxy_swire_spiral_sdm.fits"),
+            "library": "STScI",
+        },
+    }
+
+    # for k, v in infile_dict.items():
+    #     print(k, v)
+    #     main(k, v)
+
+    for k, v in infile_stsci_swire.items():
         print(k, v)
         main(k, v)
