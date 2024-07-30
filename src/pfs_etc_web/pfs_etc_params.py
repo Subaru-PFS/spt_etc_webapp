@@ -27,7 +27,7 @@ class PfsSpecParameter:
 
     # observing condition
     seeing: float = 0.8
-    degrade: float = 1.0  # equivalent to throughput
+    degrade: float = 0.9  # equivalent to throughput
     moon_zenith_angle: int = 30
     moon_target_angle: int = 60
     moon_phase: int = 0.0
