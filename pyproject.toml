@@ -27,7 +27,7 @@ dependencies = [
     "pandas>=1.5.3",
     "setuptools>=56.1.0",
     "synphot>=1.2.0",
-    "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git",
+    "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@tickets/SURVEY-31",
     "loguru>=0.7.2",
     "mkdocs-video>=1.5.0",
     "watchfiles>=0.21.0",
