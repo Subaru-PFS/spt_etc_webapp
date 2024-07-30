@@ -215,7 +215,7 @@ class TelescopeConf(param.Parameterized):
     zenith_angle = param.Integer(
         label="Zenith Angle (degree)",
         default=default_parameters.zenith_angle,
-        bounds=(30, 90),
+        bounds=(0, 60),
     )
 
     def reset(self):
