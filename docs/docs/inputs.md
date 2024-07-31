@@ -111,9 +111,10 @@ $E(B-V)$ for Galactic extinction in magnitude. An extinction curve by Weingartne
 Seeing FWHM in arcsec.
 
 
-#### Throughput
+#### Throughput Degradation Factor
 
 Throughput degradation factor.
+The output spectrum will be multiplied by this factor.
 
 
 #### Moon Zenith Angle

@@ -155,7 +155,7 @@ class EnvironmentConf(param.Parameterized):
         bounds=(0.0, 2.0),
     )
     degrade = param.Number(
-        label="Throughput",
+        label="Throughput Degradation Factor",
         default=default_parameters.degrade,
         bounds=(0.0, 1.0),
     )
