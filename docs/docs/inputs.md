@@ -154,13 +154,12 @@ Zenith angle in degrees (0 at zenith).
 The nominal observing condition as a reference to calculate the effective exposure time is the following.
 See the Call for Proposal for the current definition.
 
-| Parameter                 | Value | Unit   |
-|---------------------------|------:|--------|
-| Seeing FWHM               |   0.8 | arcsec |
-| Throughput                |   0.9 |        |
-| Moon Zenith Angle         |    30 | deg    |
-| Moon Separation to Target |    60 | deg    |
-| Moon Phase                |     0 |        |
-| Distance from FoV center  |  0.45 | deg    |
-| Telescope Zenith Angle    |    45 | deg    |
-
+| Parameter                     | Value | Unit   |
+|-------------------------------|------:|--------|
+| Seeing FWHM                   |   0.8 | arcsec |
+| Throughput Degradation Factor |   0.9 |        |
+| Moon Zenith Angle             |    30 | deg    |
+| Moon Separation to Target     |    60 | deg    |
+| Moon Phase                    |  0.15 |        |
+| Distance from FoV center      |  0.45 | deg    |
+| Telescope Zenith Angle        |    35 | deg    |
