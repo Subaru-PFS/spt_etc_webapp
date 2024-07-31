@@ -19,10 +19,12 @@ notebook>=6.5.2
 numpy>=1.24.1
 pandas>=1.5.3
 panel>=1.2
-pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git
+pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@tickets/SURVEY-31
 pip>=23.0
 pyright>=1.1.291
+python-dotenv>=1.0.1
 ruff>=0.0.239
+seaborn>=0.13.2
 setuptools>=56.1.0
 specutils>=1.10.0
 synphot>=1.2.0
