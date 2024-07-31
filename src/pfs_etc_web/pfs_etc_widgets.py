@@ -198,7 +198,7 @@ class EnvironmentWidgets(param.Parameterized):
                 },
                 "degrade": {
                     "type": pn.widgets.FloatSlider,
-                    "step": 0.2,
+                    "step": 0.1,
                     "format": "0.0",
                 },
                 "moon_zenith_angle": {"type": pn.widgets.IntSlider, "step": 15},
