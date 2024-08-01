@@ -249,6 +249,8 @@ class PfsSpecSim:
             outdir, f"pfs_etc_tjtext-{self.output.sessiondir}.txt"
         )
         text_tj += f"[16] Simulation ID: {self.output.sessiondir}\n"
+        # text_tj = text_tj.replace("_", "\\_")
+
         with open(self.outfile_tjtext, "w") as f:
             f.write(text_tj)
 
