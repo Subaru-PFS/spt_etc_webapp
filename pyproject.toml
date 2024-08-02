@@ -18,7 +18,7 @@ dynamic = ["version"]
 description = ""
 authors = [{ name = "Masato Onodera", email = "monodera@naoj.org" }]
 dependencies = [
-    "panel>=1.2",
+    "panel==1.4.5",
     "astropy>=5.2.1",
     "jinja2>=3.1.2",
     "loguru>=0.7.2",
@@ -30,7 +30,7 @@ dependencies = [
     "seaborn>=0.13.2",
     "setuptools>=56.1.0",
     "synphot>=1.2.0",
-    "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@tickets/SURVEY-31",
+    "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git",
     "watchfiles>=0.21.0",
 ]
 requires-python = ">=3.10"
