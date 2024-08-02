@@ -13,7 +13,7 @@ RUN apt-get -y update
 RUN apt-get -y upgrade
 # Install new packages:
 # RUN apt-get -y install git libomp-dev build-essential
-RUN apt-get -y install git libomp-dev make gcc
+RUN apt-get -y install git libomp-dev make gcc libpangocairo-1.0-0
 
 # install PDM
 RUN pip install -U pip setuptools wheel

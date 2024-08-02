@@ -30,7 +30,7 @@ class PfsSpecParameter:
     degrade: float = 0.9  # conservative value
     moon_zenith_angle: int = 30
     moon_target_angle: int = 60
-    moon_phase: int = 0.0
+    moon_phase: int = 0.15  # or 0.10
 
     # instrument
     exp_time: int = 900
@@ -39,7 +39,7 @@ class PfsSpecParameter:
     mr_mode: bool = False
 
     # telescope
-    zenith_angle: int = 45
+    zenith_angle: int = 35
 
     # misc
     noise_reused: bool = False
@@ -155,7 +155,7 @@ class EnvironmentConf(param.Parameterized):
         bounds=(0.0, 2.0),
     )
     degrade = param.Number(
-        label="Throughput",
+        label="Throughput Degradation Factor",
         default=default_parameters.degrade,
         bounds=(0.0, 1.0),
     )
@@ -215,7 +215,7 @@ class TelescopeConf(param.Parameterized):
     zenith_angle = param.Integer(
         label="Zenith Angle (degree)",
         default=default_parameters.zenith_angle,
-        bounds=(30, 90),
+        bounds=(0, 60),
     )
 
     def reset(self):

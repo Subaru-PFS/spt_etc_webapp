@@ -127,7 +127,8 @@ def pfs_etc_app():
 
                     session_id = (
                         datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-                        + "_"
+                        + "-"
+                        # + "_"
                         + secrets.token_hex(8)
                     )
 
