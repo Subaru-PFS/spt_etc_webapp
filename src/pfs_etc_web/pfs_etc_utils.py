@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
 
+import glob
+import os
+
 import numpy as np
 import pandas as pd
+import panel as pn
 from astropy import units as u
 from astropy.table import Column, QTable, Table
 from bokeh.layouts import column
@@ -487,3 +491,60 @@ def create_simspec_files(
 """
 
     return tb_out, tb_snline, tj_text
+
+
+def recover_simulation(
+    simulation_id,
+    conf_target,
+    conf_environment,
+    conf_instrument,
+    conf_telescope,
+    conf_output,
+    logger,
+):
+    dir = conf_output.basedir
+
+    # load the simulation results
+    filename_cont = f"pfs_etc_simspec-{simulation_id}.ecsv"
+    filename_line = f"pfs_etc_snline-{simulation_id}.ecsv"
+
+    try:
+        tb_cont = QTable.read(os.path.join(dir, simulation_id, filename_cont))
+        tb_line = QTable.read(os.path.join(dir, simulation_id, filename_line))
+
+        conf_target.template = tb_cont.meta["TMPLSPEC"][0]
+        conf_target.mag = tb_cont.meta["TMPL_MAG"][0]
+        conf_target.wavelength = tb_cont.meta["TMPL_WAV"][0]
+        conf_target.redshift = tb_cont.meta["TMPL_Z"][0]
+        conf_target.galactic_extinction = tb_cont.meta["GAL_EXT"][0]
+        conf_target.r_eff = tb_cont.meta["R_EFF"][0]
+        conf_target.line_flux = tb_line.meta["EL_FLUX"][0]
+        conf_target.line_width = tb_line.meta["EL_SIG"][0]
+
+        conf_environment.seeing = tb_line.meta["SEEING"][0]
+        conf_environment.degrade = tb_line.meta["DEGRADE"][0]
+        conf_environment.moon_zenith_angle = tb_line.meta["MOON-ZA"][0]
+        conf_environment.moon_target_angle = tb_line.meta["MOON-SEP"][0]
+        conf_environment.moon_phase = tb_line.meta["MOON-PH"][0]
+
+        conf_instrument.exp_time = tb_line.meta["EXPTIME1"][0]
+        conf_instrument.exp_num = tb_line.meta["EXPNUM"][0]
+        conf_instrument.field_angle = tb_line.meta["FLDANG"][0]
+        conf_instrument.mr_mode = tb_line.meta["MED_RES"][0]
+
+        conf_telescope.zenith_angle = tb_line.meta["ZANG"][0]
+
+        # pn.state.notifications.info(
+        #     f"Recovering Simulation ID {simulation_id}",
+        #     duration=0,
+        # )
+        logger.info(f"Recovering Simulation ID {simulation_id}")
+
+    except FileNotFoundError:
+        logger.error(
+            f"File not found, {filename_cont}, {filename_line}. No recovery is done."
+        )
+
+        simulation_id = None
+
+    return

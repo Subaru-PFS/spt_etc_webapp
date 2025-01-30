@@ -7,6 +7,7 @@ import threading
 import time
 
 import panel as pn
+import param
 from bokeh.resources import INLINE
 from dotenv import dotenv_values
 from loguru import logger
@@ -20,7 +21,7 @@ from .pfs_etc_params import (
     TelescopeConf,
 )
 from .pfs_etc_specsim import PfsSpecSim
-from .pfs_etc_utils import create_dummy_plot
+from .pfs_etc_utils import create_dummy_plot, recover_simulation
 from .pfs_etc_widgets import (
     BokehWidgets,
     DownloadWidgets,
@@ -33,7 +34,14 @@ from .pfs_etc_widgets import (
 )
 
 
+class SimulationId(param.Parameterized):
+    simulation_id = param.String(default=None)
+
+
 def pfs_etc_app():
+    # pn.config.notifications = True
+    pn.state.notifications.position = "bottom-left"
+
     template = pn.template.MaterialTemplate(
         # template = pn.template.BootstrapTemplate(
         title="PFS Spectral Simulator",
@@ -58,6 +66,11 @@ def pfs_etc_app():
         basedir = "tmp"
 
     logger.info(f"Output directory: {basedir}")
+
+    # set simulation_id class
+    simulation_id = SimulationId()
+
+    pn.state.location.sync(simulation_id, {"simulation_id": "id"})
 
     # set parameter objects with default parameters
     conf_target = TargetConf()
@@ -93,6 +106,17 @@ def pfs_etc_app():
 
     # Create download buttons
     panel_downloads = DownloadWidgets(visible=False)
+
+    if simulation_id.simulation_id not in [None, "null", ""]:
+        recover_simulation(
+            simulation_id.simulation_id,
+            conf_target,
+            conf_environment,
+            conf_instrument,
+            conf_telescope,
+            conf_output,
+            logger,
+        )
 
     # Float panel to display some messages
     # panel_initnote = InitNoteWidgets()
@@ -131,6 +155,8 @@ def pfs_etc_app():
                         # + "_"
                         + secrets.token_hex(8)
                     )
+
+                    simulation_id.simulation_id = session_id
 
                     logger.info(f"Session ID: {session_id}")
 
@@ -235,6 +261,8 @@ def pfs_etc_app():
                         panel_instrument.disabled(disabled=False)
                         panel_telescope.disabled(disabled=False)
 
+                        simulation_id.simulation_id = None
+
             queue_exec.clear()
             c_exec.release()
             time.sleep(1)
@@ -248,6 +276,8 @@ def pfs_etc_app():
                 conf_environment.reset()
                 conf_instrument.reset()
                 conf_telescope.reset()
+
+                simulation_id.simulation_id = None
 
                 panel_plots.plot.object = None
                 panel_plots.plot_heading.visible = False
