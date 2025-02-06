@@ -12,6 +12,7 @@ from bokeh.layouts import column
 from bokeh.models import LinearAxis, Range1d
 from bokeh.palettes import Colorblind
 from bokeh.plotting import ColumnDataSource, figure
+from loguru import logger
 
 
 def load_simspec(infile: str) -> pd.DataFrame:
@@ -301,10 +302,11 @@ def create_simspec_files(
         template_wave = param_target.wavelength
         template_redshift = param_target.redshift
     else:
+        logger.info("Custom input is used.")
         template_type = "Custom"
         template_mag, template_wave, template_redshift = None, None, None
         # template_mag, template_wave, template_redshift = np.nan, np.nan, np.nan
-        print(template_mag, template_wave, template_redshift)
+        # logger.info(template_mag, template_wave, template_redshift)
 
     # initialize output table
     tb_out = QTable()
@@ -500,6 +502,7 @@ def recover_simulation(
     conf_instrument,
     conf_telescope,
     conf_output,
+    panel_target,
     logger,
 ):
     dir = conf_output.basedir
@@ -512,10 +515,19 @@ def recover_simulation(
         tb_cont = QTable.read(os.path.join(dir, simulation_id, filename_cont))
         tb_line = QTable.read(os.path.join(dir, simulation_id, filename_line))
 
-        conf_target.template = tb_cont.meta["TMPLSPEC"][0]
-        conf_target.mag = tb_cont.meta["TMPL_MAG"][0]
-        conf_target.wavelength = tb_cont.meta["TMPL_WAV"][0]
-        conf_target.redshift = tb_cont.meta["TMPL_Z"][0]
+        if tb_cont.meta["TMPLSPEC"][0] != "Custom":
+            conf_target.template = tb_cont.meta["TMPLSPEC"][0]
+            conf_target.mag = tb_cont.meta["TMPL_MAG"][0]
+            conf_target.wavelength = tb_cont.meta["TMPL_WAV"][0]
+            conf_target.redshift = tb_cont.meta["TMPL_Z"][0]
+            custom_input_file = None
+        else:
+            custom_input_file = os.path.join(dir, simulation_id, "custom_input.csv")
+            if os.path.exists(custom_input_file):
+                with open(custom_input_file, "rb") as f:
+                    conf_target.custom_input = f.read()
+                    logger.info("Custom input is used.")
+
         conf_target.galactic_extinction = tb_cont.meta["GAL_EXT"][0]
         conf_target.r_eff = tb_cont.meta["R_EFF"][0]
         conf_target.line_flux = tb_line.meta["EL_FLUX"][0]
@@ -534,11 +546,9 @@ def recover_simulation(
 
         conf_telescope.zenith_angle = tb_line.meta["ZANG"][0]
 
-        # pn.state.notifications.info(
-        #     f"Recovering Simulation ID {simulation_id}",
-        #     duration=0,
-        # )
         logger.info(f"Recovering Simulation ID {simulation_id}")
+
+        is_recovered = True
 
     except FileNotFoundError:
         logger.error(
@@ -546,5 +556,7 @@ def recover_simulation(
         )
 
         simulation_id = None
+        is_recovered = False
+        custom_input_file = None
 
-    return
+    return simulation_id, is_recovered, custom_input_file

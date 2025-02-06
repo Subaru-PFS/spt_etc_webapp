@@ -38,6 +38,32 @@ class SimulationId(param.Parameterized):
     simulation_id = param.String(default=None)
 
 
+def show_main_panel(panel_plots, panel_downloads, specsim, write=True):
+    panel_plots.pane.visible = False
+    panel_plots.plot.object = specsim.show(write=write)
+
+    logger.info("Set download buttons")
+
+    panel_downloads.download_pfsobject_fits.file = f"{specsim.outfile_pfsobject}"
+    panel_downloads.download_simspec_fits.file = (
+        f"{specsim.outfile_simspec_prefix}.fits"
+    )
+    panel_downloads.download_simspec_csv.file = f"{specsim.outfile_simspec_prefix}.ecsv"
+    panel_downloads.download_snline_fits.file = f"{specsim.outfile_snline_prefix}.fits"
+    panel_downloads.download_snline_csv.file = f"{specsim.outfile_snline_prefix}.ecsv"
+    panel_downloads.download_tjtext.file = f"{specsim.outfile_tjtext}"
+
+    panel_downloads.download_heading.visible = True
+    panel_downloads.download_pfsobject_fits.visible = True
+    panel_downloads.download_simspec_fits.visible = True
+    panel_downloads.download_simspec_csv.visible = True
+    panel_downloads.download_snline_fits.visible = True
+    panel_downloads.download_snline_csv.visible = True
+    panel_downloads.download_tjtext.visible = True
+    panel_plots.plot_heading.visible = True
+    panel_plots.pane.visible = True
+
+
 def pfs_etc_app():
     # pn.config.notifications = True
     pn.state.notifications.position = "bottom-left"
@@ -50,6 +76,7 @@ def pfs_etc_app():
         header_background="#6A589D",
         # header_background="#3A7D7E",
         busy_indicator=None,
+        # site_url="/",
         favicon="doc/assets/images/favicon.png",
     )
 
@@ -107,16 +134,29 @@ def pfs_etc_app():
     # Create download buttons
     panel_downloads = DownloadWidgets(visible=False)
 
+    is_recovered = False
+
     if simulation_id.simulation_id not in [None, "null", ""]:
-        recover_simulation(
+        recovered_simulation_id, is_recovered, custom_input_file = recover_simulation(
             simulation_id.simulation_id,
             conf_target,
             conf_environment,
             conf_instrument,
             conf_telescope,
             conf_output,
+            panel_target,
             logger,
         )
+        if is_recovered:
+            conf_output.sessiondir = recovered_simulation_id
+            specsim = PfsSpecSim(
+                target=conf_target,
+                environment=conf_environment,
+                instrument=conf_instrument,
+                telescope=conf_telescope,
+                output=conf_output,
+            )
+            show_main_panel(panel_plots, panel_downloads, specsim, write=False)
 
     # Float panel to display some messages
     # panel_initnote = InitNoteWidgets()
@@ -141,6 +181,18 @@ def pfs_etc_app():
 
     # https://github.com/holoviz/panel/issues/5488
     curdoc = pn.state.curdoc
+
+    # with set_curdoc(curdoc):
+    #     if is_recovered:
+    #         pn.state.notifications.info(
+    #             f"Recovering Simulation ID {simulation_id}",
+    #             duration=0,
+    #         )
+    #     else:
+    #         pn.state.notifications.warning(
+    #             f"Simulation ID {simulation_id} not found, use initial parameters",
+    #             duration=0,
+    #         )
 
     def callback_exec():
         while True:
@@ -197,39 +249,43 @@ def pfs_etc_app():
                             specsim.exec(skip=False)
 
                         logger.info("Plotting simulated spectrum")
-                        panel_plots.pane.visible = False
-                        panel_plots.plot.object = specsim.show()
-
-                        logger.info("Set download buttons")
-                        panel_downloads.download_pfsobject_fits.file = (
-                            f"{specsim.outfile_pfsobject}"
-                        )
-                        panel_downloads.download_simspec_fits.file = (
-                            f"{specsim.outfile_simspec_prefix}.fits"
-                        )
-                        panel_downloads.download_simspec_csv.file = (
-                            f"{specsim.outfile_simspec_prefix}.ecsv"
-                        )
-                        panel_downloads.download_snline_fits.file = (
-                            f"{specsim.outfile_snline_prefix}.fits"
-                        )
-                        panel_downloads.download_snline_csv.file = (
-                            f"{specsim.outfile_snline_prefix}.ecsv"
-                        )
-                        panel_downloads.download_tjtext.file = (
-                            f"{specsim.outfile_tjtext}"
+                        show_main_panel(
+                            panel_plots, panel_downloads, specsim, write=True
                         )
 
-                        panel_downloads.download_heading.visible = True
-                        panel_downloads.download_pfsobject_fits.visible = True
-                        panel_downloads.download_simspec_fits.visible = True
-                        panel_downloads.download_simspec_csv.visible = True
-                        panel_downloads.download_snline_fits.visible = True
-                        panel_downloads.download_snline_csv.visible = True
-                        panel_downloads.download_tjtext.visible = True
+                        # panel_plots.pane.visible = False
+                        # panel_plots.plot.object = specsim.show()
 
-                        panel_plots.plot_heading.visible = True
-                        panel_plots.pane.visible = True
+                        # logger.info("Set download buttons")
+                        # panel_downloads.download_pfsobject_fits.file = (
+                        #     f"{specsim.outfile_pfsobject}"
+                        # )
+                        # panel_downloads.download_simspec_fits.file = (
+                        #     f"{specsim.outfile_simspec_prefix}.fits"
+                        # )
+                        # panel_downloads.download_simspec_csv.file = (
+                        #     f"{specsim.outfile_simspec_prefix}.ecsv"
+                        # )
+                        # panel_downloads.download_snline_fits.file = (
+                        #     f"{specsim.outfile_snline_prefix}.fits"
+                        # )
+                        # panel_downloads.download_snline_csv.file = (
+                        #     f"{specsim.outfile_snline_prefix}.ecsv"
+                        # )
+                        # panel_downloads.download_tjtext.file = (
+                        #     f"{specsim.outfile_tjtext}"
+                        # )
+
+                        # panel_downloads.download_heading.visible = True
+                        # panel_downloads.download_pfsobject_fits.visible = True
+                        # panel_downloads.download_simspec_fits.visible = True
+                        # panel_downloads.download_simspec_csv.visible = True
+                        # panel_downloads.download_snline_fits.visible = True
+                        # panel_downloads.download_snline_csv.visible = True
+                        # panel_downloads.download_tjtext.visible = True
+
+                        # panel_plots.plot_heading.visible = True
+                        # panel_plots.pane.visible = True
 
                         logger.info("Enable the run button")
                         panel_buttons.exec.name = "Run"
@@ -306,9 +362,11 @@ def pfs_etc_app():
     thread_reset.start()
 
     def on_click_exec(event):
+        pn.state.location.unsync(simulation_id, {"simulation_id": "id"})
         queue_exec.append(event)
 
     def on_click_reset(event):
+        pn.state.location.unsync(simulation_id, {"simulation_id": "id"})
         queue_reset.append(event)
 
     # Define an action on click

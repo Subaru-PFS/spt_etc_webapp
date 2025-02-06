@@ -3,6 +3,7 @@
 import glob
 import os
 import pprint
+import shutil
 import sys
 
 from loguru import logger
@@ -98,6 +99,15 @@ class PfsSpecSim:
         # self.target.mag_file = mag_file
         # self.etc.set_param("MAG_FILE", self.target.mag_file)
 
+        if self.target.custom_input is not None:
+            with open(
+                os.path.join(
+                    self.output.basedir, self.output.sessiondir, "custom_input.csv"
+                ),
+                "wb",
+            ) as f:
+                f.write(self.target.custom_input)
+
         self.etc.set_param("REFF", self.target.r_eff)
         self.etc.set_param("LINE_FLUX", self.target.line_flux)
         self.etc.set_param("LINE_WIDTH", self.target.line_width)
@@ -183,7 +193,7 @@ class PfsSpecSim:
             self.run_etc()
             self.run_sim()
 
-    def show(self, infile: str = None):
+    def show(self, infile: str = None, write: bool = True):
         outdir = os.path.join(self.output.basedir, self.output.sessiondir)
 
         if infile is None:
@@ -205,54 +215,56 @@ class PfsSpecSim:
         self.outfile_snline_prefix = os.path.join(
             outdir, f"pfs_etc_snline-{self.output.sessiondir}"
         )
-
-        tb_simspec, tb_snline, text_tj = create_simspec_files(
-            self.target,
-            self.environment,
-            self.instrument,
-            self.telescope,
-            df_simspec,
-            df_snline,
-            df_sncont,
-        )
-        tb_simspec.write(
-            f"{self.outfile_simspec_prefix}.fits", format="fits", overwrite=True
-        )
-        tb_simspec.write(
-            f"{self.outfile_simspec_prefix}.ecsv",
-            format="ascii.ecsv",
-            delimiter=",",
-            overwrite=True,
-        )
-        tb_snline.write(
-            f"{self.outfile_snline_prefix}.fits", format="fits", overwrite=True
-        )
-        tb_snline.write(
-            f"{self.outfile_snline_prefix}.ecsv",
-            format="ascii.ecsv",
-            delimiter=",",
-            overwrite=True,
-        )
-
-        list_pfsobject_files = glob.glob(os.path.join(outdir, "pfsObject*.fits"))
-        if len(list_pfsobject_files) != 1:
-            logger.error(
-                f"something wrong for pfsObject generation: {list_pfsobject_files}"
-            )
-        self.output.pfsobject = list_pfsobject_files[0]
-        os.rename(
-            self.output.pfsobject,
-            self.outfile_pfsobject,
-        )
-
         self.outfile_tjtext = os.path.join(
             outdir, f"pfs_etc_tjtext-{self.output.sessiondir}.txt"
         )
-        text_tj += f"[16] Simulation ID: {self.output.sessiondir}\n"
-        # text_tj = text_tj.replace("_", "\\_")
 
-        with open(self.outfile_tjtext, "w") as f:
-            f.write(text_tj)
+        if write:
+            tb_simspec, tb_snline, text_tj = create_simspec_files(
+                self.target,
+                self.environment,
+                self.instrument,
+                self.telescope,
+                df_simspec,
+                df_snline,
+                df_sncont,
+            )
+            tb_simspec.write(
+                f"{self.outfile_simspec_prefix}.fits", format="fits", overwrite=True
+            )
+            tb_simspec.write(
+                f"{self.outfile_simspec_prefix}.ecsv",
+                format="ascii.ecsv",
+                delimiter=",",
+                overwrite=True,
+            )
+            tb_snline.write(
+                f"{self.outfile_snline_prefix}.fits", format="fits", overwrite=True
+            )
+            tb_snline.write(
+                f"{self.outfile_snline_prefix}.ecsv",
+                format="ascii.ecsv",
+                delimiter=",",
+                overwrite=True,
+            )
+
+            list_pfsobject_files = glob.glob(os.path.join(outdir, "pfsObject*.fits"))
+
+            if len(list_pfsobject_files) != 1:
+                logger.error(
+                    f"something wrong for pfsObject generation: {list_pfsobject_files}"
+                )
+            self.output.pfsobject = list_pfsobject_files[0]
+            os.rename(
+                self.output.pfsobject,
+                self.outfile_pfsobject,
+            )
+
+            text_tj += f"[16] Simulation ID: {self.output.sessiondir}\n"
+            # text_tj = text_tj.replace("_", "\\_")
+
+            with open(self.outfile_tjtext, "w") as f:
+                f.write(text_tj)
 
         self.p_simspec = create_simspec_plot(df_simspec, df_snline, df_sncont)
 
