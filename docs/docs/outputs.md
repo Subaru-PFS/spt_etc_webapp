@@ -197,3 +197,8 @@ You can click the legend to highlight or mute lines of your interest.
 You can also zoom, pan, etc. by using the Bokeh tooltips located at the right side of each plot.
 
 
+## (Experimental) Recover a simulation
+
+You can recover the simulation if you have your simulation ID in hand by attaching `?id=<simulation ID>` to the URL.
+Note that this feature is intended primarily to internal use for the technical review.
+Please use the feature with caution as it can behave unexpectedly.
