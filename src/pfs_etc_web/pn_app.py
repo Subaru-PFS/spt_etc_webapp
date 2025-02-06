@@ -162,7 +162,11 @@ def pfs_etc_app():
             )
             # panel_downloads.update_simulation_id(recovered_simulation_id)
             show_main_panel(
-                panel_plots, panel_downloads, specsim, simulation_id, write=False
+                panel_plots,
+                panel_downloads,
+                specsim,
+                recovered_simulation_id,
+                write=False,
             )
 
     # Float panel to display some messages
