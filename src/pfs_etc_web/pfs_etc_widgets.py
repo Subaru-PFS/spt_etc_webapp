@@ -3,6 +3,7 @@
 import numpy as np
 import panel as pn
 import param
+from loguru import logger
 
 
 class InitNoteWidgets:
@@ -318,9 +319,29 @@ class DownloadWidgets:
         )
         # self.download_heading = pn.pane.Markdown("## Download Results", visible=visible)
         self.download_heading = pn.pane.Markdown(
-            "<font size=4>**Download Results**</font>", visible=visible
+            "<font size=4>**Download Results**</font>",
+            visible=visible,
         )
+
+        self.simulation_id_text = pn.pane.Markdown(
+            "<font size=4>**Simulation ID: None**</font>",
+            visible=visible,
+            # margin=(0, 0, 0, 0),
+            # width=600,
+        )
+        # self.simulation_id_button = pn.widgets.ButtonIcon(
+        #     icon="copy",
+        #     width=40,
+        #     visible=visible,
+        #     align="center",
+        # )
+
         self.pane = pn.Column(
+            pn.Row(
+                self.simulation_id_text,
+                # self.simulation_id_button,
+                # pn.HSpacer(),
+            ),
             self.download_heading,
             pn.Row(
                 self.download_simspec_fits,
@@ -334,3 +355,16 @@ class DownloadWidgets:
             ),
             width=1200,
         )
+
+    def update_simulation_id(self, simulation_id: str):
+        self.simulation_id_text.object = (
+            f"<font size=4>**Simulation ID: {simulation_id}**</font>"
+        )
+
+        # copy_source_code = "navigator.clipboard.writeText(source);"
+        # self.simulation_id_button.js_on_click(
+        #     args={"source": simulation_id},
+        #     code=copy_source_code,
+        # )
+
+        logger.info(f"Simulation ID: {simulation_id}")

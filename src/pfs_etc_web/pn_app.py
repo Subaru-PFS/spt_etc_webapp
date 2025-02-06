@@ -38,7 +38,7 @@ class SimulationId(param.Parameterized):
     simulation_id = param.String(default=None)
 
 
-def show_main_panel(panel_plots, panel_downloads, specsim, write=True):
+def show_main_panel(panel_plots, panel_downloads, specsim, simulation_id, write=True):
     panel_plots.pane.visible = False
     panel_plots.plot.object = specsim.show(write=write)
 
@@ -53,13 +53,18 @@ def show_main_panel(panel_plots, panel_downloads, specsim, write=True):
     panel_downloads.download_snline_csv.file = f"{specsim.outfile_snline_prefix}.ecsv"
     panel_downloads.download_tjtext.file = f"{specsim.outfile_tjtext}"
 
+    panel_downloads.update_simulation_id(simulation_id)
+
     panel_downloads.download_heading.visible = True
+    panel_downloads.simulation_id_text.visible = True
+    # panel_downloads.simulation_id_button.visible = True
     panel_downloads.download_pfsobject_fits.visible = True
     panel_downloads.download_simspec_fits.visible = True
     panel_downloads.download_simspec_csv.visible = True
     panel_downloads.download_snline_fits.visible = True
     panel_downloads.download_snline_csv.visible = True
     panel_downloads.download_tjtext.visible = True
+
     panel_plots.plot_heading.visible = True
     panel_plots.pane.visible = True
 
@@ -155,7 +160,10 @@ def pfs_etc_app():
                 telescope=conf_telescope,
                 output=conf_output,
             )
-            show_main_panel(panel_plots, panel_downloads, specsim, write=False)
+            # panel_downloads.update_simulation_id(recovered_simulation_id)
+            show_main_panel(
+                panel_plots, panel_downloads, specsim, simulation_id, write=False
+            )
 
     # Float panel to display some messages
     # panel_initnote = InitNoteWidgets()
@@ -249,7 +257,11 @@ def pfs_etc_app():
 
                         logger.info("Plotting simulated spectrum")
                         show_main_panel(
-                            panel_plots, panel_downloads, specsim, write=True
+                            panel_plots,
+                            panel_downloads,
+                            specsim,
+                            session_id,
+                            write=True,
                         )
 
                         # panel_plots.pane.visible = False
