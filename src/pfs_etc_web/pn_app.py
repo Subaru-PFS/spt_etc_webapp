@@ -144,7 +144,6 @@ def pfs_etc_app():
             conf_instrument,
             conf_telescope,
             conf_output,
-            panel_target,
             logger,
         )
         if is_recovered:

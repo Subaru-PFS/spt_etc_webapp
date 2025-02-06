@@ -502,7 +502,6 @@ def recover_simulation(
     conf_instrument,
     conf_telescope,
     conf_output,
-    panel_target,
     logger,
 ):
     dir = conf_output.basedir
