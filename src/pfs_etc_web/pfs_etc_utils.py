@@ -1,13 +1,18 @@
 #!/usr/bin/env python3
 
+import glob
+import os
+
 import numpy as np
 import pandas as pd
+import panel as pn
 from astropy import units as u
 from astropy.table import Column, QTable, Table
 from bokeh.layouts import column
 from bokeh.models import LinearAxis, Range1d
 from bokeh.palettes import Colorblind
 from bokeh.plotting import ColumnDataSource, figure
+from loguru import logger
 
 
 def load_simspec(infile: str) -> pd.DataFrame:
@@ -297,10 +302,11 @@ def create_simspec_files(
         template_wave = param_target.wavelength
         template_redshift = param_target.redshift
     else:
+        logger.info("Custom input is used.")
         template_type = "Custom"
         template_mag, template_wave, template_redshift = None, None, None
         # template_mag, template_wave, template_redshift = np.nan, np.nan, np.nan
-        print(template_mag, template_wave, template_redshift)
+        # logger.info(template_mag, template_wave, template_redshift)
 
     # initialize output table
     tb_out = QTable()
@@ -487,3 +493,69 @@ def create_simspec_files(
 """
 
     return tb_out, tb_snline, tj_text
+
+
+def recover_simulation(
+    simulation_id,
+    conf_target,
+    conf_environment,
+    conf_instrument,
+    conf_telescope,
+    conf_output,
+    logger,
+):
+    dir = conf_output.basedir
+
+    # load the simulation results
+    filename_cont = f"pfs_etc_simspec-{simulation_id}.ecsv"
+    filename_line = f"pfs_etc_snline-{simulation_id}.ecsv"
+
+    try:
+        tb_cont = QTable.read(os.path.join(dir, simulation_id, filename_cont))
+        tb_line = QTable.read(os.path.join(dir, simulation_id, filename_line))
+
+        if tb_cont.meta["TMPLSPEC"][0] != "Custom":
+            conf_target.template = tb_cont.meta["TMPLSPEC"][0]
+            conf_target.mag = tb_cont.meta["TMPL_MAG"][0]
+            conf_target.wavelength = tb_cont.meta["TMPL_WAV"][0]
+            conf_target.redshift = tb_cont.meta["TMPL_Z"][0]
+            custom_input_file = None
+        else:
+            custom_input_file = os.path.join(dir, simulation_id, "custom_input.csv")
+            if os.path.exists(custom_input_file):
+                with open(custom_input_file, "rb") as f:
+                    conf_target.custom_input = f.read()
+                    logger.info("Custom input is used.")
+
+        conf_target.galactic_extinction = tb_cont.meta["GAL_EXT"][0]
+        conf_target.r_eff = tb_cont.meta["R_EFF"][0]
+        conf_target.line_flux = tb_line.meta["EL_FLUX"][0]
+        conf_target.line_width = tb_line.meta["EL_SIG"][0]
+
+        conf_environment.seeing = tb_line.meta["SEEING"][0]
+        conf_environment.degrade = tb_line.meta["DEGRADE"][0]
+        conf_environment.moon_zenith_angle = tb_line.meta["MOON-ZA"][0]
+        conf_environment.moon_target_angle = tb_line.meta["MOON-SEP"][0]
+        conf_environment.moon_phase = tb_line.meta["MOON-PH"][0]
+
+        conf_instrument.exp_time = tb_line.meta["EXPTIME1"][0]
+        conf_instrument.exp_num = tb_line.meta["EXPNUM"][0]
+        conf_instrument.field_angle = tb_line.meta["FLDANG"][0]
+        conf_instrument.mr_mode = tb_line.meta["MED_RES"][0]
+
+        conf_telescope.zenith_angle = tb_line.meta["ZANG"][0]
+
+        logger.info(f"Recovering Simulation ID {simulation_id}")
+
+        is_recovered = True
+
+    except FileNotFoundError:
+        logger.error(
+            f"File not found, {filename_cont}, {filename_line}. No recovery is done."
+        )
+
+        simulation_id = None
+        is_recovered = False
+        custom_input_file = None
+
+    return simulation_id, is_recovered, custom_input_file
