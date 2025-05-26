@@ -12,6 +12,8 @@ from bokeh.palettes import Colorblind
 from bokeh.plotting import ColumnDataSource, figure
 from loguru import logger
 
+from . import PfsArm
+
 
 def load_simspec(infile: str) -> pd.DataFrame:
     df = pd.read_table(
@@ -98,13 +100,20 @@ def load_sncont(infile: str) -> pd.DataFrame:
 
     # saturation counts
     # CCDs: ~50000 e-, H4RGs ~80000-100000 e- (As a upper limit for good linearity)
-    saturate = np.zeros_like(df["wavelength"], dtype=bool)
-    saturate[np.logical_and(df["arm"] == 0, df["signal_per_exp"] > 50000.0)] = True
-    saturate[np.logical_and(df["arm"] == 1, df["signal_per_exp"] > 50000.0)] = True
-    saturate[np.logical_and(df["arm"] == 2, df["signal_per_exp"] > 80000.0)] = True
-    saturate[np.logical_and(df["arm"] == 3, df["signal_per_exp"] > 50000.0)] = True
+    SATURATION_THRESH = {
+        PfsArm.b: 50000.0,
+        PfsArm.r: 50000.0,
+        PfsArm.n: 80000.0,
+        PfsArm.m: 50000.0,
+    }
+    is_saturated = np.zeros_like(df["wavelength"], dtype=bool)
 
-    df["saturate"] = saturate
+    for arm, thresh in SATURATION_THRESH.items():
+        is_saturated[
+            np.logical_and(df["arm"] == arm.value, df["signal_per_exp"] > thresh)
+        ] = True
+
+    df["is_saturated"] = is_saturated
 
     return df
 
@@ -158,7 +167,7 @@ def create_simspec_plot(
     ymin2, ymax2 = 0.0, np.nanmax(df_sncont["sncont"]) * 1.5
 
     df["sncont"] = df_sncont["sncont"]
-    df["saturate"] = df_sncont["saturate"]
+    df["is_saturated"] = df_sncont["is_saturated"]
     df["input_spec"] = input_spec
 
     dict_df_arm = dict(
@@ -262,17 +271,17 @@ def create_simspec_plot(
             legend_label="Error",
         )
         # indicate saturated pixels
-        if np.any(dict_df_arm[arm]["saturate"]):
+        if np.any(dict_df_arm[arm]["is_saturated"]):
             logger.info(f"Saturated pixels in {arm} arm detected.")
 
             n_sat_sample = 15
-            if np.sum(dict_df_arm[arm]["saturate"]) < n_sat_sample:
+            if np.sum(dict_df_arm[arm]["is_saturated"]) < n_sat_sample:
                 n_sat_sample = 1
             logger.info(
-                "One in every {n_sat_sample} saturated datapoints are plotted as flagged."
+                f"One in every {n_sat_sample} saturated datapoints are plotted as flagged."
             )
-            flag_saturate = np.zeros_like(dict_df_arm[arm]["saturate"], dtype=bool)
-            flag_saturate[::n_sat_sample] = dict_df_arm[arm]["saturate"][
+            flag_saturate = np.zeros_like(dict_df_arm[arm]["is_saturated"], dtype=bool)
+            flag_saturate[::n_sat_sample] = dict_df_arm[arm]["is_saturated"][
                 ::n_sat_sample
             ].to_numpy()
 
@@ -382,8 +391,8 @@ def create_simspec_files(
     tb_out["pixel"] = Column(
         df_sncont["pixel"], dtype=int, description="Pixel ID in each arm"
     )
-    tb_out["saturate_cont"] = Column(
-        df_sncont["saturate"].to_numpy(),
+    tb_out["saturated"] = Column(
+        df_sncont["is_saturated"].to_numpy(),
         dtype=bool,
         description="Saturated continuum flux if True",
     )

@@ -10,6 +10,7 @@ import numpy as np
 from loguru import logger
 from pfsspecsim import pfsetc, pfsspec
 
+from . import PfsArm
 from .pfs_etc_params import OutputConf, SimulationConf
 from .pfs_etc_spectemplates import create_template_spectrum
 from .pfs_etc_utils import (
@@ -209,10 +210,18 @@ class PfsSpecSim:
         df_sncont = load_sncont(infile_sncont)
 
         self.flag_saturation = {
-            "b": np.any(df_sncont.loc[df_sncont["arm"] == 0, "saturate"]),
-            "r": np.any(df_sncont.loc[df_sncont["arm"] == 1, "saturate"]),
-            "n": np.any(df_sncont.loc[df_sncont["arm"] == 2, "saturate"]),
-            "m": np.any(df_sncont.loc[df_sncont["arm"] == 3, "saturate"]),
+            PfsArm.b: np.any(
+                df_sncont.loc[df_sncont["arm"] == PfsArm.b.value, "is_saturated"]
+            ),
+            PfsArm.r: np.any(
+                df_sncont.loc[df_sncont["arm"] == PfsArm.r.value, "is_saturated"]
+            ),
+            PfsArm.n: np.any(
+                df_sncont.loc[df_sncont["arm"] == PfsArm.n.value, "is_saturated"]
+            ),
+            PfsArm.m: np.any(
+                df_sncont.loc[df_sncont["arm"] == PfsArm.m.value, "is_saturated"]
+            ),
         }
 
         self.outfile_pfsobject = os.path.join(

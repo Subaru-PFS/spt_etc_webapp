@@ -54,18 +54,18 @@ print(df)
 
 Files for the simulated spectrum (`pfs_simspec*`) contain the following columns.
 
-| name          | unit    | datatype | description                      |
-|---------------|---------|----------|----------------------------------|
-| wavelength    | nm      | float64  | Wavelength in vacuum             |
-| flux          | nJy     | float64  | Flux                             |
-| error         | nJy     | float64  | Error                            |
-| sn            | 1 / pix | float64  | S/N per pixel                    |
-| flux_input    | nJy     | float64  | Input flux                       |
-| sky           | nJy     | float64  | Sky                              |
-| mask          |         | bool     | Masked if True                   |
-| arm           |         | int64    | Arm ID (0=blue 1=red 2=nir 3=mr) |
-| pixel         |         | int64    | Pixel ID in each arm             |
-| saturate_cont |         | bool     | Saturated if True                |
+| name       | unit    | datatype | description                      |
+|------------|---------|----------|----------------------------------|
+| wavelength | nm      | float64  | Wavelength in vacuum             |
+| flux       | nJy     | float64  | Flux                             |
+| error      | nJy     | float64  | Error                            |
+| sn         | 1 / pix | float64  | S/N per pixel                    |
+| flux_input | nJy     | float64  | Input flux                       |
+| sky        | nJy     | float64  | Sky                              |
+| mask       |         | bool     | Masked if True                   |
+| arm        |         | int64    | Arm ID (0=blue 1=red 2=nir 3=mr) |
+| pixel      |         | int64    | Pixel ID in each arm             |
+| saturated  |         | bool     | Saturated if True                |
 
 The following metadata from the inputs are also included.
 

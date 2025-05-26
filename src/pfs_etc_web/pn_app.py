@@ -45,7 +45,7 @@ def show_main_panel(panel_plots, panel_downloads, specsim, simulation_id, write=
 
     # notify saturation
     for arm in PfsArm:
-        if specsim.flag_saturation[arm.name]:
+        if specsim.flag_saturation[arm]:
             pn.state.notifications.error(
                 f"Saturation detected in the {arm.label} arm.",
                 duration=0,
