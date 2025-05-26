@@ -249,8 +249,10 @@ def pfs_etc_app():
                     panel_instrument.disabled(disabled=True)
                     panel_telescope.disabled(disabled=True)
 
-                    panel_plots.plot.object = create_dummy_plot()
                     panel_plots.plot_heading.visible = False
+                    panel_plots.plot.object = create_dummy_plot()
+
+                    panel_downloads.simulation_id_text.visible = False
 
                     panel_downloads.download_heading.visible = False
                     panel_downloads.download_pfsobject_fits.visible = False
@@ -356,36 +358,40 @@ def pfs_etc_app():
         while True:
             c_reset.acquire()
             for _ in queue_reset:
-                # clear notifications
-                pn.state.notifications.clear()
+                with set_curdoc(curdoc):
 
-                logger.info("Reset parameters")
-                conf_target.reset()
-                conf_environment.reset()
-                conf_instrument.reset()
-                conf_telescope.reset()
+                    # clear notifications
+                    pn.state.notifications.clear()
 
-                simulation_id.simulation_id = None
+                    logger.info("Reset parameters")
+                    conf_target.reset()
+                    conf_environment.reset()
+                    conf_instrument.reset()
+                    conf_telescope.reset()
 
-                panel_plots.plot.object = None
-                panel_plots.plot_heading.visible = False
+                    simulation_id.simulation_id = None
 
-                panel_downloads.download_heading.visible = False
-                panel_downloads.download_pfsobject_fits.file = None
-                panel_downloads.download_pfsobject_fits.visible = False
-                panel_downloads.download_simspec_fits.file = None
-                panel_downloads.download_simspec_fits.visible = False
-                panel_downloads.download_simspec_csv.file = None
-                panel_downloads.download_simspec_csv.visible = False
-                panel_downloads.download_snline_fits.file = None
-                panel_downloads.download_snline_fits.visible = False
-                panel_downloads.download_snline_csv.file = None
-                panel_downloads.download_snline_csv.visible = False
-                panel_downloads.download_tjtext.file = None
-                panel_downloads.download_tjtext.visible = False
-            queue_reset.clear()
-            c_reset.release()
-            time.sleep(1)
+                    panel_plots.plot.object = None
+                    panel_plots.plot_heading.visible = False
+
+                    panel_downloads.simulation_id_text.visible = False
+
+                    panel_downloads.download_heading.visible = False
+                    panel_downloads.download_pfsobject_fits.file = None
+                    panel_downloads.download_pfsobject_fits.visible = False
+                    panel_downloads.download_simspec_fits.file = None
+                    panel_downloads.download_simspec_fits.visible = False
+                    panel_downloads.download_simspec_csv.file = None
+                    panel_downloads.download_simspec_csv.visible = False
+                    panel_downloads.download_snline_fits.file = None
+                    panel_downloads.download_snline_fits.visible = False
+                    panel_downloads.download_snline_csv.file = None
+                    panel_downloads.download_snline_csv.visible = False
+                    panel_downloads.download_tjtext.file = None
+                    panel_downloads.download_tjtext.visible = False
+                queue_reset.clear()
+                c_reset.release()
+                time.sleep(1)
 
     thread_exec = threading.Thread(target=callback_exec, daemon=True)
     thread_exec.start()
