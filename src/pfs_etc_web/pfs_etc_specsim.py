@@ -6,6 +6,7 @@ import pprint
 import shutil
 import sys
 
+import numpy as np
 from loguru import logger
 from pfsspecsim import pfsetc, pfsspec
 
@@ -48,6 +49,8 @@ class PfsSpecSim:
 
         self.outfile_simspec_prefix = None
         self.outfile_snline_prefix = None
+
+        self.flag_saturation = {"b": False, "r": False, "n": False, "m": False}
 
     def run_etc(self):
         self.etc.set_param(
@@ -193,7 +196,7 @@ class PfsSpecSim:
             self.run_etc()
             self.run_sim()
 
-    def show(self, infile: str = None, write: bool = True):
+    def show(self, infile: str | None = None, write: bool = True):
         outdir = os.path.join(self.output.basedir, self.output.sessiondir)
 
         if infile is None:
@@ -204,6 +207,13 @@ class PfsSpecSim:
         df_simspec = load_simspec(infile_simspec)
         df_snline = load_snline(infile_snline)
         df_sncont = load_sncont(infile_sncont)
+
+        self.flag_saturation = {
+            "b": np.any(df_sncont.loc[df_sncont["arm"] == 0, "saturate"]),
+            "r": np.any(df_sncont.loc[df_sncont["arm"] == 1, "saturate"]),
+            "n": np.any(df_sncont.loc[df_sncont["arm"] == 2, "saturate"]),
+            "m": np.any(df_sncont.loc[df_sncont["arm"] == 3, "saturate"]),
+        }
 
         self.outfile_pfsobject = os.path.join(
             outdir, f"pfsObject-{self.output.sessiondir}.fits"

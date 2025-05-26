@@ -13,6 +13,7 @@ from dotenv import dotenv_values
 from loguru import logger
 from panel.io.state import set_curdoc
 
+from . import PfsArm
 from .pfs_etc_params import (
     EnvironmentConf,
     InstrumentConf,
@@ -41,6 +42,15 @@ class SimulationId(param.Parameterized):
 def show_main_panel(panel_plots, panel_downloads, specsim, simulation_id, write=True):
     panel_plots.pane.visible = False
     panel_plots.plot.object = specsim.show(write=write)
+
+    # notify saturation
+    for arm in PfsArm:
+        if specsim.flag_saturation[arm.name]:
+            pn.state.notifications.error(
+                f"Saturation detected in the {arm.label} arm.",
+                duration=0,
+            )
+            logger.warning(f"Saturation detected in {arm.name} arm")
 
     logger.info("Set download buttons")
 
@@ -210,6 +220,10 @@ def pfs_etc_app():
             c_exec.acquire()
             for _ in queue_exec:
                 with set_curdoc(curdoc):
+
+                    # clear notifications
+                    pn.state.notifications.clear()
+
                     logger.info("callback function is called")
 
                     session_id = (
@@ -342,6 +356,9 @@ def pfs_etc_app():
         while True:
             c_reset.acquire()
             for _ in queue_reset:
+                # clear notifications
+                pn.state.notifications.clear()
+
                 logger.info("Reset parameters")
                 conf_target.reset()
                 conf_environment.reset()
