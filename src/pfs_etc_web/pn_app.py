@@ -389,9 +389,9 @@ def pfs_etc_app():
                     panel_downloads.download_snline_csv.visible = False
                     panel_downloads.download_tjtext.file = None
                     panel_downloads.download_tjtext.visible = False
-                queue_reset.clear()
-                c_reset.release()
-                time.sleep(1)
+            queue_reset.clear()
+            c_reset.release()
+            time.sleep(1)
 
     thread_exec = threading.Thread(target=callback_exec, daemon=True)
     thread_exec.start()
