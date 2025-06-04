@@ -101,11 +101,14 @@ def load_sncont(infile: str) -> pd.DataFrame:
     # saturation counts
     # CCDs: ~50000 e-, H4RGs ~80000-100000 e- (As a upper limit for good linearity)
     total2perpixel = 0.65  # conversion factor from the profile to a pixel
+    fudge_factor = 0.9  # fudge factor to make buffers for saturation counts
+    saturation_thresh_ccd = 50000.0 / total2perpixel * fudge_factor
+    saturation_thresh_h4rg = 80000.0 / total2perpixel * fudge_factor
     SATURATION_THRESH = {
-        PfsArm.b: 50000.0 * total2perpixel,
-        PfsArm.r: 50000.0 * total2perpixel,
-        PfsArm.n: 80000.0 * total2perpixel,
-        PfsArm.m: 50000.0 * total2perpixel,
+        PfsArm.b: saturation_thresh_ccd,
+        PfsArm.r: saturation_thresh_ccd,
+        PfsArm.n: saturation_thresh_h4rg,
+        PfsArm.m: saturation_thresh_ccd,
     }
     is_saturated = np.zeros_like(df["wavelength"], dtype=bool)
 

@@ -186,8 +186,6 @@ The following parameters are used with the PFS spectral simulator:
 [16] Simulation ID: 20240729-114543_135195277db7c5c7
 ```
 
-
-
 ## Plots
 
 Five panels will be shown for blue arm, red arm, near-IR arm, medium-resolution arm, and emission line S/N.
@@ -197,6 +195,14 @@ You can click the legend to highlight or mute lines of your interest.
 
 You can also zoom, pan, etc. by using the Bokeh tooltips located at the right side of each plot.
 
+## Saturated pixels
+
+When saturated pixels are detected, notifications will be shown in the lower right corner of the browser window.
+The saturated pixels will be highlighted in the plot with red circles with crosses (see the screenshot below).
+
+These saturated pixels will be indicated in the output file as `saturated=True`.
+
+![type:image](images/screenshot_saturated_spectra.png)
 
 ## (Experimental) Recover a simulation
 
