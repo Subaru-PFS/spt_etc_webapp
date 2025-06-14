@@ -100,7 +100,10 @@ def load_sncont(infile: str) -> pd.DataFrame:
 
     # saturation counts
     # CCDs: ~50000 e-, H4RGs ~80000-100000 e- (As a upper limit for good linearity)
-    total2perpixel = 0.65  # conversion factor from the profile to a pixel
+    # The pixel scale to enclose 90% of the flux is 1.8 pixels in radius.
+    # Then the flux at the central pixel is 0.35 times the total flux in the profile.
+    # The conversion factor from the profile to a pixel is 0.35.
+    total2perpixel = 0.35  # conversion factor from the profile to a pixel
     fudge_factor = 0.9  # fudge factor to make buffers for saturation counts
     saturation_thresh_ccd = 50000.0 / total2perpixel * fudge_factor
     saturation_thresh_h4rg = 80000.0 / total2perpixel * fudge_factor
