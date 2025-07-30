@@ -158,8 +158,9 @@ See the Call for Proposal for the current definition.
 |-------------------------------|------:|--------|
 | Seeing FWHM                   |   0.8 | arcsec |
 | Throughput Degradation Factor |   0.9 |        |
-| Moon Zenith Angle             |    30 | deg    |
+| Moon Zenith Angle             |    60 | deg    |
 | Moon Separation to Target     |    60 | deg    |
 | Moon Phase                    |  0.15 |        |
+| Integration Time per Exposure |   450 | s      |
 | Distance from FoV center      |  0.45 | deg    |
 | Telescope Zenith Angle        |    35 | deg    |
