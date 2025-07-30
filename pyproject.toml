@@ -35,12 +35,11 @@ dependencies = [
     "watchfiles>=0.21.0",
     "importlib_metadata",
 ]
-requires-python = ">=3.11,<3.13"
+requires-python = ">=3.12,<3.13"
 readme = "README.md"
 license = { text = "MIT" }
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
 
@@ -107,4 +106,4 @@ version = { attr = "pfs_etc_web.__version__" }
 
 [tool.black]
 # line-length = 120
-target-version = ["py39", "py310", "py311"]
+target-version = ["py312"]
