@@ -28,7 +28,7 @@ class PfsSpecParameter:
     # observing condition
     seeing: float = 0.8
     degrade: float = 0.9  # conservative value
-    moon_zenith_angle: int = 30
+    moon_zenith_angle: int = 60 # 30 degree elevation
     moon_target_angle: int = 60
     moon_phase: int = 0.15  # or 0.10
 
