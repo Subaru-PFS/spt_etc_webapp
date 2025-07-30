@@ -13,6 +13,7 @@ from dotenv import dotenv_values
 from loguru import logger
 from panel.io.state import set_curdoc
 
+from . import PfsArm
 from .pfs_etc_params import (
     EnvironmentConf,
     InstrumentConf,
@@ -41,6 +42,15 @@ class SimulationId(param.Parameterized):
 def show_main_panel(panel_plots, panel_downloads, specsim, simulation_id, write=True):
     panel_plots.pane.visible = False
     panel_plots.plot.object = specsim.show(write=write)
+
+    # notify saturation
+    for arm in PfsArm:
+        if specsim.flag_saturation[arm]:
+            pn.state.notifications.error(
+                f"Saturation detected in the {arm.label} arm.",
+                duration=0,
+            )
+            logger.warning(f"Saturation detected in {arm.name} arm")
 
     logger.info("Set download buttons")
 
@@ -210,6 +220,10 @@ def pfs_etc_app():
             c_exec.acquire()
             for _ in queue_exec:
                 with set_curdoc(curdoc):
+
+                    # clear notifications
+                    pn.state.notifications.clear()
+
                     logger.info("callback function is called")
 
                     session_id = (
@@ -235,8 +249,10 @@ def pfs_etc_app():
                     panel_instrument.disabled(disabled=True)
                     panel_telescope.disabled(disabled=True)
 
-                    panel_plots.plot.object = create_dummy_plot()
                     panel_plots.plot_heading.visible = False
+                    panel_plots.plot.object = create_dummy_plot()
+
+                    panel_downloads.simulation_id_text.visible = False
 
                     panel_downloads.download_heading.visible = False
                     panel_downloads.download_pfsobject_fits.visible = False
@@ -342,30 +358,37 @@ def pfs_etc_app():
         while True:
             c_reset.acquire()
             for _ in queue_reset:
-                logger.info("Reset parameters")
-                conf_target.reset()
-                conf_environment.reset()
-                conf_instrument.reset()
-                conf_telescope.reset()
+                with set_curdoc(curdoc):
 
-                simulation_id.simulation_id = None
+                    # clear notifications
+                    pn.state.notifications.clear()
 
-                panel_plots.plot.object = None
-                panel_plots.plot_heading.visible = False
+                    logger.info("Reset parameters")
+                    conf_target.reset()
+                    conf_environment.reset()
+                    conf_instrument.reset()
+                    conf_telescope.reset()
 
-                panel_downloads.download_heading.visible = False
-                panel_downloads.download_pfsobject_fits.file = None
-                panel_downloads.download_pfsobject_fits.visible = False
-                panel_downloads.download_simspec_fits.file = None
-                panel_downloads.download_simspec_fits.visible = False
-                panel_downloads.download_simspec_csv.file = None
-                panel_downloads.download_simspec_csv.visible = False
-                panel_downloads.download_snline_fits.file = None
-                panel_downloads.download_snline_fits.visible = False
-                panel_downloads.download_snline_csv.file = None
-                panel_downloads.download_snline_csv.visible = False
-                panel_downloads.download_tjtext.file = None
-                panel_downloads.download_tjtext.visible = False
+                    simulation_id.simulation_id = None
+
+                    panel_plots.plot.object = None
+                    panel_plots.plot_heading.visible = False
+
+                    panel_downloads.simulation_id_text.visible = False
+
+                    panel_downloads.download_heading.visible = False
+                    panel_downloads.download_pfsobject_fits.file = None
+                    panel_downloads.download_pfsobject_fits.visible = False
+                    panel_downloads.download_simspec_fits.file = None
+                    panel_downloads.download_simspec_fits.visible = False
+                    panel_downloads.download_simspec_csv.file = None
+                    panel_downloads.download_simspec_csv.visible = False
+                    panel_downloads.download_snline_fits.file = None
+                    panel_downloads.download_snline_fits.visible = False
+                    panel_downloads.download_snline_csv.file = None
+                    panel_downloads.download_snline_csv.visible = False
+                    panel_downloads.download_tjtext.file = None
+                    panel_downloads.download_tjtext.visible = False
             queue_reset.clear()
             c_reset.release()
             time.sleep(1)

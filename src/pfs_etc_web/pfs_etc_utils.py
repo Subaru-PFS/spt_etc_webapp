@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 
-import glob
 import os
 
 import numpy as np
 import pandas as pd
-import panel as pn
 from astropy import units as u
-from astropy.table import Column, QTable, Table
+from astropy.table import Column, QTable
 from bokeh.layouts import column
-from bokeh.models import LinearAxis, Range1d
+from bokeh.models import BooleanFilter, CDSView, LinearAxis, Range1d
 from bokeh.palettes import Colorblind
 from bokeh.plotting import ColumnDataSource, figure
 from loguru import logger
+
+from . import PfsArm
 
 
 def load_simspec(infile: str) -> pd.DataFrame:
@@ -97,6 +97,31 @@ def load_sncont(infile: str) -> pd.DataFrame:
             "sky": float,
         },
     )
+
+    # saturation counts
+    # CCDs: ~50000 e-, H4RGs ~80000-100000 e- (As a upper limit for good linearity)
+    # The pixel scale to enclose 90% of the flux is 1.8 pixels in radius.
+    # Then the flux at the central pixel is 0.35 times the total flux in the profile.
+    # The conversion factor from the profile to a pixel is 0.35.
+    total2perpixel = 0.35  # conversion factor from the profile to a pixel
+    fudge_factor = 0.9  # fudge factor to make buffers for saturation counts
+    saturation_thresh_ccd = 50000.0 / total2perpixel * fudge_factor
+    saturation_thresh_h4rg = 80000.0 / total2perpixel * fudge_factor
+    SATURATION_THRESH = {
+        PfsArm.b: saturation_thresh_ccd,
+        PfsArm.r: saturation_thresh_ccd,
+        PfsArm.n: saturation_thresh_h4rg,
+        PfsArm.m: saturation_thresh_ccd,
+    }
+    is_saturated = np.zeros_like(df["wavelength"], dtype=bool)
+
+    for arm, thresh in SATURATION_THRESH.items():
+        is_saturated[
+            np.logical_and(df["arm"] == arm.value, df["signal_per_exp"] > thresh)
+        ] = True
+
+    df["is_saturated"] = is_saturated
+
     return df
 
 
@@ -149,6 +174,7 @@ def create_simspec_plot(
     ymin2, ymax2 = 0.0, np.nanmax(df_sncont["sncont"]) * 1.5
 
     df["sncont"] = df_sncont["sncont"]
+    df["is_saturated"] = df_sncont["is_saturated"]
     df["input_spec"] = input_spec
 
     dict_df_arm = dict(
@@ -251,6 +277,36 @@ def create_simspec_plot(
             alpha=0.8,
             legend_label="Error",
         )
+        # indicate saturated pixels
+        if np.any(dict_df_arm[arm]["is_saturated"]):
+            logger.info(f"Saturated pixels in {arm} arm detected.")
+
+            n_sat_sample = 15
+            if np.sum(dict_df_arm[arm]["is_saturated"]) < n_sat_sample:
+                n_sat_sample = 1
+            logger.info(
+                f"One in every {n_sat_sample} saturated datapoints are plotted as flagged."
+            )
+            flag_saturate = np.zeros_like(dict_df_arm[arm]["is_saturated"], dtype=bool)
+            flag_saturate[::n_sat_sample] = dict_df_arm[arm]["is_saturated"][
+                ::n_sat_sample
+            ].to_numpy()
+
+            p_arm.scatter(
+                "wavelength",
+                "input_spec",
+                source=dict_source_arm[arm],
+                view=CDSView(
+                    filter=BooleanFilter(flag_saturate),
+                ),
+                marker="circle_x",
+                fill_color=None,
+                line_color="orangered",
+                size=10,
+                alpha=0.8,
+                legend_label="Saturated",
+            )
+
         # plot S/N using the right-side axis
         p_arm.extra_y_ranges = {"sncont": Range1d(start=ymin2, end=ymax2)}
         p_arm.add_layout(
@@ -341,6 +397,11 @@ def create_simspec_files(
     )
     tb_out["pixel"] = Column(
         df_sncont["pixel"], dtype=int, description="Pixel ID in each arm"
+    )
+    tb_out["saturated"] = Column(
+        df_sncont["is_saturated"].to_numpy(),
+        dtype=bool,
+        description="Saturated continuum flux if True",
     )
 
     # add meta data
