@@ -164,3 +164,6 @@ See the Call for Proposal for the current definition.
 | Integration Time per Exposure |   450 | s      |
 | Distance from FoV center      |  0.45 | deg    |
 | Telescope Zenith Angle        |    35 | deg    |
+
+Note that one can set unrealistic observing conditions, so please make sure to set the parameters close to your requested observing conditions.
+The safest approach is to use the nominal (default) observing condition as a reference.
