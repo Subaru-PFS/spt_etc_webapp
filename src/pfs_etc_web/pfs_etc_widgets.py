@@ -213,6 +213,12 @@ class EnvironmentWidgets(param.Parameterized):
             show_name=False,
             default_layout=pn.Column,
         )
+        self.note = pn.pane.Markdown(
+            """
+One can set unrealistic observing conditions, so please make sure to set the parameters close to your requested observing conditions.
+The safest approach is to use the nominal (default) observing condition as a reference.
+        """
+        )
 
     def disabled(self, disabled=True):
         for p in self.panel.parameters:

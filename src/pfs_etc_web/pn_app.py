@@ -134,7 +134,7 @@ def pfs_etc_app():
     # Use a tab layout for input parameters
     tab_inputs = pn.Tabs(
         ("Target    ", panel_target.panel),
-        ("Condition ", panel_environment.panel),
+        ("Condition ", pn.Column(panel_environment.panel, panel_environment.note)),
         ("Instrument", panel_instrument.panel),
         ("Telescope ", panel_telescope.panel),
     )
