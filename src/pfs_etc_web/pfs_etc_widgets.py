@@ -117,10 +117,10 @@ class TargetWidgets(param.Parameterized):
             },
         )
         self.custom_input_help = pn.pane.Markdown(
-            "Input spectrum must be in a CSV format with exactly two columns. "
-            "The first column must be the wavelength in [Å] and "
-            "the second column must be the flux in [$$\mathrm{erg}$$ $$\mathrm{s}^{-1}$$ $$\mathrm{cm}^{-2}$$ $$\mathrm{Å}^{\ \ \ -1}$$]. "
-            'No header line is needed and lines starting with "#" are regarded as commment. An [example CSV file](https://gist.github.com/monodera/be48be04f376b2db268d0b14ad9cb5e1) is available.',
+            r"Input spectrum must be in a CSV format with exactly two columns. "
+            r"The first column must be the wavelength in [Å] and "
+            r"the second column must be the flux in [$$\mathrm{erg}$$ $$\mathrm{s}^{-1}$$ $$\mathrm{cm}^{-2}$$ $$\mathrm{Å}^{\ \ \ -1}$$]. "
+            r"No header line is needed and lines starting with '#' are regarded as comment. An [example CSV file](https://gist.github.com/monodera/be48be04f376b2db268d0b14ad9cb5e1) is available.",
             # renderer="myst"
             # markdown-it', 'markdown', 'myst
         )

@@ -18,7 +18,7 @@ from . import PfsArm
 def load_simspec(infile: str) -> pd.DataFrame:
     df = pd.read_table(
         infile,
-        sep="\s+",
+        sep=r"\s+",
         comment="#",
         header=None,
         # header=0,
@@ -38,7 +38,7 @@ def load_simspec(infile: str) -> pd.DataFrame:
 def load_snline(infile: str) -> pd.DataFrame:
     df = pd.read_table(
         infile,
-        sep="\s+",
+        sep=r"\s+",
         comment="#",
         header=None,
         # header=0,
@@ -67,7 +67,7 @@ def load_snline(infile: str) -> pd.DataFrame:
 def load_sncont(infile: str) -> pd.DataFrame:
     df = pd.read_table(
         infile,
-        sep="\s+",
+        sep=r"\s+",
         comment="#",
         header=None,
         names=[
