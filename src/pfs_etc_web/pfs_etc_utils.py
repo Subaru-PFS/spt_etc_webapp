@@ -571,11 +571,20 @@ def recover_simulation(
     filename_cont = f"pfs_etc_simspec-{simulation_id}.ecsv"
     filename_line = f"pfs_etc_snline-{simulation_id}.ecsv"
 
+    # Validate simulation_id format (must be YYYYMMDD-HHMMSS-...)
+    if len(simulation_id) < 8 or not simulation_id[:8].isdigit():
+        logger.error(
+            f"Invalid simulation_id format: {simulation_id}. "
+            "Expected YYYYMMDD-HHMMSS-... format."
+        )
+        return None, False, None
+
+    # Extract year and month from simulation_id
+    year = simulation_id[:4]
+    month = simulation_id[4:6]
+    session_path = os.path.join(dir, year, month, simulation_id)
+
     try:
-        # Extract year and month from simulation_id (format: YYYYMMDD-HHMMSS-...)
-        year = simulation_id[:4]
-        month = simulation_id[4:6]
-        session_path = os.path.join(dir, year, month, simulation_id)
 
         tb_cont = QTable.read(os.path.join(session_path, filename_cont))
         tb_line = QTable.read(os.path.join(session_path, filename_line))
