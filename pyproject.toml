@@ -90,7 +90,7 @@ serve-app = { cmd = [
 ] }
 
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["setuptools>=64", "setuptools-scm>=8", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
@@ -99,6 +99,10 @@ include-package-data = true
 
 [tool.setuptools.dynamic]
 version = { attr = "pfs_etc_web.__version__" }
+
+[tool.setuptools_scm]
+version_file = "src/pfs_etc_web/_version.py"
+fallback_version = "0.0.0+unknown"
 
 # [tool.ruff]
 # ignore-init-module-imports = true

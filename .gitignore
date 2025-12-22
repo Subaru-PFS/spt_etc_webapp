@@ -165,3 +165,6 @@ tmp/
 .space
 
 .DS_Store
+
+# setuptools-scm generated version file
+src/pfs_etc_web/_version.py

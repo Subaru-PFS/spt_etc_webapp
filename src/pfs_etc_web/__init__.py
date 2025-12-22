@@ -1,8 +1,16 @@
-__version__ = "2.2.0"
+try:
+    from ._version import __version__
+except ImportError:
+    # Fallback for editable installs without build
+    try:
+        from setuptools_scm import get_version
+        __version__ = get_version(root='../..', relative_to=__file__)
+    except (ImportError, LookupError):
+        __version__ = "0.0.0+unknown"
 
 from enum import Enum
 
-__all__ = ["PfsArm"]
+__all__ = ["PfsArm", "__version__"]
 
 
 class PfsArm(Enum):
