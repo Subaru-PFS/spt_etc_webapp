@@ -162,7 +162,10 @@ def pfs_etc_app():
             logger,
         )
         if is_recovered:
-            conf_output.sessiondir = recovered_simulation_id
+            # Extract year and month from recovered session_id (format: YYYYMMDD-HHMMSS-...)
+            year = recovered_simulation_id[:4]
+            month = recovered_simulation_id[4:6]
+            conf_output.sessiondir = f"{year}/{month}/{recovered_simulation_id}"
             specsim = PfsSpecSim(
                 target=conf_target,
                 environment=conf_environment,
@@ -226,8 +229,10 @@ def pfs_etc_app():
 
                     logger.info("callback function is called")
 
+                    # Use UTC for session_id timestamp
+                    now_utc = datetime.datetime.now(datetime.timezone.utc)
                     session_id = (
-                        datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+                        now_utc.strftime("%Y%m%d-%H%M%S")
                         + "-"
                         # + "_"
                         + secrets.token_hex(8)
@@ -237,7 +242,9 @@ def pfs_etc_app():
 
                     logger.info(f"Session ID: {session_id}")
 
-                    conf_output.sessiondir = session_id
+                    # Create nested directory path: YYYY/MM/session_id (UTC)
+                    year_month_path = now_utc.strftime("%Y/%m")
+                    conf_output.sessiondir = f"{year_month_path}/{session_id}"
 
                     panel_buttons.exec.disabled = True
                     panel_buttons.exec.name = "Running"

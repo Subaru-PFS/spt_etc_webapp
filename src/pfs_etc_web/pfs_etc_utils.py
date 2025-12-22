@@ -572,8 +572,13 @@ def recover_simulation(
     filename_line = f"pfs_etc_snline-{simulation_id}.ecsv"
 
     try:
-        tb_cont = QTable.read(os.path.join(dir, simulation_id, filename_cont))
-        tb_line = QTable.read(os.path.join(dir, simulation_id, filename_line))
+        # Extract year and month from simulation_id (format: YYYYMMDD-HHMMSS-...)
+        year = simulation_id[:4]
+        month = simulation_id[4:6]
+        session_path = os.path.join(dir, year, month, simulation_id)
+
+        tb_cont = QTable.read(os.path.join(session_path, filename_cont))
+        tb_line = QTable.read(os.path.join(session_path, filename_line))
 
         if tb_cont.meta["TMPLSPEC"][0] != "Custom":
             conf_target.template = tb_cont.meta["TMPLSPEC"][0]
@@ -582,7 +587,7 @@ def recover_simulation(
             conf_target.redshift = tb_cont.meta["TMPL_Z"][0]
             custom_input_file = None
         else:
-            custom_input_file = os.path.join(dir, simulation_id, "custom_input.csv")
+            custom_input_file = os.path.join(session_path, "custom_input.csv")
             if os.path.exists(custom_input_file):
                 with open(custom_input_file, "rb") as f:
                     conf_target.custom_input = f.read()
