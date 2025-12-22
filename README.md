@@ -3,79 +3,71 @@
 
 PFS spectral simulator web app using [PFS Exposure Time Calculator and Spectrum Simulator](https://github.com/Subaru-PFS/spt_ExposureTimeCalculator/).
 
-## Requirements
+## Prerequisites
 
-See `requirements.txt` for the latest dependencies.
+This project supports multiple Python package managers:
 
-For production:
-- python (>=3.9)
-- panel (>=1.2)
-- astropy
-- jinja2
-- loguru
-- matplotlib
-- myst-parser
-- numpy
-- pandas
-- setuptools
-- synphot
-- pfsspecsim @ git+<https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git>
+- **uv** (recommended) - Modern, fast package manager
+- **PDM** - Python Development Master
+- **pip + venv** - Traditional Python package management
 
-For development:
+Choose the one that best fits your workflow.
 
-- black
-- ipython
-- jupyter
-- notebook
-- pip
-- ruff
-- pyright
-- isort
-- specutils
-
-For documentation:
-
-- mkdocs
-- mkdocs-material
-- mkdocs-macros-plugin
-- mkdocs-video
-- fontawesome-markdown
-
+See `requirements.txt` for the complete list of dependencies.
 
 ## Installation
 
 First of all, please clone this repository. There are several ways to install the app.
 
-
-### Create a virtual environment
+### Using uv (Recommended)
 
 ```sh
-python3 -m venv .
-source .venv/bin/activate
+# Install uv if not already installed
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Sync dependencies
+uv sync
+
+# With documentation dependencies
+uv sync --extra mkdocs
 ```
 
-### Local installation
+### Using PDM
 
 ```sh
-# if you use pip
-python3 -m pip install -r requirements.txt
-python3 -m pip install -e .
+# Install PDM if not already installed
+pip install pdm
 
-# if you use pdm
+# Install dependencies
 pdm install
+
+# With documentation dependencies
+pdm install -G mkdocs
 ```
 
-If you wish to build documentation, run the following command in the `docs` directory.
+### Using pip + venv
 
 ```sh
-cd docs
+# Create virtual environment
+python3 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-# if you use pip
-mkdocs build
-cd ../
+# Install dependencies
+pip install -r requirements.txt
+pip install -e .
 
-# if you use pdm
-pdm run mkdocs build
+# With documentation dependencies
+pip install -e .[mkdocs]
+```
+
+### Building Documentation
+
+```sh
+# Using helper script (auto-detects package manager)
+./scripts/build-doc.sh
+
+# Or manually
+cd docs && mkdocs build
 ```
 
 The documentation is built under `docs/site`.
@@ -98,19 +90,74 @@ gcloud run deploy pfsetcweb --source .
 
 ## Usage
 
-### Local installation
+### Using Helper Scripts
 
-You can run the app by using the `panel serve` as follows.
+The project includes helper scripts in the `scripts/` directory that automatically detect your package manager:
 
 ```sh
-# installed via pip
-panel serve ./app.py --static-dirs etc-docs="./docs/site/"
+# Start the web application
+./scripts/serve-app.sh
 
-# installed via pdm
-pdm run panel serve ./app.py --static-dirs etc-docs="./docs/site/"
+# Start documentation server
+./scripts/serve-doc.sh
+
+# Build documentation
+./scripts/build-doc.sh
+
+# Generate requirements.txt
+./scripts/gen-requirements.sh
 ```
 
-Then open `http://localhost:5006/app` in a web browser.
+You can force a specific package manager:
+
+```sh
+./scripts/serve-app.sh uv    # Force use of uv
+./scripts/serve-app.sh pdm   # Force use of PDM
+./scripts/serve-app.sh venv  # Force use of venv
+```
+
+Access the app at: `http://localhost:5007/etc`
+
+### Direct Commands
+
+**Note:** The project provides a `run_pfs_etc_web` CLI command, but using the shell scripts or direct `panel serve` commands is recommended as they provide more complete configuration (static directories, URL prefix, WebSocket settings, etc.).
+
+**With uv:**
+
+```sh
+# Run the web app
+uv run panel serve ./app.py --static-dirs doc=docs/site --prefix=etc --port=5007
+
+# Build documentation
+cd docs && uv run mkdocs build
+```
+
+**With PDM:**
+
+```sh
+# Use PDM scripts (existing functionality)
+pdm run serve-app
+pdm run build-doc
+pdm run serve-doc
+pdm run gen-requirements
+
+# Or run directly
+pdm run panel serve ./app.py --static-dirs doc=docs/site --prefix=etc --port=5007
+```
+
+**With venv:**
+
+```sh
+source .venv/bin/activate
+
+# Run the web app
+panel serve ./app.py --static-dirs doc=docs/site --prefix=etc --port=5007
+
+# Build documentation
+cd docs && mkdocs build
+```
+
+### Performance Tuning
 
 You can specify the number of threads used by the ETC using `OMP_NUM_THREADS` environment variable. A larger number of threads will enable to achieve faster running time, but reduce the per-thread efficiency of the computation. My experiment with AMD EPYC 7542 is summarized as follows.
 

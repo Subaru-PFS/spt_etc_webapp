@@ -1,24 +1,9 @@
-[tool.pdm]
-[tool.pdm.dev-dependencies]
-dev = [
-    "black>=22.12.0",
-    "ipython>=8.9.0",
-    "jupyter>=1.0.0",
-    "notebook>=6.5.2",
-    "pip>=23.0",
-    "ruff>=0.0.239",
-    "pyright>=1.1.291",
-    "isort>=5.12.0",
-    "specutils>=1.10.0",
-]
-
 [project]
 name = "pfs_etc_web"
 dynamic = ["version"]
-description = ""
+description = "PFS Exposure Time Calculator Web Application"
 authors = [{ name = "Masato Onodera", email = "monodera@naoj.org" }]
 dependencies = [
-    # "panel==1.4.5",
     "panel>=1.4.5",
     "astropy>=5.2.1",
     "jinja2>=3.1.2",
@@ -37,13 +22,26 @@ dependencies = [
 ]
 requires-python = ">=3.12,<3.13"
 readme = "README.md"
-license = { text = "MIT" }
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.12",
-]
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["astronomy", "spectroscopy", "pfs", "exposure-time-calculator", "etc"]
+
+[project.urls]
+Homepage = "https://github.com/Subaru-PFS/spt_etc_webapp"
+Repository = "https://github.com/Subaru-PFS/spt_etc_webapp"
 
 [project.optional-dependencies]
+dev = [
+    "black>=22.12.0",
+    "ipython>=8.9.0",
+    "jupyter>=1.0.0",
+    "notebook>=6.5.2",
+    "pip>=23.0",
+    "ruff>=0.0.239",
+    "pyright>=1.1.291",
+    "isort>=5.12.0",
+    "specutils>=1.10.0",
+]
 mkdocs = [
     "mkdocs>=1.4.3",
     "mkdocs-material[imaging]>=9.5.3",
@@ -51,46 +49,16 @@ mkdocs = [
     "fontawesome-markdown @ https://github.com/bmcorser/fontawesome-markdown/archive/master.zip",
     "mkdocs-video>=1.5.0",
 ]
-# fastapi = ["fastapi>=0.89.1", "uvicorn[standard]>=0.20.0", "gunicorn>=20.1.0"]
 
 [project.scripts]
+# NOTE: This CLI entry point is available but not actively used.
+# For development and production, use the shell scripts in scripts/ directory instead:
+# - scripts/serve-app.sh (recommended)
+# The CLI provides basic functionality but lacks some features (static dirs, prefix, etc.)
 run_pfs_etc_web = "pfs_etc_web.cli.run_panel_server:main"
 
-[tool.pdm.scripts]
-serve-doc = { shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview" }
-build-doc = { shell = "cd docs && mkdocs build", help = "Build documentation" }
-gen-requirements = { cmd = [
-    "pdm",
-    "export",
-    "--format",
-    "requirements",
-    "--without-hashes",
-    "--pyproject",
-    "--dev",
-    "--group",
-    "mkdocs",
-    "--output",
-    "requirements.txt",
-    "--pyproject",
-    "--editable-self",
-    "--verbose",
-], help = "Generate requirements.txt" }
-serve-app = { cmd = [
-    "pdm",
-    "run",
-    "panel",
-    "serve",
-    "./app.py",
-    "--static-dirs",
-    "doc=docs/site",
-    "--prefix=etc",
-    "--websocket-max-message-size=104857600",
-    "--port=5007",
-    "--autoreload",
-] }
-
 [build-system]
-requires = ["setuptools>=64", "setuptools-scm>=8", "wheel"]
+requires = ["setuptools>=64", "setuptools-scm>=8.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
@@ -104,10 +72,67 @@ version = { attr = "pfs_etc_web.__version__" }
 version_file = "src/pfs_etc_web/_version.py"
 fallback_version = "0.0.0+unknown"
 
-# [tool.ruff]
-# ignore-init-module-imports = true
-# unfixable = ["F401"]
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+ignore = [
+    "F401",   # module imported but unused
+    "F841",   # local variable is assigned to but never used
+    "E501",   # line too long, handled by black
+    "B008",   # do not perform function calls in argument defaults
+    "C901",   # too complex
+    "N802",   # function name should be lowercase
+    "N803",   # argument name should be lowercase
+    "N806",   # variable in function should be lowercase
+    "N815",   # variable in class should be lowercase
+    "N816",   # attribute in class should be lowercase
+    "EM101",  # use 'isinstance()' instead of comparing types directly
+    "TRY003", # unnecessary except block
+]
 
 [tool.black]
-# line-length = 120
+line-length = 88
 target-version = ["py312"]
+
+# ==============================================================================
+# DEPRECATED: PDM Scripts (Legacy)
+# ==============================================================================
+# NOTE: The PDM scripts below are deprecated and maintained for backward compatibility only.
+# For new development, use the shell scripts in scripts/ directory instead,
+# which support automatic detection of uv/pdm/venv runners.
+# See scripts/serve-app.sh, scripts/serve-doc.sh, scripts/build-doc.sh, scripts/gen-requirements.sh
+#
+# [tool.pdm.scripts]
+# serve-doc = { shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview" }
+# build-doc = { shell = "cd docs && mkdocs build", help = "Build documentation" }
+# gen-requirements = { cmd = [
+#     "pdm",
+#     "export",
+#     "--format",
+#     "requirements",
+#     "--without-hashes",
+#     "--pyproject",
+#     "--dev",
+#     "--group",
+#     "mkdocs",
+#     "--output",
+#     "requirements.txt",
+#     "--pyproject",
+#     "--editable-self",
+#     "--verbose",
+# ], help = "Generate requirements.txt" }
+# serve-app = { cmd = [
+#     "pdm",
+#     "run",
+#     "panel",
+#     "serve",
+#     "./app.py",
+#     "--static-dirs",
+#     "doc=docs/site",
+#     "--prefix=etc",
+#     "--websocket-max-message-size=104857600",
+#     "--port=5007",
+#     "--autoreload",
+# ], help = "Start the dev server for the ETC web application" }
