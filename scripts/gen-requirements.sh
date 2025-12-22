@@ -7,14 +7,13 @@
 #
 # This script exports all project dependencies to requirements.txt:
 # - Production dependencies
-# - Development dependencies
-# - Optional mkdocs dependencies
+# - All optional dependencies (dev, mkdocs)
 # - Editable self-install (-e .)
 # - Git and URL dependencies
 #
 # Output: requirements.txt (at project root)
 #
-# Note: Prefers uv export, falls back to pdm export if uv not available.
+# Note: Prefers uv export (with --all-extras), falls back to pdm export.
 #
 
 set -euo pipefail
@@ -43,8 +42,7 @@ case "${RUNNER_TYPE}" in
         exec uv export \
             --format requirements-txt \
             --no-hashes \
-            --all-groups \
-            --extra mkdocs \
+            --all-extras \
             --output-file "${PROJECT_ROOT}/requirements.txt"
         ;;
     pdm)
@@ -72,8 +70,7 @@ case "${RUNNER_TYPE}" in
             exec uv export \
                 --format requirements-txt \
                 --no-hashes \
-                --all-groups \
-                --extra mkdocs \
+                --all-extras \
                 --output-file "${PROJECT_ROOT}/requirements.txt"
         elif command -v pdm &> /dev/null; then
             echo "Generating requirements.txt using pdm export..."
