@@ -14,11 +14,8 @@ dependencies = [
     "pandas>=1.5.3",
     "python-dotenv>=1.0.1",
     "seaborn>=0.13.2",
-    "setuptools>=56.1.0",
     "synphot>=1.2.0",
     "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git",
-    "watchfiles>=0.21.0",
-    "importlib_metadata",
 ]
 requires-python = ">=3.12,<3.13"
 readme = "README.md"
@@ -37,6 +34,7 @@ dev = [
     "ruff>=0.0.239",
     "specutils>=1.10.0",
     "ty>=0.0.5",
+    "watchfiles>=0.21.0",
 ]
 mkdocs = [
     "mkdocs>=1.4.3",
