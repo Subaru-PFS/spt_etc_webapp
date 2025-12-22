@@ -7,7 +7,7 @@
 # - URL prefix: /etc
 # - Static documentation: /etc/doc
 # - WebSocket max message size: 100MB
-# - Auto-reload enabled for development
+# - Development mode enabled (--dev) for auto-reload
 #
 # Usage:
 #   ./scripts/serve-app.sh [uv|pdm|venv]
@@ -89,4 +89,4 @@ exec ${RUNNER} panel serve "${PROJECT_ROOT}/app.py" \
     --prefix=etc \
     --websocket-max-message-size=104857600 \
     --port=5007 \
-    --autoreload
+    --dev

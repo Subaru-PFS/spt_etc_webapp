@@ -66,7 +66,7 @@ class PfsSpecSim:
         for d in ["OUTDIR", "TMPDIR"]:
             if not os.path.exists(self.etc.params[d]):
                 try:
-                    os.makedirs(self.etc.params[d])
+                    os.makedirs(self.etc.params[d], exist_ok=True)
                 except OSError as e:
                     sys.exit("Unable to create outDir: %s" % e)
 
@@ -224,19 +224,18 @@ class PfsSpecSim:
             ),
         }
 
-        self.outfile_pfsobject = os.path.join(
-            outdir, f"pfsObject-{self.output.sessiondir}.fits"
-        )
+        # Extract session_id from sessiondir (last component of the path)
+        session_id = os.path.basename(self.output.sessiondir)
+
+        self.outfile_pfsobject = os.path.join(outdir, f"pfsObject-{session_id}.fits")
 
         self.outfile_simspec_prefix = os.path.join(
-            outdir, f"pfs_etc_simspec-{self.output.sessiondir}"
+            outdir, f"pfs_etc_simspec-{session_id}"
         )
         self.outfile_snline_prefix = os.path.join(
-            outdir, f"pfs_etc_snline-{self.output.sessiondir}"
+            outdir, f"pfs_etc_snline-{session_id}"
         )
-        self.outfile_tjtext = os.path.join(
-            outdir, f"pfs_etc_tjtext-{self.output.sessiondir}.txt"
-        )
+        self.outfile_tjtext = os.path.join(outdir, f"pfs_etc_tjtext-{session_id}.txt")
 
         if write:
             tb_simspec, tb_snline, text_tj = create_simspec_files(

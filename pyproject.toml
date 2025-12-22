@@ -14,11 +14,8 @@ dependencies = [
     "pandas>=1.5.3",
     "python-dotenv>=1.0.1",
     "seaborn>=0.13.2",
-    "setuptools>=56.1.0",
     "synphot>=1.2.0",
     "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git",
-    "watchfiles>=0.21.0",
-    "importlib_metadata",
 ]
 requires-python = ">=3.12,<3.13"
 readme = "README.md"
@@ -34,13 +31,10 @@ Repository = "https://github.com/Subaru-PFS/spt_etc_webapp"
 dev = [
     "black>=22.12.0",
     "ipython>=8.9.0",
-    "jupyter>=1.0.0",
-    "notebook>=6.5.2",
-    "pip>=23.0",
     "ruff>=0.0.239",
-    "pyright>=1.1.291",
-    "isort>=5.12.0",
     "specutils>=1.10.0",
+    "ty>=0.0.5",
+    "watchfiles>=0.21.0",
 ]
 mkdocs = [
     "mkdocs>=1.4.3",
@@ -64,6 +58,9 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools]
 package-dir = { "" = "src" }
 include-package-data = true
+
+[tool.setuptools.package-data]
+pfs_etc_web = ["py.typed"]
 
 [tool.setuptools.dynamic]
 version = { attr = "pfs_etc_web.__version__" }

@@ -151,33 +151,49 @@ def pfs_etc_app():
 
     is_recovered = False
 
+    # Attempt to recover simulation if simulation_id is provided
     if simulation_id.simulation_id not in [None, "null", ""]:
-        recovered_simulation_id, is_recovered, custom_input_file = recover_simulation(
-            simulation_id.simulation_id,
-            conf_target,
-            conf_environment,
-            conf_instrument,
-            conf_telescope,
-            conf_output,
-            logger,
-        )
-        if is_recovered:
-            conf_output.sessiondir = recovered_simulation_id
-            specsim = PfsSpecSim(
-                target=conf_target,
-                environment=conf_environment,
-                instrument=conf_instrument,
-                telescope=conf_telescope,
-                output=conf_output,
+        # Validate simulation_id format (must be YYYYMMDD-HHMMSS-...)
+        if (
+            len(simulation_id.simulation_id) < 8
+            or not simulation_id.simulation_id[:8].isdigit()
+        ):
+            logger.error(
+                f"Invalid simulation_id format: {simulation_id.simulation_id}. "
+                "Expected YYYYMMDD-HHMMSS-... format."
             )
-            # panel_downloads.update_simulation_id(recovered_simulation_id)
-            show_main_panel(
-                panel_plots,
-                panel_downloads,
-                specsim,
-                recovered_simulation_id,
-                write=False,
+        else:
+            # Try to recover the simulation
+            recovered_simulation_id, is_recovered, custom_input_file = recover_simulation(
+                simulation_id.simulation_id,
+                conf_target,
+                conf_environment,
+                conf_instrument,
+                conf_telescope,
+                conf_output,
+                logger,
             )
+
+            if is_recovered:
+                # Extract year and month from recovered session_id
+                year = recovered_simulation_id[:4]
+                month = recovered_simulation_id[4:6]
+                conf_output.sessiondir = f"{year}/{month}/{recovered_simulation_id}"
+
+                specsim = PfsSpecSim(
+                    target=conf_target,
+                    environment=conf_environment,
+                    instrument=conf_instrument,
+                    telescope=conf_telescope,
+                    output=conf_output,
+                )
+                show_main_panel(
+                    panel_plots,
+                    panel_downloads,
+                    specsim,
+                    recovered_simulation_id,
+                    write=False,
+                )
 
     # Float panel to display some messages
     # panel_initnote = InitNoteWidgets()
@@ -226,8 +242,10 @@ def pfs_etc_app():
 
                     logger.info("callback function is called")
 
+                    # Use UTC for session_id timestamp
+                    now_utc = datetime.datetime.now(datetime.timezone.utc)
                     session_id = (
-                        datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+                        now_utc.strftime("%Y%m%d-%H%M%S")
                         + "-"
                         # + "_"
                         + secrets.token_hex(8)
@@ -237,7 +255,9 @@ def pfs_etc_app():
 
                     logger.info(f"Session ID: {session_id}")
 
-                    conf_output.sessiondir = session_id
+                    # Create nested directory path: YYYY/MM/session_id (UTC)
+                    year_month_path = now_utc.strftime("%Y/%m")
+                    conf_output.sessiondir = f"{year_month_path}/{session_id}"
 
                     panel_buttons.exec.disabled = True
                     panel_buttons.exec.name = "Running"
