@@ -51,6 +51,10 @@ mkdocs = [
 ]
 
 [project.scripts]
+# NOTE: This CLI entry point is available but not actively used.
+# For development and production, use the shell scripts in scripts/ directory instead:
+# - scripts/serve-app.sh (recommended)
+# The CLI provides basic functionality but lacks some features (static dirs, prefix, etc.)
 run_pfs_etc_web = "pfs_etc_web.cli.run_panel_server:main"
 
 [build-system]

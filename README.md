@@ -120,6 +120,8 @@ Access the app at: `http://localhost:5007/etc`
 
 ### Direct Commands
 
+**Note:** The project provides a `run_pfs_etc_web` CLI command, but using the shell scripts or direct `panel serve` commands is recommended as they provide more complete configuration (static directories, URL prefix, WebSocket settings, etc.).
+
 **With uv:**
 
 ```sh
