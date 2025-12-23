@@ -1,5 +1,35 @@
 # Spectral Templates
 
+## Directory Structure
+
+```
+data/
+└── spectemplates/
+    ├── README.md           # This file
+    ├── input/              # Source input files
+    │   ├── swire_original/ # Original SWIRE SED templates
+    │   ├── swire_stsci/    # STScI-processed SWIRE templates
+    │   └── *.fits, *.txt   # Various stellar and galaxy templates
+    ├── output/             # Generated spectral templates (FITS format)
+    └── figures/            # Visualization outputs (PDF/PNG)
+```
+
+## Generating Templates
+
+Use the scripts in `scripts/` directory to generate spectral templates:
+
+```bash
+# Generate templates (default: reads from data/spectemplates/input, outputs to data/spectemplates/output)
+uv run python scripts/generate_spectemplates.py
+
+# Generate plots
+uv run python scripts/plot_spectemplates.py
+
+# For testing with custom directories
+uv run python scripts/generate_spectemplates.py --inputdir data --outputdir /tmp/test
+uv run python scripts/plot_spectemplates.py --inputdir /tmp/test --outputdir /tmp/test
+```
+
 ## References:
 
 ### Stellar libraries
