@@ -68,9 +68,14 @@ def prepare_spectrum(
     return None
 
 
-def create_template_spectrum(target, tmpdir: str = "."):
-    pkgdir = os.path.dirname(os.path.abspath(__file__))
-    datadir = os.path.join("spectemplates", "output")
+def create_template_spectrum(target, tmpdir: str = ".", datadir: str = None):
+    if datadir is None:
+        pkgdir = os.path.dirname(os.path.abspath(__file__))
+        projectroot = os.path.dirname(os.path.dirname(pkgdir))
+        datadir = os.path.join(projectroot, "data", "spectemplates", "output")
+
+    # Ensure output directory exists
+    os.makedirs(datadir, exist_ok=True)
     templatefiles = {
         # "Star-forming galaxy": "galaxy_starforming.fits",
         # "Quiescent galaxy": "galaxy_quiescent.fits",
@@ -121,7 +126,7 @@ def create_template_spectrum(target, tmpdir: str = "."):
     else:
         target.mag_file = os.path.join(tmpdir, "mag_file_template.txt")
         flag_good_lamnorm = prepare_spectrum(
-            os.path.join(pkgdir, datadir, templatefiles[target.template]),
+            os.path.join(datadir, templatefiles[target.template]),
             target.mag_file,
             redshift=target.redshift,
             norm_wavelength=target.wavelength * u.nm,

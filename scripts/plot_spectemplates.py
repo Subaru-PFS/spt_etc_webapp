@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import os
 
 import matplotlib.pyplot as plt
@@ -61,9 +62,38 @@ def plot_spectra(
     # fig.legend(loc="outside upper right")
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Plot spectral templates")
+    parser.add_argument(
+        "--datadir",
+        default="data",
+        help="Root directory for input/output data (default: data)",
+    )
+    parser.add_argument(
+        "--inputdir",
+        default=None,
+        help="Root directory for input data (default: <datadir>)",
+    )
+    parser.add_argument(
+        "--outputdir",
+        default=None,
+        help="Root directory for output data (default: <datadir>)",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    specdir = "output"
-    plotdir = "figures"
+    args = parse_args()
+
+    # Use separate input/output dirs if specified, otherwise use datadir
+    input_root = args.inputdir if args.inputdir else args.datadir
+    output_root = args.outputdir if args.outputdir else args.datadir
+
+    specdir = os.path.join(input_root, "spectemplates", "output")
+    plotdir = os.path.join(output_root, "spectemplates", "figures")
+
+    # Ensure output directory exists
+    os.makedirs(plotdir, exist_ok=True)
     spec_stars = {
         "B0V": "star_b0v.fits",
         "A0V": "star_a0v.fits",

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import os
 
 import numpy as np
@@ -118,9 +119,38 @@ def main(k, v):
     # print(wave_new, flux_new)
 
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Generate spectral templates")
+    parser.add_argument(
+        "--datadir",
+        default="data",
+        help="Root directory for input/output data (default: data)",
+    )
+    parser.add_argument(
+        "--inputdir",
+        default=None,
+        help="Root directory for input data (default: <datadir>)",
+    )
+    parser.add_argument(
+        "--outputdir",
+        default=None,
+        help="Root directory for output data (default: <datadir>)",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    indir = "input"
-    outdir = "output"
+    args = parse_args()
+
+    # Use separate input/output dirs if specified, otherwise use datadir
+    input_root = args.inputdir if args.inputdir else args.datadir
+    output_root = args.outputdir if args.outputdir else args.datadir
+
+    indir = os.path.join(input_root, "spectemplates", "input")
+    outdir = os.path.join(output_root, "spectemplates", "output")
+
+    # Ensure output directory exists
+    os.makedirs(outdir, exist_ok=True)
 
     infile_dict = {
         "B0V": {
@@ -233,7 +263,9 @@ if __name__ == "__main__":
         },
     }
 
-    indir_swire_original = "input/swire_original"
+    indir_swire_original = os.path.join(
+        input_root, "spectemplates", "input", "swire_original"
+    )
     infile_swire_original = {
         "Elliptical 2 Gyr": {
             "infile": os.path.join(indir_swire_original, "Ell2_template_norm.sed"),
@@ -282,9 +314,9 @@ if __name__ == "__main__":
         },
     }
 
-    # for k, v in infile_dict.items():
-    #     print(k, v)
-    #     main(k, v)
+    for k, v in infile_dict.items():
+        print(k, v)
+        main(k, v)
 
     for k, v in infile_swire_original.items():
         print(k, v)
