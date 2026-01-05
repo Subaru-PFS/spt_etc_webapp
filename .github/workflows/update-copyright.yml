@@ -1,102 +1,102 @@
 name: Update Copyright Year
 
 on:
-    # Allow manual execution from GitHub UI
-    workflow_dispatch:
-    # Automatically run on January 1st every year at 00:00 UTC
-    schedule:
-        - cron: "0 0 1 1 *"
+  # Allow manual execution from GitHub UI
+  workflow_dispatch:
+  # Automatically run on January 1st every year at 00:00 UTC
+  schedule:
+    - cron: "0 0 1 1 *"
 
 permissions:
-    contents: write # Required for creating branches and commits
-    pull-requests: write # Required for creating pull requests
+  contents: write # Required for creating branches and commits
+  pull-requests: write # Required for creating pull requests
 
 jobs:
-    update-copyright:
-        runs-on: ubuntu-latest
+  update-copyright:
+    runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v6
-              with:
-                  fetch-depth: 0 # Fetch full history for proper git operations
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # Fetch full history for proper git operations
 
-            - name: Get current year
-              id: year
-              run: echo "current_year=$(date +%Y)" >> $GITHUB_OUTPUT
+      - name: Get current year
+        id: year
+        run: echo "current_year=$(date +%Y)" >> $GITHUB_OUTPUT
 
-            - name: Check if LICENSE file exists
-              id: check_license
-              run: |
-                  if [ -f LICENSE ]; then
-                    echo "exists=true" >> $GITHUB_OUTPUT
-                  else
-                    echo "exists=false" >> $GITHUB_OUTPUT
-                    echo "::warning::LICENSE file not found in repository"
-                  fi
+      - name: Check if LICENSE file exists
+        id: check_license
+        run: |
+          if [ -f LICENSE ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "::warning::LICENSE file not found in repository"
+          fi
 
-            - name: Update copyright year in LICENSE
-              if: steps.check_license.outputs.exists == 'true'
-              run: |
-                  CURRENT_YEAR="${{ steps.year.outputs.current_year }}"
+      - name: Update copyright year in LICENSE
+        if: steps.check_license.outputs.exists == 'true'
+        run: |
+          CURRENT_YEAR="${{ steps.year.outputs.current_year }}"
 
-                  # Update copyright year patterns:
-                  # 1. "Copyright (c) 2023" -> "Copyright (c) 2023-YYYY"
-                  # 2. "Copyright (c) 2023-XXXX" -> "Copyright (c) 2023-YYYY"
+          # Update copyright year patterns:
+          # 1. "Copyright (c) 2023" -> "Copyright (c) 2023-YYYY"
+          # 2. "Copyright (c) 2023-XXXX" -> "Copyright (c) 2023-YYYY"
 
-                  # Check if already using range format
-                  if grep -q "Copyright (c) 2023-" LICENSE; then
-                    # Update existing range
-                    sed -i "s/Copyright (c) 2023-[0-9]\{4\}/Copyright (c) 2023-$CURRENT_YEAR/" LICENSE
-                    echo "Updated existing copyright range to 2023-$CURRENT_YEAR"
-                  elif grep -q "Copyright (c) 2023 " LICENSE; then
-                    # Convert single year to range
-                    sed -i "s/Copyright (c) 2023 /Copyright (c) 2023-$CURRENT_YEAR /" LICENSE
-                    echo "Converted copyright to range format: 2023-$CURRENT_YEAR"
-                  else
-                    echo "::notice::No copyright year pattern found that needs updating"
-                  fi
+          # Check if already using range format
+          if grep -q "Copyright (c) 2023-" LICENSE; then
+            # Update existing range
+            sed -i "s/Copyright (c) 2023-[0-9]\{4\}/Copyright (c) 2023-$CURRENT_YEAR/" LICENSE
+            echo "Updated existing copyright range to 2023-$CURRENT_YEAR"
+          elif grep -q "Copyright (c) 2023 " LICENSE; then
+            # Convert single year to range
+            sed -i "s/Copyright (c) 2023 /Copyright (c) 2023-$CURRENT_YEAR /" LICENSE
+            echo "Converted copyright to range format: 2023-$CURRENT_YEAR"
+          else
+            echo "::notice::No copyright year pattern found that needs updating"
+          fi
 
-            - name: Check for changes
-              id: check_changes
-              run: |
-                  if git diff --quiet LICENSE; then
-                    echo "has_changes=false" >> $GITHUB_OUTPUT
-                    echo "::notice::LICENSE file is already up to date"
-                  else
-                    echo "has_changes=true" >> $GITHUB_OUTPUT
-                    echo "Changes detected in LICENSE file"
-                  fi
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet LICENSE; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "::notice::LICENSE file is already up to date"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected in LICENSE file"
+          fi
 
-            - name: Display changes
-              if: steps.check_changes.outputs.has_changes == 'true'
-              run: |
-                  echo "=== LICENSE file changes ==="
-                  git diff LICENSE
+      - name: Display changes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          echo "=== LICENSE file changes ==="
+          git diff LICENSE
 
-            - name: Create Pull Request
-              if: steps.check_changes.outputs.has_changes == 'true'
-              uses: peter-evans/create-pull-request@v8
-              with:
-                  token: ${{ secrets.GITHUB_TOKEN }}
-                  commit-message: "chore: update copyright year to ${{ steps.year.outputs.current_year }}"
-                  title: "chore: Update copyright year to ${{ steps.year.outputs.current_year }}"
-                  body: |
-                      ## Summary
-                      This PR automatically updates the copyright year in the LICENSE file to ${{ steps.year.outputs.current_year }}.
+      - name: Create Pull Request
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update copyright year to ${{ steps.year.outputs.current_year }}"
+          title: "chore: Update copyright year to ${{ steps.year.outputs.current_year }}"
+          body: |
+            ## Summary
+            This PR automatically updates the copyright year in the LICENSE file to ${{ steps.year.outputs.current_year }}.
 
-                      ## Changes
-                      - Updated `LICENSE` file copyright notice from `2023` or `2023-XXXX` to `2023-${{ steps.year.outputs.current_year }}`
+            ## Changes
+            - Updated `LICENSE` file copyright notice from `2023` or `2023-XXXX` to `2023-${{ steps.year.outputs.current_year }}`
 
-                      ## Notes
-                      - This PR was automatically created by the "Update Copyright Year" GitHub Actions workflow
-                      - Please review and merge to keep the copyright year current
+            ## Notes
+            - This PR was automatically created by the "Update Copyright Year" GitHub Actions workflow
+            - Please review and merge to keep the copyright year current
 
-                      ---
-                      *Generated by `.github/workflows/update-copyright.yml`*
-                  branch: auto-update-copyright-${{ steps.year.outputs.current_year }}
-                  base: dev-main
-                  delete-branch: true
-                  labels: |
-                      automated
-                      maintenance
+            ---
+            *Generated by `.github/workflows/update-copyright.yml`*
+          branch: auto-update-copyright-${{ steps.year.outputs.current_year }}
+          base: main
+          delete-branch: true
+          labels: |
+            automated
+            maintenance
