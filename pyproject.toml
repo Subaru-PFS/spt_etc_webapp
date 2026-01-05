@@ -15,7 +15,12 @@ keywords = [
 ]
 dependencies = [
   "astropy>=6.1.0",
+  "fontawesome-markdown @ https://github.com/bmcorser/fontawesome-markdown/archive/master.zip",
   "loguru>=0.7.2",
+  "mkdocs>=1.4.3",
+  "mkdocs-macros-plugin>=0.7.0",
+  "mkdocs-material[imaging]>=9.5.3",
+  "mkdocs-video>=1.5.0",
   "myst-parser>=1.0.0",
   "numpy>=2.0.0",
   "pandas>=2.2.2",
@@ -47,13 +52,6 @@ dev = [
   "specutils>=1.10.0",
   "ty>=0.0.5",
   "watchfiles>=0.21.0",
-]
-mkdocs = [
-  "mkdocs>=1.4.3",
-  "mkdocs-material[imaging]>=9.5.3",
-  "mkdocs-macros-plugin>=0.7.0",
-  "fontawesome-markdown @ https://github.com/bmcorser/fontawesome-markdown/archive/master.zip",
-  "mkdocs-video>=1.5.0",
 ]
 
 [build-system]
