@@ -19,7 +19,7 @@ def prepare_spectrum(
     norm_bandwidth: u.Quantity = 10.0 * u.nm,
     wmin: float = 300.0,  # [nm]
     wmax: float = 1300.0,  # [nm]
-) -> None or bool:
+) -> None | bool:
     # define a tophat filter for flux normalization
     band = synphot.SpectralElement(
         synphot.models.Box1D,
@@ -29,12 +29,8 @@ def prepare_spectrum(
     )
 
     # load the template spectrum
-    sp_rest = synphot.SourceSpectrum.from_file(
-        infile,
-        wave_unit=u.AA,
-        # flux_unit=synphot.units.FLAM,
-        flux_unit=u.erg / u.s / u.cm**2 / u.AA,
-    )
+    sp_rest = synphot.SourceSpectrum.from_file(infile)
+
     # min/max wavelenghth supported in the original template
     wmin0 = getval(infile, "WAVE_MIN", 1)  # angstrom
     wmax0 = getval(infile, "WAVE_MAX", 1)  # angstrom
@@ -68,7 +64,7 @@ def prepare_spectrum(
     return None
 
 
-def create_template_spectrum(target, tmpdir: str = ".", datadir: str = None):
+def create_template_spectrum(target, tmpdir: str = ".", datadir: str | None = None):
     if datadir is None:
         pkgdir = os.path.dirname(os.path.abspath(__file__))
         projectroot = os.path.dirname(os.path.dirname(pkgdir))
