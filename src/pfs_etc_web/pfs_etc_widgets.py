@@ -374,3 +374,34 @@ class DownloadWidgets:
         # )
 
         logger.info(f"Simulation ID: {simulation_id}")
+
+
+class VersionInfoWidgets:
+    """Display version information for pfs_etc_webapp and pfsspecsim."""
+
+    def __init__(self):
+        webapp_version, specsim_version = self._get_versions()
+
+        self.pane = pn.pane.Markdown(
+            f"""<font size=2>**Version Information**</font>
+
+- **<a href="https://github.com/Subaru-PFS/spt_etc_webapp/" target="_blank">PFS Spectral Simulator</a>**: {webapp_version}
+- **<a href="https://github.com/Subaru-PFS/spt_ExposureTimeCalculator/" target="_blank">PFS Exposure Time Calculator</a>**: {specsim_version}
+            """
+        )
+
+    def _get_versions(self):
+        """Get version strings with fallback handling."""
+        try:
+            from pfs_etc_web import __version__ as webapp_version
+        except ImportError:
+            webapp_version = "unknown"
+
+        try:
+            import pfsspecsim
+
+            specsim_version = pfsspecsim.__version__
+        except (ImportError, AttributeError):
+            specsim_version = "unknown"
+
+        return webapp_version, specsim_version

@@ -32,6 +32,7 @@ from .pfs_etc_widgets import (
     InstrumentWidgets,
     TargetWidgets,
     TelescopeWidgets,
+    VersionInfoWidgets,
 )
 
 
@@ -142,6 +143,9 @@ def pfs_etc_app():
     # Create button to start computation
     panel_buttons = ExecButtonWidgets()
 
+    # Create version info panel
+    panel_version = VersionInfoWidgets()
+
     # Create a panel to show plots
     panel_plots = BokehWidgets(create_dummy_plot())
     panel_plots.plot_heading.visible = False
@@ -199,7 +203,12 @@ def pfs_etc_app():
     # panel_initnote = InitNoteWidgets()
 
     # put panels into a template
-    sidebar_column = pn.Column(panel_buttons.pane, tab_inputs)
+    sidebar_column = pn.Column(
+        panel_buttons.pane,
+        tab_inputs,
+        pn.Spacer(),
+        panel_version.pane,
+    )
     template.sidebar.append(sidebar_column)
 
     main_column = pn.Column(
