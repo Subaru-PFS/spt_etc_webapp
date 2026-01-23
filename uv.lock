@@ -1102,8 +1102,8 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "pfsspecsim"
-version = "1.5.0"
-source = { git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git#664bedd4df9f0495c3729f95b530674f35f6b55b" }
+version = "1.5.1"
+source = { git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git#fa694df7313df262f62cd92a80ae5e0011c97fd1" }
 dependencies = [
     { name = "astropy" },
     { name = "matplotlib" },
