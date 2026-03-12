@@ -54,7 +54,7 @@ babel==2.17.0
     #   sphinx
 backrefs==6.1
     # via mkdocs-material
-black==25.12.0
+black==26.3.1
     # via pfs-etc-web
 bleach==6.3.0
     # via panel
