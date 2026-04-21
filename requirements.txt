@@ -298,7 +298,7 @@ python-dateutil==2.9.0.post0
     #   matplotlib
     #   mkdocs-macros-plugin
     #   pandas
-python-dotenv==1.2.1
+python-dotenv==1.2.2
     # via pfs-etc-web
 pytokens==0.3.0
     # via black
