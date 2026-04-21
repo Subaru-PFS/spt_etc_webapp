@@ -143,7 +143,7 @@ linkify-it-py==2.0.3
     # via panel
 loguru==0.7.3
     # via pfs-etc-web
-lxml==6.0.2
+lxml==6.1.0
     # via mkdocs-video
 markdown==3.10
     # via
