@@ -26,7 +26,7 @@ dependencies = [
   "pandas>=2.2.2",
   "panel>=1.5.0",
   "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git",
-  "python-dotenv>=1.0.1",
+  "python-dotenv>=1.2.2",
   "synphot>=1.2.0",
 ]
 dynamic = ["version"]
