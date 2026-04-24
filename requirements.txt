@@ -262,7 +262,7 @@ pfs-datamodel @ git+https://github.com/Subaru-PFS/datamodel.git@a5eb4c04878dd58b
     # via pfsspecsim
 pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@664bedd4df9f0495c3729f95b530674f35f6b55b
     # via pfs-etc-web
-pillow==12.1.1
+pillow==12.2.0
     # via
     #   bokeh
     #   cairosvg
