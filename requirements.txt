@@ -374,7 +374,7 @@ tinycss2==1.5.1
     # via
     #   cairosvg
     #   cssselect2
-tornado==6.5.5 ; sys_platform != 'emscripten'
+tornado==6.5.6 ; sys_platform != 'emscripten'
     # via bokeh
 tqdm==4.67.1
     # via panel
