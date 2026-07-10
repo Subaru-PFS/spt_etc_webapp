@@ -24,7 +24,7 @@ def _looks_like_ecsv(infile: str) -> bool:
                     break
                 if line.startswith("# %ECSV"):
                     return True
-    except OSError:
+    except (OSError, UnicodeDecodeError):
         return False
     return False
 
