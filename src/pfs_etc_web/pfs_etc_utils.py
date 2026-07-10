@@ -302,6 +302,28 @@ def create_dummy_plot(
     return column(p)
 
 
+ARM_PLOT_SPECS = {
+    "b": {"title": "Blue arm", "x_range": [380, 650], "color": Colorblind[7][0]},
+    "r": {"title": "Red arm", "x_range": [630, 970], "color": Colorblind[7][3]},
+    "n": {"title": "Near-IR arm", "x_range": [940, 1260], "color": Colorblind[7][1]},
+    "m": {
+        "title": "Medium resolution arm",
+        "x_range": [710, 885],
+        "color": Colorblind[7][6],
+    },
+}
+
+
+def _active_arm_keys(mr_mode: bool) -> list[str]:
+    """Arm plot keys to display, in wavelength order.
+
+    The ETC computes at most 3 arms per run (n_workers is capped to 3 in
+    pfsspecsim's Etc.run()), so r (normal resolution) and m (medium
+    resolution) are mutually exclusive depending on ``mr_mode``.
+    """
+    return ["b", "m" if mr_mode else "r", "n"]
+
+
 def create_simspec_plot(
     df: pd.DataFrame,
     df_snline: pd.DataFrame,
