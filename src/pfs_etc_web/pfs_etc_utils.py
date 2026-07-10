@@ -29,12 +29,29 @@ def _looks_like_ecsv(infile: str) -> bool:
     return False
 
 
+def _first_data_line_has_header(infile: str) -> bool:
+    """Peek at the first non-comment, non-blank line to see whether it is
+    a literal column-name header rather than numeric data."""
+    with open(infile) as f:
+        for line in f:
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            tokens = stripped.split()
+            try:
+                [float(token) for token in tokens]
+            except ValueError:
+                return True
+            return False
+    return False
+
+
 def _read_legacy_ascii_with_optional_header(
     infile: str,
     names: list[str],
     dtype: dict[str, type],
 ) -> pd.DataFrame:
-    try:
+    if not _first_data_line_has_header(infile):
         return pd.read_table(
             infile,
             sep=r"\s+",
@@ -43,20 +60,17 @@ def _read_legacy_ascii_with_optional_header(
             names=names,
             dtype=dtype,
         )
-    except ValueError:
-        # Some legacy outputs include an uncommented header row.
-        df = pd.read_table(
-            infile,
-            sep=r"\s+",
-            comment="#",
-            header=0,
-        )
-        if not set(names).issubset(df.columns):
-            if len(df.columns) < len(names):
-                raise
-            df = df.iloc[:, : len(names)].copy()
-            df.columns = names
-        return df.astype(dtype)
+
+    # Some legacy outputs include an uncommented header row.
+    df = pd.read_table(
+        infile,
+        sep=r"\s+",
+        comment="#",
+        header=0,
+    )
+    if not set(names).issubset(df.columns):
+        raise ValueError(f"Unsupported legacy columns in {infile}: {list(df.columns)}")
+    return df[names].astype(dtype)
 
 
 def load_simspec(infile: str) -> pd.DataFrame:
