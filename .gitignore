@@ -167,6 +167,9 @@ tmp/
 
 .space
 
+# Local notes from Claude Code's superpowers skills (specs/plans) -- not shared via git
+docs/superpowers/
+
 .DS_Store
 
 # setuptools-scm generated version file
