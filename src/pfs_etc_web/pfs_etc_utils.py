@@ -29,6 +29,18 @@ def _looks_like_ecsv(infile: str) -> bool:
     return False
 
 
+def _cast_columns(df: pd.DataFrame, dtype: dict[str, type], infile: str) -> pd.DataFrame:
+    """astype(dtype), raising a clear error instead of a confusing pandas
+    exception when a column destined for an int dtype contains NaN."""
+    for col, col_type in dtype.items():
+        if col_type is int and df[col].isna().any():
+            raise ValueError(
+                f"Column '{col}' in {infile} contains missing values "
+                "and cannot be cast to int"
+            )
+    return df.astype(dtype)
+
+
 def _first_data_line_has_header(infile: str) -> bool:
     """Peek at the first non-comment, non-blank line to see whether it is
     a literal column-name header rather than numeric data."""
@@ -70,7 +82,7 @@ def _read_legacy_ascii_with_optional_header(
     )
     if not set(names).issubset(df.columns):
         raise ValueError(f"Unsupported legacy columns in {infile}: {list(df.columns)}")
-    return df[names].astype(dtype)
+    return _cast_columns(df[names], dtype, infile)
 
 
 def load_simspec(infile: str) -> pd.DataFrame:
@@ -101,7 +113,7 @@ def load_simspec(infile: str) -> pd.DataFrame:
             raise ValueError(
                 f"Unsupported simspec columns in {infile}: {list(df.columns)}"
             )
-        df = df[names].astype(dtype)
+        df = _cast_columns(df[names], dtype, infile)
     else:
         df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
 
@@ -155,7 +167,7 @@ def load_snline(infile: str) -> pd.DataFrame:
         for col in names:
             if col not in df.columns:
                 df[col] = np.nan
-        df = df[names].astype(dtype)
+        df = _cast_columns(df[names], dtype, infile)
     else:
         df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
 
@@ -208,7 +220,7 @@ def load_sncont(infile: str) -> pd.DataFrame:
             raise ValueError(
                 f"Unsupported sn-continuum columns in {infile}: {list(df.columns)}"
             )
-        df = df[names].astype(dtype)
+        df = _cast_columns(df[names], dtype, infile)
     else:
         df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
 
