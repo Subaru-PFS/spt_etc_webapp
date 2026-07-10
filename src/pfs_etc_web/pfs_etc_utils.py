@@ -15,88 +15,178 @@ from loguru import logger
 from . import PfsArm
 
 
+def _looks_like_ecsv(infile: str) -> bool:
+    try:
+        with open(infile) as f:
+            for _ in range(20):
+                line = f.readline()
+                if line == "":
+                    break
+                if line.startswith("# %ECSV"):
+                    return True
+    except OSError:
+        return False
+    return False
+
+
+def _read_legacy_ascii_with_optional_header(
+    infile: str,
+    names: list[str],
+    dtype: dict[str, type],
+) -> pd.DataFrame:
+    try:
+        return pd.read_table(
+            infile,
+            sep=r"\s+",
+            comment="#",
+            header=None,
+            names=names,
+            dtype=dtype,
+        )
+    except ValueError:
+        # Some legacy outputs include an uncommented header row.
+        df = pd.read_table(
+            infile,
+            sep=r"\s+",
+            comment="#",
+            header=0,
+        )
+        if not set(names).issubset(df.columns):
+            if len(df.columns) < len(names):
+                raise
+            df = df.iloc[:, : len(names)].copy()
+            df.columns = names
+        return df.astype(dtype)
+
+
 def load_simspec(infile: str) -> pd.DataFrame:
-    df = pd.read_table(
-        infile,
-        sep=r"\s+",
-        comment="#",
-        header=None,
-        # header=0,
-        names=["wavelength", "flux", "error", "mask", "sky", "arm"],
-        dtype={
-            "wavelength": float,
-            "flux": float,
-            "error": float,
-            "mask": int,
-            "sky": float,
-            "arm": int,
-        },
-    )
+    names = ["wavelength", "flux", "error", "mask", "sky", "arm"]
+    dtype = {
+        "wavelength": float,
+        "flux": float,
+        "error": float,
+        "mask": int,
+        "sky": float,
+        "arm": int,
+    }
+
+    if _looks_like_ecsv(infile):
+        tb = QTable.read(infile, format="ascii.ecsv")
+        df = tb.to_pandas()
+        if not set(names).issubset(df.columns):
+            rename_map = {
+                "WAVELENGTH": "wavelength",
+                "FLUX": "flux",
+                "ERROR": "error",
+                "MASK": "mask",
+                "SKY": "sky",
+                "ARM": "arm",
+            }
+            df = df.rename(columns=rename_map)
+        if not set(names).issubset(df.columns):
+            raise ValueError(
+                f"Unsupported simspec columns in {infile}: {list(df.columns)}"
+            )
+        df = df[names].astype(dtype)
+    else:
+        df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
+
     return df
 
 
 def load_snline(infile: str) -> pd.DataFrame:
-    df = pd.read_table(
-        infile,
-        sep=r"\s+",
-        comment="#",
-        header=None,
-        # header=0,
-        names=[
-            "wavelength",
-            "fiber_aperture_factor",
-            "effective_collecting_area",
-            "snline_b",
-            "snline_r",
-            "snline_n",
-            "snline_tot",
-        ],
-        dtype={
-            "wavelength": float,
-            "fiber_aperture_factor": float,
-            "effective_collecting_area": float,
-            "snline_b": float,
-            "snline_r": float,
-            "snline_n": float,
-            "snline_tot": float,
-        },
-    )
+    names = [
+        "wavelength",
+        "fiber_aperture_factor",
+        "effective_collecting_area",
+        "snline_b",
+        "snline_r",
+        "snline_n",
+        "snline_tot",
+    ]
+    dtype = {
+        "wavelength": float,
+        "fiber_aperture_factor": float,
+        "effective_collecting_area": float,
+        "snline_b": float,
+        "snline_r": float,
+        "snline_n": float,
+        "snline_tot": float,
+    }
+
+    if _looks_like_ecsv(infile):
+        tb = QTable.read(infile, format="ascii.ecsv")
+        df = tb.to_pandas()
+        df = df.rename(
+            columns={
+                "effective_area": "effective_collecting_area",
+                "snr_b": "snline_b",
+                "snr_r": "snline_r",
+                "snr_m": "snline_r",
+                "snr_n": "snline_n",
+                "snr_tot": "snline_tot",
+            }
+        )
+        # Fill missing arm columns in MR mode with NaN where needed.
+        for col in names:
+            if col not in df.columns:
+                df[col] = np.nan
+        df = df[names].astype(dtype)
+    else:
+        df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
+
     return df
 
 
 def load_sncont(infile: str) -> pd.DataFrame:
-    df = pd.read_table(
-        infile,
-        sep=r"\s+",
-        comment="#",
-        header=None,
-        names=[
-            "arm",
-            "pixel",
-            "wavelength",
-            "sncont",
-            "signal_per_exp",
-            "noise_wo_obj_per_exp",
-            "noise_w_obj_per_exp",
-            "input_spec",
-            "convfac_flux2e",
-            "samplefac",
-            "sky",
-        ],
-        dtype={
-            "arm": int,
-            "pixel": int,
-            "wavelength": float,
-            "sncont": float,
-            "signal_per_exp": float,
-            "noise_wo_obj_per_exp": float,
-            "noise_w_obj_per_exp": float,
-            "input_spec": float,
-            "convfac_flux2e": float,
-            "samplefac": float,
-            "sky": float,
-        },
-    )
+    names = [
+        "arm",
+        "pixel",
+        "wavelength",
+        "sncont",
+        "signal_per_exp",
+        "noise_wo_obj_per_exp",
+        "noise_w_obj_per_exp",
+        "input_spec",
+        "convfac_flux2e",
+        "samplefac",
+        "sky",
+    ]
+    dtype = {
+        "arm": int,
+        "pixel": int,
+        "wavelength": float,
+        "sncont": float,
+        "signal_per_exp": float,
+        "noise_wo_obj_per_exp": float,
+        "noise_w_obj_per_exp": float,
+        "input_spec": float,
+        "convfac_flux2e": float,
+        "samplefac": float,
+        "sky": float,
+    }
+
+    if _looks_like_ecsv(infile):
+        tb = QTable.read(infile, format="ascii.ecsv")
+        df = tb.to_pandas()
+        df = df.rename(
+            columns={
+                "snr": "sncont",
+                "signal": "signal_per_exp",
+                "noise_variance": "noise_wo_obj_per_exp",
+                "noise_variance_tot": "noise_w_obj_per_exp",
+                "input_mag": "input_spec",
+                "conversion_factor": "convfac_flux2e",
+                "sampling_factor": "samplefac",
+            }
+        )
+        if not set(names).issubset(df.columns):
+            raise ValueError(
+                f"Unsupported sn-continuum columns in {infile}: {list(df.columns)}"
+            )
+        df = df[names].astype(dtype)
+    else:
+        df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
 
     # saturation counts
     # CCDs: ~50000 e-, H4RGs ~80000-100000 e- (As a upper limit for good linearity)
@@ -154,6 +244,7 @@ def create_simspec_plot(
         aspect_ratio=aspect_ratio,
         sizing_mode="scale_width",
         output_backend="webgl",
+        tools="pan,wheel_zoom,box_zoom,reset,save",
         active_drag="box_zoom",
     )
     kwargs_snline = dict(
@@ -162,11 +253,13 @@ def create_simspec_plot(
         aspect_ratio=aspect_ratio,
         sizing_mode="scale_width",
         output_backend="webgl",
+        tools="pan,wheel_zoom,box_zoom,reset,save",
         active_drag="box_zoom",
     )
     extra_y_axis_label = "S/N per pixel"
 
-    input_spec = df_sncont["input_spec"].to_numpy()
+    # pandas 3 may return a read-only array from to_numpy(); copy for safe mutation.
+    input_spec = df_sncont["input_spec"].to_numpy(copy=True)
     input_spec[np.isclose(input_spec, np.zeros_like(input_spec))] = np.nan
     input_spec = (input_spec * u.ABmag).to(u.nJy).value
 

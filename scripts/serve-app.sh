@@ -33,6 +33,26 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 # Change to project root
 cd "${PROJECT_ROOT}"
 
+ensure_watchfiles() {
+    if ${RUNNER} python -c "import watchfiles" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    echo "watchfiles is not installed; syncing dev dependencies before startup..."
+
+    case "${RUNNER_TYPE}" in
+        uv)
+            uv sync --extra dev
+            ;;
+        pdm)
+            pdm install -G dev
+            ;;
+        venv|auto)
+            "${PROJECT_ROOT}/.venv/bin/python" -m pip install -e "${PROJECT_ROOT}[dev]"
+            ;;
+    esac
+}
+
 # Parse command-line argument
 RUNNER_TYPE="${1:-auto}"
 
@@ -82,6 +102,8 @@ case "${RUNNER_TYPE}" in
         exit 1
         ;;
 esac
+
+ensure_watchfiles
 
 # Execute the command
 exec ${RUNNER} panel serve "${PROJECT_ROOT}/app.py" \
