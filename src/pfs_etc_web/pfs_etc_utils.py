@@ -328,6 +328,7 @@ def create_simspec_plot(
     df: pd.DataFrame,
     df_snline: pd.DataFrame,
     df_sncont: pd.DataFrame,
+    mr_mode: bool,
     aspect_ratio: float = 2.5,
 ):
     kwargs_simspec = dict(
@@ -362,26 +363,13 @@ def create_simspec_plot(
     df["is_saturated"] = df_sncont["is_saturated"]
     df["input_spec"] = input_spec
 
-    dict_df_arm = dict(
-        b=df.loc[df["arm"] == 0, :],
-        r=df.loc[df["arm"] == 1, :],
-        n=df.loc[df["arm"] == 2, :],
-        m=df.loc[df["arm"] == 3, :],
-    )
+    # The ETC computes at most 3 arms per run (n_workers is capped to 3),
+    # so r and m are mutually exclusive. Only build the arm that's
+    # actually active, in wavelength order.
+    arm_keys = _active_arm_keys(mr_mode)
 
-    dict_source_arm = dict(
-        b=ColumnDataSource(dict_df_arm["b"]),
-        r=ColumnDataSource(dict_df_arm["r"]),
-        n=ColumnDataSource(dict_df_arm["n"]),
-        m=ColumnDataSource(dict_df_arm["m"]),
-    )
-
-    dict_line_color = dict(
-        b=Colorblind[7][0],
-        r=Colorblind[7][3],
-        n=Colorblind[7][1],
-        m=Colorblind[7][6],
-    )
+    dict_df_arm = {key: df.loc[df["arm"] == PfsArm[key].value, :] for key in arm_keys}
+    dict_source_arm = {key: ColumnDataSource(dict_df_arm[key]) for key in arm_keys}
 
     tooltips = [
         ("Wavelength", "@wavelength"),
@@ -395,34 +383,16 @@ def create_simspec_plot(
         ("S/N", "@snline_tot"),
     ]
 
-    p_simspec_b = figure(
-        title="Blue arm",
-        x_range=[380, 650],
-        y_range=[ymin, ymax],
-        tooltips=tooltips,
-        **kwargs_simspec,
-    )
-    p_simspec_r = figure(
-        title="Red arm",
-        x_range=[630, 970],
-        y_range=[ymin, ymax],
-        tooltips=tooltips,
-        **kwargs_simspec,
-    )
-    p_simspec_n = figure(
-        title="Near-IR arm",
-        x_range=[940, 1260],
-        y_range=[ymin, ymax],
-        tooltips=tooltips,
-        **kwargs_simspec,
-    )
-    p_simspec_m = figure(
-        title="Medium resolution arm",
-        x_range=[710, 885],
-        y_range=[ymin, ymax],
-        tooltips=tooltips,
-        **kwargs_simspec,
-    )
+    figures = {}
+    for key in arm_keys:
+        spec = ARM_PLOT_SPECS[key]
+        figures[key] = figure(
+            title=spec["title"],
+            x_range=spec["x_range"],
+            y_range=[ymin, ymax],
+            tooltips=tooltips,
+            **kwargs_simspec,
+        )
 
     p_snline = figure(
         title="Emission Line S/N",
@@ -431,15 +401,16 @@ def create_simspec_plot(
         **kwargs_snline,
     )
 
-    for arm, p_arm in zip(
-        ["b", "r", "n", "m"], [p_simspec_b, p_simspec_r, p_simspec_n, p_simspec_m]
-    ):
+    for arm in arm_keys:
+        p_arm = figures[arm]
+        color = ARM_PLOT_SPECS[arm]["color"]
+
         # plot flux
         p_arm.line(
             "wavelength",
             "flux",
             source=dict_source_arm[arm],
-            color=dict_line_color[arm],
+            color=color,
             alpha=0.8,
             legend_label="Flux",
         )
@@ -448,8 +419,7 @@ def create_simspec_plot(
             "wavelength",
             "input_spec",
             source=dict_source_arm[arm],
-            color=dict_line_color[arm],
-            # color="black",
+            color=color,
             line_width=2,
             legend_label="Input",
         )
@@ -502,7 +472,6 @@ def create_simspec_plot(
             "wavelength",
             "sncont",
             source=dict_source_arm[arm],
-            # color=Colorblind[7][5],
             color=Colorblind[7][6],
             alpha=0.8,
             y_range_name="sncont",
@@ -516,16 +485,13 @@ def create_simspec_plot(
         "wavelength",
         "snline_tot",
         source=df_snline,
-        # color=Colorblind[7][4],
         color=Colorblind[7][6],
         legend_label="S/N",
     )
     p_snline.legend.location = "top_left"
     p_snline.legend.click_policy = "mute"
 
-    return column(
-        children=[p_simspec_b, p_simspec_r, p_simspec_n, p_simspec_m, p_snline]
-    )
+    return column(children=[figures[key] for key in arm_keys] + [p_snline])
 
 
 def create_simspec_files(
