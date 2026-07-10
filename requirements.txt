@@ -82,6 +82,7 @@ colorama==0.4.6
     #   loguru
     #   mkdocs
     #   mkdocs-material
+    #   pytest
     #   sphinx
     #   tqdm
     #   typer
@@ -123,6 +124,8 @@ idna==3.18
     #   requests
 imagesize==2.0.0
     # via sphinx
+iniconfig==2.3.0
+    # via pytest
 ipython==9.15.0
     # via pfs-etc-web
 ipython-pygments-lexers==1.1.1
@@ -240,6 +243,7 @@ packaging==26.2
     #   mkdocs-macros-plugin
     #   panel
     #   panel-material-ui
+    #   pytest
     #   sphinx
 paginate==0.5.7
     # via mkdocs-material
@@ -281,6 +285,8 @@ platformdirs==4.10.0
     # via
     #   black
     #   mkdocs-get-deps
+pluggy==1.6.0
+    # via pytest
 prompt-toolkit==3.0.52
     # via ipython
 psutil==7.2.2 ; sys_platform != 'cygwin' and sys_platform != 'emscripten'
@@ -298,12 +304,15 @@ pygments==2.20.0
     #   ipython
     #   ipython-pygments-lexers
     #   mkdocs-material
+    #   pytest
     #   rich
     #   sphinx
 pymdown-extensions==11.0.1
     # via mkdocs-material
 pyparsing==3.3.2
     # via matplotlib
+pytest==9.1.1
+    # via pfs-etc-web
 python-dateutil==2.9.0.post0
     # via
     #   ghp-import

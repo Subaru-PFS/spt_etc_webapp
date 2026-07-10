@@ -286,7 +286,9 @@ class PfsSpecSim:
             with open(self.outfile_tjtext, "w") as f:
                 f.write(text_tj)
 
-        self.p_simspec = create_simspec_plot(df_simspec, df_snline, df_sncont)
+        self.p_simspec = create_simspec_plot(
+            df_simspec, df_snline, df_sncont, self.instrument.mr_mode
+        )
 
         # self.outfile_plot = os.path.join(
         #     outdir, f"pfs_etc_plot-{self.output.sessiondir}.html"
