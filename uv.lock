@@ -1131,7 +1131,7 @@ requires-dist = [
     { name = "numpy", specifier = ">=2.0.0" },
     { name = "pandas", specifier = ">=2.2.2" },
     { name = "panel", specifier = ">=1.5.0" },
-    { name = "pfsspecsim", git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git?rev=tickets%2FSURVEY-43" },
+    { name = "pfsspecsim", git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git?rev=v2.0.0a1" },
     { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.0.239" },
     { name = "seaborn", marker = "extra == 'dev'", specifier = ">=0.13.2" },
@@ -1144,8 +1144,8 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "pfsspecsim"
-version = "1.5.2.dev47+g373ffd5fd"
-source = { git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git?rev=tickets%2FSURVEY-43#373ffd5fd37f6fdabd74a112cce66aed41e83c72" }
+version = "2.0.0a1"
+source = { git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git?rev=v2.0.0a1#2255f949d540f7e83647f58fe115434dc2ffa74c" }
 dependencies = [
     { name = "astropy" },
     { name = "matplotlib" },

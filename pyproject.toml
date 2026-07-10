@@ -25,7 +25,7 @@ dependencies = [
   "numpy>=2.0.0",
   "pandas>=2.2.2",
   "panel>=1.5.0",
-  "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@tickets/SURVEY-43",
+  "pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@v2.0.0a1",
   "python-dotenv>=1.2.2",
   "synphot>=1.2.0",
 ]
