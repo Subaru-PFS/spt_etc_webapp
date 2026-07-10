@@ -41,7 +41,9 @@ def _quantity_to_unit(tb: QTable, colname: str, unit: u.Unit) -> None:
         tb[colname] = tb[colname].to(unit)
 
 
-def _cast_columns(df: pd.DataFrame, dtype: dict[str, type], infile: str) -> pd.DataFrame:
+def _cast_columns(
+    df: pd.DataFrame, dtype: dict[str, type], infile: str
+) -> pd.DataFrame:
     """astype(dtype), raising a clear error instead of a confusing pandas
     exception when a column destined for an int dtype contains NaN."""
     for col, col_type in dtype.items():

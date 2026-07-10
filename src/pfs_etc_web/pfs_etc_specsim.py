@@ -278,7 +278,9 @@ class PfsSpecSim:
                 self.outfile_pfsobject,
             )
 
-            text_tj += f"[16] Simulation ID: {os.path.basename(self.output.sessiondir)}\n"
+            text_tj += (
+                f"[16] Simulation ID: {os.path.basename(self.output.sessiondir)}\n"
+            )
             # text_tj = text_tj.replace("_", "\\_")
 
             with open(self.outfile_tjtext, "w") as f:
