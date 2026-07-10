@@ -29,6 +29,18 @@ def _looks_like_ecsv(infile: str) -> bool:
     return False
 
 
+def _quantity_to_unit(tb: QTable, colname: str, unit: u.Unit) -> None:
+    """Normalize a QTable column to `unit` in place, if it carries a unit.
+
+    QTable.to_pandas() drops astropy units entirely, returning the raw
+    stored value. Without this, an ECSV file that stores wavelength in a
+    unit other than the one the rest of the pipeline assumes would be
+    silently misinterpreted.
+    """
+    if colname in tb.colnames and getattr(tb[colname], "unit", None) is not None:
+        tb[colname] = tb[colname].to(unit)
+
+
 def _cast_columns(df: pd.DataFrame, dtype: dict[str, type], infile: str) -> pd.DataFrame:
     """astype(dtype), raising a clear error instead of a confusing pandas
     exception when a column destined for an int dtype contains NaN."""
@@ -98,6 +110,8 @@ def load_simspec(infile: str) -> pd.DataFrame:
 
     if _looks_like_ecsv(infile):
         tb = QTable.read(infile, format="ascii.ecsv")
+        _quantity_to_unit(tb, "wavelength", u.nm)
+        _quantity_to_unit(tb, "WAVELENGTH", u.nm)
         df = tb.to_pandas()
         if not set(names).issubset(df.columns):
             rename_map = {
@@ -142,6 +156,7 @@ def load_snline(infile: str) -> pd.DataFrame:
 
     if _looks_like_ecsv(infile):
         tb = QTable.read(infile, format="ascii.ecsv")
+        _quantity_to_unit(tb, "wavelength", u.nm)
         df = tb.to_pandas()
         rename_map = {
             "effective_area": "effective_collecting_area",
@@ -204,6 +219,7 @@ def load_sncont(infile: str) -> pd.DataFrame:
 
     if _looks_like_ecsv(infile):
         tb = QTable.read(infile, format="ascii.ecsv")
+        _quantity_to_unit(tb, "wavelength", u.nm)
         df = tb.to_pandas()
         df = df.rename(
             columns={
