@@ -78,8 +78,12 @@ def _load_ecsv(
         for col in names:
             if col not in df.columns:
                 df[col] = np.nan
-    if not set(names).issubset(df.columns):
-        raise ValueError(f"Unsupported columns in {infile}: {list(df.columns)}")
+    missing = sorted(set(names) - set(df.columns))
+    if missing:
+        raise ValueError(
+            f"Missing required columns {missing} in {infile}; "
+            f"found {list(df.columns)}"
+        )
     return _cast_columns(df[names], dtype, infile)
 
 
@@ -106,14 +110,14 @@ def _read_legacy_ascii_with_optional_header(
     dtype: dict[str, type],
 ) -> pd.DataFrame:
     if not _first_data_line_has_header(infile):
-        return pd.read_table(
+        df = pd.read_table(
             infile,
             sep=r"\s+",
             comment="#",
             header=None,
             names=names,
-            dtype=dtype,
         )
+        return _cast_columns(df, dtype, infile)
 
     # Some legacy outputs include an uncommented header row.
     df = pd.read_table(
@@ -122,8 +126,12 @@ def _read_legacy_ascii_with_optional_header(
         comment="#",
         header=0,
     )
-    if not set(names).issubset(df.columns):
-        raise ValueError(f"Unsupported legacy columns in {infile}: {list(df.columns)}")
+    missing = sorted(set(names) - set(df.columns))
+    if missing:
+        raise ValueError(
+            f"Missing required legacy columns {missing} in {infile}; "
+            f"found {list(df.columns)}"
+        )
     return _cast_columns(df[names], dtype, infile)
 
 

@@ -106,6 +106,12 @@ case "${RUNNER_TYPE}" in
         ;;
 esac
 
+# In venv mode RUNNER is empty, so put .venv/bin first on PATH to make the
+# bare `python`/`panel` invocations below resolve to the venv, as documented.
+if [ "${RUNNER_TYPE}" = "venv" ]; then
+    export PATH="${PROJECT_ROOT}/.venv/bin:${PATH}"
+fi
+
 ensure_watchfiles
 
 # Execute the command
