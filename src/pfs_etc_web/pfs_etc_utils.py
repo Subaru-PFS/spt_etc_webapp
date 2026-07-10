@@ -309,7 +309,8 @@ ARM_PLOT_SPECS = {
     "m": {
         "title": "Medium resolution arm",
         "x_range": [710, 885],
-        "color": Colorblind[7][6],
+        # Distinct from the S/N line, which is drawn in Colorblind[7][6] (pink)
+        "color": Colorblind[7][5],
     },
 }
 
