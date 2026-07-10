@@ -33,6 +33,26 @@ PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 # Change to project root
 cd "${PROJECT_ROOT}"
 
+ensure_watchfiles() {
+    if ${RUNNER} python -c "import watchfiles" >/dev/null 2>&1; then
+        return 0
+    fi
+
+    echo "watchfiles is not installed; syncing dev dependencies before startup..."
+
+    case "${RUNNER_TYPE}" in
+        uv)
+            uv sync --extra dev
+            ;;
+        pdm)
+            pdm install -G dev
+            ;;
+        venv|auto)
+            "${PROJECT_ROOT}/.venv/bin/python" -m pip install -e "${PROJECT_ROOT}[dev]"
+            ;;
+    esac
+}
+
 # Parse command-line argument
 RUNNER_TYPE="${1:-auto}"
 
@@ -66,10 +86,13 @@ case "${RUNNER_TYPE}" in
         # Auto-detect: Priority: uv > pdm > venv
         if command -v uv &> /dev/null; then
             RUNNER="uv run"
+            RUNNER_TYPE="uv"
         elif command -v pdm &> /dev/null; then
             RUNNER="pdm run"
+            RUNNER_TYPE="pdm"
         elif [ -d "${PROJECT_ROOT}/.venv" ]; then
             RUNNER=""
+            RUNNER_TYPE="venv"
         else
             echo "Error: Cannot find a suitable package manager" >&2
             echo "Please install dependencies using 'uv sync' or 'pdm install'" >&2
@@ -82,6 +105,14 @@ case "${RUNNER_TYPE}" in
         exit 1
         ;;
 esac
+
+# In venv mode RUNNER is empty, so put .venv/bin first on PATH to make the
+# bare `python`/`panel` invocations below resolve to the venv, as documented.
+if [ "${RUNNER_TYPE}" = "venv" ]; then
+    export PATH="${PROJECT_ROOT}/.venv/bin:${PATH}"
+fi
+
+ensure_watchfiles
 
 # Execute the command
 exec ${RUNNER} panel serve "${PROJECT_ROOT}/app.py" \

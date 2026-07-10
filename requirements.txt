@@ -3,23 +3,25 @@
 -e .
 alabaster==1.0.0
     # via sphinx
-anyio==4.12.1
+annotated-doc==0.0.4
+    # via typer
+anyio==4.14.1
     # via watchfiles
-asdf==5.1.0
+asdf==5.3.1
     # via
     #   asdf-astropy
     #   asdf-coordinates-schemas
     #   gwcs
     #   specutils
-asdf-astropy==0.9.0
+asdf-astropy==0.11.0
     # via
     #   gwcs
     #   specutils
-asdf-coordinates-schemas==0.4.0
+asdf-coordinates-schemas==0.5.1
     # via
     #   asdf-astropy
     #   asdf-wcs-schemas
-asdf-standard==1.4.0
+asdf-standard==1.5.0
     # via
     #   asdf
     #   asdf-astropy
@@ -28,12 +30,11 @@ asdf-standard==1.4.0
     #   asdf-wcs-schemas
 asdf-transform-schemas==0.6.0
     # via
-    #   asdf
     #   asdf-astropy
     #   asdf-wcs-schemas
 asdf-wcs-schemas==0.5.0
     # via gwcs
-astropy==7.2.0
+astropy==8.0.1
     # via
     #   asdf-astropy
     #   gwcs
@@ -42,35 +43,35 @@ astropy==7.2.0
     #   pfsspecsim
     #   specutils
     #   synphot
-astropy-iers-data==0.2026.1.5.0.43.43
+astropy-iers-data==0.2026.7.6.1.1.20
     # via astropy
 asttokens==3.0.1
     # via stack-data
-attrs==25.4.0
+attrs==26.1.0
     # via asdf
-babel==2.17.0
+babel==2.18.0
     # via
     #   mkdocs-material
     #   sphinx
-backrefs==6.1
+backrefs==7.0
     # via mkdocs-material
-black==26.3.1
+black==26.5.1
     # via pfs-etc-web
-bleach==6.3.0
-    # via panel
-bokeh==3.8.2
-    # via panel
+bokeh==3.9.1
+    # via
+    #   panel
+    #   panel-material-ui
 cairocffi==1.7.1
     # via cairosvg
 cairosvg==2.9.0
     # via mkdocs-material
-certifi==2026.1.4
+certifi==2026.6.17
     # via requests
-cffi==2.0.0
+cffi==2.1.0
     # via cairocffi
-charset-normalizer==3.4.4
+charset-normalizer==3.4.9
     # via requests
-click==8.3.1
+click==8.4.2
     # via
     #   black
     #   mkdocs
@@ -83,19 +84,20 @@ colorama==0.4.6
     #   mkdocs-material
     #   sphinx
     #   tqdm
+    #   typer
 contourpy==1.3.3
     # via
     #   bokeh
     #   matplotlib
-cssselect2==0.8.0
+cssselect2==0.9.0
     # via cairosvg
 cycler==0.12.1
     # via matplotlib
-decorator==5.2.1
+decorator==5.3.1
     # via ipython
 defusedxml==0.7.1
     # via cairosvg
-docutils==0.21.2
+docutils==0.22.4
     # via
     #   myst-parser
     #   sphinx
@@ -103,11 +105,11 @@ executing==2.2.1
     # via stack-data
 fontawesome-markdown @ https://github.com/bmcorser/fontawesome-markdown/archive/master.zip
     # via pfs-etc-web
-fonttools==4.61.1
+fonttools==4.63.0
     # via matplotlib
 ghp-import==2.1.0
     # via mkdocs
-gwcs==0.26.1
+gwcs==1.0.3
     # via
     #   ndcube
     #   specutils
@@ -115,17 +117,17 @@ hjson==3.1.0
     # via
     #   mkdocs-macros-plugin
     #   super-collections
-idna==3.11
+idna==3.18
     # via
     #   anyio
     #   requests
-imagesize==1.4.1
+imagesize==2.0.0
     # via sphinx
-ipython==9.9.0
+ipython==9.15.0
     # via pfs-etc-web
 ipython-pygments-lexers==1.1.1
     # via ipython
-jedi==0.19.2
+jedi==0.20.0
     # via ipython
 jinja2==3.1.6
     # via
@@ -135,40 +137,41 @@ jinja2==3.1.6
     #   mkdocs-material
     #   myst-parser
     #   sphinx
-jmespath==1.0.1
+jmespath==1.1.0
     # via asdf
-kiwisolver==1.4.9
+kiwisolver==1.5.0
     # via matplotlib
-linkify-it-py==2.0.3
+linkify-it-py==2.1.0
     # via panel
 loguru==0.7.3
     # via pfs-etc-web
-lxml==6.1.0
+lxml==6.1.1
     # via mkdocs-video
-markdown==3.10
+markdown==3.10.2
     # via
     #   fontawesome-markdown
     #   mkdocs
     #   mkdocs-material
     #   panel
     #   pymdown-extensions
-markdown-it-py==3.0.0
+markdown-it-py==4.2.0
     # via
     #   mdit-py-plugins
     #   myst-parser
     #   panel
+    #   rich
 markupsafe==3.0.3
     # via
     #   jinja2
     #   mkdocs
-matplotlib==3.10.8
+matplotlib==3.11.0
     # via
     #   pfs-etc-web
     #   pfsspecsim
     #   seaborn
-matplotlib-inline==0.2.1
+matplotlib-inline==0.2.2
     # via ipython
-mdit-py-plugins==0.5.0
+mdit-py-plugins==0.6.1
     # via
     #   myst-parser
     #   panel
@@ -184,11 +187,11 @@ mkdocs==1.6.1
     #   mkdocs-material
     #   mkdocs-video
     #   pfs-etc-web
-mkdocs-get-deps==0.2.0
+mkdocs-get-deps==0.2.2
     # via mkdocs
 mkdocs-macros-plugin==1.5.0
     # via pfs-etc-web
-mkdocs-material==9.7.1
+mkdocs-material==9.7.6
     # via pfs-etc-web
 mkdocs-material-extensions==1.3.1
     # via mkdocs-material
@@ -196,15 +199,17 @@ mkdocs-video==1.5.0
     # via pfs-etc-web
 mypy-extensions==1.1.0
     # via black
-myst-parser==4.0.1
+myst-parser==5.1.0
     # via pfs-etc-web
-narwhals==2.15.0
+narwhals==2.23.0
     # via
     #   bokeh
     #   panel
-ndcube==2.3.5
+ndcube==2.4.1
     # via specutils
-numpy==2.4.0
+nh3==0.3.6
+    # via panel
+numpy==2.4.6
     # via
     #   asdf
     #   asdf-astropy
@@ -223,7 +228,7 @@ numpy==2.4.0
     #   seaborn
     #   specutils
     #   synphot
-packaging==25.0
+packaging==26.2
     # via
     #   asdf
     #   asdf-astropy
@@ -234,24 +239,28 @@ packaging==25.0
     #   mkdocs
     #   mkdocs-macros-plugin
     #   panel
+    #   panel-material-ui
     #   sphinx
 paginate==0.5.7
     # via mkdocs-material
-pandas==2.3.3
+pandas==3.0.3
     # via
-    #   bokeh
     #   panel
     #   pfs-etc-web
     #   seaborn
-panel==1.8.5
-    # via pfs-etc-web
-param==2.3.1
+panel==1.9.3
+    # via
+    #   panel-material-ui
+    #   pfs-etc-web
+panel-material-ui==0.13.0
+    # via panel
+param==2.4.1
     # via
     #   panel
     #   pyviz-comms
-parso==0.8.5
+parso==0.8.7
     # via jedi
-pathspec==1.0.1
+pathspec==1.1.1
     # via
     #   black
     #   mkdocs
@@ -260,25 +269,27 @@ pexpect==4.9.0 ; sys_platform != 'emscripten' and sys_platform != 'win32'
     # via ipython
 pfs-datamodel @ git+https://github.com/Subaru-PFS/datamodel.git@a5eb4c04878dd58b2dfeb1eeda9a15fee8e7e717
     # via pfsspecsim
-pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@664bedd4df9f0495c3729f95b530674f35f6b55b
+pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@d90958bf556fe4d5b86d4e96c387da017e164fc7
     # via pfs-etc-web
-pillow==12.2.0
+pillow==12.3.0
     # via
     #   bokeh
     #   cairosvg
     #   matplotlib
     #   mkdocs-material
-platformdirs==4.5.1
+platformdirs==4.10.0
     # via
     #   black
     #   mkdocs-get-deps
 prompt-toolkit==3.0.52
     # via ipython
+psutil==7.2.2 ; sys_platform != 'cygwin' and sys_platform != 'emscripten'
+    # via ipython
 ptyprocess==0.7.0 ; sys_platform != 'emscripten' and sys_platform != 'win32'
     # via pexpect
 pure-eval==0.2.3
     # via stack-data
-pycparser==2.23 ; implementation_name != 'PyPy'
+pycparser==3.0 ; implementation_name != 'PyPy'
     # via cffi
 pyerfa==2.0.1.5
     # via astropy
@@ -287,10 +298,11 @@ pygments==2.20.0
     #   ipython
     #   ipython-pygments-lexers
     #   mkdocs-material
+    #   rich
     #   sphinx
-pymdown-extensions==10.20
+pymdown-extensions==11.0.1
     # via mkdocs-material
-pyparsing==3.3.1
+pyparsing==3.3.2
     # via matplotlib
 python-dateutil==2.9.0.post0
     # via
@@ -300,10 +312,8 @@ python-dateutil==2.9.0.post0
     #   pandas
 python-dotenv==1.2.2
     # via pfs-etc-web
-pytokens==0.3.0
+pytokens==0.4.1
     # via black
-pytz==2025.2
-    # via pandas
 pyviz-comms==3.0.6
     # via panel
 pyyaml==6.0.3
@@ -319,19 +329,19 @@ pyyaml==6.0.3
     #   pyyaml-env-tag
 pyyaml-env-tag==1.1
     # via mkdocs
-requests==2.33.0
+requests==2.34.2
     # via
     #   mkdocs-macros-plugin
     #   mkdocs-material
     #   panel
     #   sphinx
+rich==15.0.0
+    # via typer
 roman-numerals==4.1.0
-    # via roman-numerals-py
-roman-numerals-py==4.1.0
     # via sphinx
-ruff==0.14.10
+ruff==0.15.21
     # via pfs-etc-web
-scipy==1.16.3
+scipy==1.18.0
     # via
     #   gwcs
     #   ndcube
@@ -342,13 +352,15 @@ seaborn==0.13.2
     # via pfs-etc-web
 semantic-version==2.10.0
     # via asdf
+shellingham==1.5.4
+    # via typer
 six==1.17.0
     # via python-dateutil
-snowballstemmer==3.0.1
+snowballstemmer==3.1.1
     # via sphinx
-specutils==2.2.0
+specutils==2.4.0
     # via pfs-etc-web
-sphinx==8.2.3
+sphinx==9.1.0
     # via myst-parser
 sphinxcontrib-applehelp==2.0.0
     # via sphinx
@@ -366,7 +378,7 @@ stack-data==0.6.3
     # via ipython
 super-collections==0.6.2
     # via mkdocs-macros-plugin
-synphot==1.6.1
+synphot==1.7.0
     # via pfs-etc-web
 termcolor==3.3.0
     # via mkdocs-macros-plugin
@@ -374,38 +386,39 @@ tinycss2==1.5.1
     # via
     #   cairosvg
     #   cssselect2
-tornado==6.5.5 ; sys_platform != 'emscripten'
+tornado==6.5.7 ; sys_platform != 'emscripten'
     # via bokeh
-tqdm==4.67.1
+tqdm==4.68.4
     # via panel
-traitlets==5.14.3
+traitlets==5.15.1
     # via
     #   ipython
     #   matplotlib-inline
-ty==0.0.9
+ty==0.0.58
     # via pfs-etc-web
-typing-extensions==4.15.0
+typer==0.26.8
+    # via pfsspecsim
+typing-extensions==4.16.0
     # via
     #   anyio
     #   panel
-tzdata==2025.3
+tzdata==2026.2 ; sys_platform == 'emscripten' or sys_platform == 'win32'
     # via pandas
-uc-micro-py==1.0.3
+uc-micro-py==2.0.0
     # via linkify-it-py
-urllib3==2.6.3
+urllib3==2.7.0
     # via requests
 watchdog==6.0.0
     # via mkdocs
-watchfiles==1.1.1
+watchfiles==1.2.0
     # via pfs-etc-web
-wcwidth==0.2.14
+wcwidth==0.8.2
     # via prompt-toolkit
 webencodings==0.5.1
     # via
-    #   bleach
     #   cssselect2
     #   tinycss2
 win32-setctime==1.2.0 ; sys_platform == 'win32'
     # via loguru
-xyzservices==2025.11.0
+xyzservices==2026.3.0
     # via bokeh

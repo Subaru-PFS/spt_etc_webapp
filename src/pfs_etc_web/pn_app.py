@@ -168,14 +168,16 @@ def pfs_etc_app():
             )
         else:
             # Try to recover the simulation
-            recovered_simulation_id, is_recovered, custom_input_file = recover_simulation(
-                simulation_id.simulation_id,
-                conf_target,
-                conf_environment,
-                conf_instrument,
-                conf_telescope,
-                conf_output,
-                logger,
+            recovered_simulation_id, is_recovered, custom_input_file = (
+                recover_simulation(
+                    simulation_id.simulation_id,
+                    conf_target,
+                    conf_environment,
+                    conf_instrument,
+                    conf_telescope,
+                    conf_output,
+                    logger,
+                )
             )
 
             if is_recovered:

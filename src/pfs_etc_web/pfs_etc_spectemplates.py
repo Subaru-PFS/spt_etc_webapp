@@ -52,7 +52,8 @@ def prepare_spectrum(
 
     # write to an ascii file
     wout = sp_norm.waveset.to(u.nm).value
-    fout = sp_norm(sp_norm.waveset, flux_unit=u.ABmag).value
+    # Ensure writable array before in-place cleanup below.
+    fout = np.array(sp_norm(sp_norm.waveset, flux_unit=u.ABmag).value, copy=True)
     # fout[~np.isfinite(fout)] = 0.0
     fout[~np.isfinite(fout)] = 99.9
     idx = np.logical_and(wout >= wmin, wout <= wmax)

@@ -213,12 +213,10 @@ class EnvironmentWidgets(param.Parameterized):
             show_name=False,
             default_layout=pn.Column,
         )
-        self.note = pn.pane.Markdown(
-            """
+        self.note = pn.pane.Markdown("""
 One can set unrealistic observing conditions, so please make sure to set the parameters close to your requested observing conditions.
 The safest approach is to use the nominal (default) observing condition as a reference.
-        """
-        )
+        """)
 
     def disabled(self, disabled=True):
         for p in self.panel.parameters:
@@ -382,13 +380,11 @@ class VersionInfoWidgets:
     def __init__(self):
         webapp_version, specsim_version = self._get_versions()
 
-        self.pane = pn.pane.Markdown(
-            f"""<font size=2>**Version Information**</font>
+        self.pane = pn.pane.Markdown(f"""<font size=2>**Version Information**</font>
 
 - **<a href="https://github.com/Subaru-PFS/spt_etc_webapp/" target="_blank">PFS Spectral Simulator</a>**: {webapp_version}
 - **<a href="https://github.com/Subaru-PFS/spt_ExposureTimeCalculator/" target="_blank">PFS Exposure Time Calculator</a>**: {specsim_version}
-            """
-        )
+            """)
 
     def _get_versions(self):
         """Get version strings with fallback handling."""

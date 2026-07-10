@@ -30,6 +30,9 @@ uv sync
 
 # With documentation dependencies
 uv sync --extra mkdocs
+
+# With development autoreload dependencies
+uv sync --extra dev
 ```
 
 ### Using PDM
@@ -43,6 +46,9 @@ pdm install
 
 # With documentation dependencies
 pdm install -G mkdocs
+
+# With development autoreload dependencies
+pdm install -G dev
 ```
 
 ### Using pip + venv
@@ -58,6 +64,9 @@ pip install -e .
 
 # With documentation dependencies
 pip install -e .[mkdocs]
+
+# With development autoreload dependencies
+pip install -e .[dev]
 ```
 
 ### Building Documentation
@@ -107,6 +116,8 @@ The project includes helper scripts in the `scripts/` directory that automatical
 # Generate requirements.txt
 ./scripts/gen-requirements.sh
 ```
+
+`./scripts/serve-app.sh` enables Panel development autoreload and will ensure `watchfiles` is installed before startup. If you prefer to install it yourself, use the development dependency commands above.
 
 You can force a specific package manager:
 

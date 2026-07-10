@@ -15,88 +15,256 @@ from loguru import logger
 from . import PfsArm
 
 
-def load_simspec(infile: str) -> pd.DataFrame:
+def _looks_like_ecsv(infile: str) -> bool:
+    try:
+        with open(infile) as f:
+            for _ in range(20):
+                line = f.readline()
+                if line == "":
+                    break
+                if line.startswith("# %ECSV"):
+                    return True
+    except (OSError, UnicodeDecodeError):
+        return False
+    return False
+
+
+def _quantity_to_unit(tb: QTable, colname: str, unit: u.Unit) -> None:
+    """Normalize a QTable column to `unit` in place, if it carries a unit.
+
+    QTable.to_pandas() drops astropy units entirely, returning the raw
+    stored value. Without this, an ECSV file that stores wavelength in a
+    unit other than the one the rest of the pipeline assumes would be
+    silently misinterpreted.
+    """
+    if colname in tb.colnames and getattr(tb[colname], "unit", None) is not None:
+        tb[colname] = tb[colname].to(unit)
+
+
+def _cast_columns(
+    df: pd.DataFrame, dtype: dict[str, type], infile: str
+) -> pd.DataFrame:
+    """astype(dtype), raising a clear error instead of a confusing pandas
+    exception when a column destined for an int dtype contains NaN."""
+    for col, col_type in dtype.items():
+        if col_type is int and df[col].isna().any():
+            raise ValueError(
+                f"Column '{col}' in {infile} contains missing values "
+                "and cannot be cast to int"
+            )
+    return df.astype(dtype)
+
+
+def _load_ecsv(
+    infile: str,
+    names: list[str],
+    dtype: dict[str, type],
+    build_rename_map,
+    fill_missing_with_nan: bool = False,
+    wavelength_columns: tuple[str, ...] = ("wavelength",),
+) -> pd.DataFrame:
+    """Shared scaffold for the three ECSV loaders below: read the table,
+    normalize wavelength units, rename columns to the target schema, then
+    validate/select/cast. `build_rename_map(columns, infile)` computes the
+    rename dict from the table's actual columns, since which source column
+    maps to which target column can depend on what's present (e.g. LR vs
+    MR mode in load_snline)."""
+    tb = QTable.read(infile, format="ascii.ecsv")
+    for col in wavelength_columns:
+        _quantity_to_unit(tb, col, u.nm)
+    df = tb.to_pandas()
+    df = df.rename(columns=build_rename_map(df.columns, infile))
+    if fill_missing_with_nan:
+        for col in names:
+            if col not in df.columns:
+                df[col] = np.nan
+    missing = sorted(set(names) - set(df.columns))
+    if missing:
+        raise ValueError(
+            f"Missing required columns {missing} in {infile}; "
+            f"found {list(df.columns)}"
+        )
+    return _cast_columns(df[names], dtype, infile)
+
+
+def _first_data_line_has_header(infile: str) -> bool:
+    """Peek at the first non-comment, non-blank line to see whether it is
+    a literal column-name header rather than numeric data."""
+    with open(infile) as f:
+        for line in f:
+            stripped = line.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            tokens = stripped.split()
+            try:
+                [float(token) for token in tokens]
+            except ValueError:
+                return True
+            return False
+    return False
+
+
+def _read_legacy_ascii_with_optional_header(
+    infile: str,
+    names: list[str],
+    dtype: dict[str, type],
+) -> pd.DataFrame:
+    if not _first_data_line_has_header(infile):
+        df = pd.read_table(
+            infile,
+            sep=r"\s+",
+            comment="#",
+            header=None,
+            names=names,
+        )
+        return _cast_columns(df, dtype, infile)
+
+    # Some legacy outputs include an uncommented header row.
     df = pd.read_table(
         infile,
         sep=r"\s+",
         comment="#",
-        header=None,
-        # header=0,
-        names=["wavelength", "flux", "error", "mask", "sky", "arm"],
-        dtype={
-            "wavelength": float,
-            "flux": float,
-            "error": float,
-            "mask": int,
-            "sky": float,
-            "arm": int,
-        },
+        header=0,
     )
+    missing = sorted(set(names) - set(df.columns))
+    if missing:
+        raise ValueError(
+            f"Missing required legacy columns {missing} in {infile}; "
+            f"found {list(df.columns)}"
+        )
+    return _cast_columns(df[names], dtype, infile)
+
+
+def load_simspec(infile: str) -> pd.DataFrame:
+    names = ["wavelength", "flux", "error", "mask", "sky", "arm"]
+    dtype = {
+        "wavelength": float,
+        "flux": float,
+        "error": float,
+        "mask": int,
+        "sky": float,
+        "arm": int,
+    }
+
+    if _looks_like_ecsv(infile):
+        df = _load_ecsv(
+            infile,
+            names,
+            dtype,
+            build_rename_map=lambda cols, infile: {
+                "WAVELENGTH": "wavelength",
+                "FLUX": "flux",
+                "ERROR": "error",
+                "MASK": "mask",
+                "SKY": "sky",
+                "ARM": "arm",
+            },
+            wavelength_columns=("wavelength", "WAVELENGTH"),
+        )
+    else:
+        df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
+
     return df
 
 
 def load_snline(infile: str) -> pd.DataFrame:
-    df = pd.read_table(
-        infile,
-        sep=r"\s+",
-        comment="#",
-        header=None,
-        # header=0,
-        names=[
-            "wavelength",
-            "fiber_aperture_factor",
-            "effective_collecting_area",
-            "snline_b",
-            "snline_r",
-            "snline_n",
-            "snline_tot",
-        ],
-        dtype={
-            "wavelength": float,
-            "fiber_aperture_factor": float,
-            "effective_collecting_area": float,
-            "snline_b": float,
-            "snline_r": float,
-            "snline_n": float,
-            "snline_tot": float,
-        },
-    )
+    names = [
+        "wavelength",
+        "fiber_aperture_factor",
+        "effective_collecting_area",
+        "snline_b",
+        "snline_r",
+        "snline_n",
+        "snline_tot",
+    ]
+    dtype = {
+        "wavelength": float,
+        "fiber_aperture_factor": float,
+        "effective_collecting_area": float,
+        "snline_b": float,
+        "snline_r": float,
+        "snline_n": float,
+        "snline_tot": float,
+    }
+
+    def _snline_rename_map(cols, infile):
+        rename_map = {
+            "effective_area": "effective_collecting_area",
+            "snr_b": "snline_b",
+            "snr_n": "snline_n",
+            "snr_tot": "snline_tot",
+        }
+        # snr_r (LR mode) and snr_m (MR mode) are mutually exclusive arm
+        # columns that both map onto snline_r; guard against a file that
+        # unexpectedly carries both, which would otherwise collide into a
+        # single duplicated column name after rename.
+        if "snr_r" in cols and "snr_m" in cols:
+            raise ValueError(
+                f"Unsupported snline columns in {infile}: "
+                "both snr_r and snr_m are present"
+            )
+        elif "snr_r" in cols:
+            rename_map["snr_r"] = "snline_r"
+        elif "snr_m" in cols:
+            rename_map["snr_m"] = "snline_r"
+        return rename_map
+
+    if _looks_like_ecsv(infile):
+        # Fill missing arm columns in MR mode with NaN where needed.
+        df = _load_ecsv(
+            infile, names, dtype, _snline_rename_map, fill_missing_with_nan=True
+        )
+    else:
+        df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
+
     return df
 
 
 def load_sncont(infile: str) -> pd.DataFrame:
-    df = pd.read_table(
-        infile,
-        sep=r"\s+",
-        comment="#",
-        header=None,
-        names=[
-            "arm",
-            "pixel",
-            "wavelength",
-            "sncont",
-            "signal_per_exp",
-            "noise_wo_obj_per_exp",
-            "noise_w_obj_per_exp",
-            "input_spec",
-            "convfac_flux2e",
-            "samplefac",
-            "sky",
-        ],
-        dtype={
-            "arm": int,
-            "pixel": int,
-            "wavelength": float,
-            "sncont": float,
-            "signal_per_exp": float,
-            "noise_wo_obj_per_exp": float,
-            "noise_w_obj_per_exp": float,
-            "input_spec": float,
-            "convfac_flux2e": float,
-            "samplefac": float,
-            "sky": float,
-        },
-    )
+    names = [
+        "arm",
+        "pixel",
+        "wavelength",
+        "sncont",
+        "signal_per_exp",
+        "noise_wo_obj_per_exp",
+        "noise_w_obj_per_exp",
+        "input_spec",
+        "convfac_flux2e",
+        "samplefac",
+        "sky",
+    ]
+    dtype = {
+        "arm": int,
+        "pixel": int,
+        "wavelength": float,
+        "sncont": float,
+        "signal_per_exp": float,
+        "noise_wo_obj_per_exp": float,
+        "noise_w_obj_per_exp": float,
+        "input_spec": float,
+        "convfac_flux2e": float,
+        "samplefac": float,
+        "sky": float,
+    }
+
+    if _looks_like_ecsv(infile):
+        df = _load_ecsv(
+            infile,
+            names,
+            dtype,
+            build_rename_map=lambda cols, infile: {
+                "snr": "sncont",
+                "signal": "signal_per_exp",
+                "noise_variance": "noise_wo_obj_per_exp",
+                "noise_variance_tot": "noise_w_obj_per_exp",
+                "input_mag": "input_spec",
+                "conversion_factor": "convfac_flux2e",
+                "sampling_factor": "samplefac",
+            },
+        )
+    else:
+        df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
 
     # saturation counts
     # CCDs: ~50000 e-, H4RGs ~80000-100000 e- (As a upper limit for good linearity)
@@ -154,6 +322,7 @@ def create_simspec_plot(
         aspect_ratio=aspect_ratio,
         sizing_mode="scale_width",
         output_backend="webgl",
+        tools="pan,wheel_zoom,box_zoom,reset,save",
         active_drag="box_zoom",
     )
     kwargs_snline = dict(
@@ -162,11 +331,13 @@ def create_simspec_plot(
         aspect_ratio=aspect_ratio,
         sizing_mode="scale_width",
         output_backend="webgl",
+        tools="pan,wheel_zoom,box_zoom,reset,save",
         active_drag="box_zoom",
     )
     extra_y_axis_label = "S/N per pixel"
 
-    input_spec = df_sncont["input_spec"].to_numpy()
+    # pandas 3 may return a read-only array from to_numpy(); copy for safe mutation.
+    input_spec = df_sncont["input_spec"].to_numpy(copy=True)
     input_spec[np.isclose(input_spec, np.zeros_like(input_spec))] = np.nan
     input_spec = (input_spec * u.ABmag).to(u.nJy).value
 
