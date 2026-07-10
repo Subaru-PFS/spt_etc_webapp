@@ -269,7 +269,7 @@ pexpect==4.9.0 ; sys_platform != 'emscripten' and sys_platform != 'win32'
     # via ipython
 pfs-datamodel @ git+https://github.com/Subaru-PFS/datamodel.git@a5eb4c04878dd58b2dfeb1eeda9a15fee8e7e717
     # via pfsspecsim
-pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@2255f949d540f7e83647f58fe115434dc2ffa74c
+pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@d90958bf556fe4d5b86d4e96c387da017e164fc7
     # via pfs-etc-web
 pillow==12.3.0
     # via
