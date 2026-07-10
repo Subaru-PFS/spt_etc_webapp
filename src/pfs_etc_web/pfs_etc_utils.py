@@ -53,6 +53,34 @@ def _cast_columns(df: pd.DataFrame, dtype: dict[str, type], infile: str) -> pd.D
     return df.astype(dtype)
 
 
+def _load_ecsv(
+    infile: str,
+    names: list[str],
+    dtype: dict[str, type],
+    build_rename_map,
+    fill_missing_with_nan: bool = False,
+    wavelength_columns: tuple[str, ...] = ("wavelength",),
+) -> pd.DataFrame:
+    """Shared scaffold for the three ECSV loaders below: read the table,
+    normalize wavelength units, rename columns to the target schema, then
+    validate/select/cast. `build_rename_map(columns, infile)` computes the
+    rename dict from the table's actual columns, since which source column
+    maps to which target column can depend on what's present (e.g. LR vs
+    MR mode in load_snline)."""
+    tb = QTable.read(infile, format="ascii.ecsv")
+    for col in wavelength_columns:
+        _quantity_to_unit(tb, col, u.nm)
+    df = tb.to_pandas()
+    df = df.rename(columns=build_rename_map(df.columns, infile))
+    if fill_missing_with_nan:
+        for col in names:
+            if col not in df.columns:
+                df[col] = np.nan
+    if not set(names).issubset(df.columns):
+        raise ValueError(f"Unsupported columns in {infile}: {list(df.columns)}")
+    return _cast_columns(df[names], dtype, infile)
+
+
 def _first_data_line_has_header(infile: str) -> bool:
     """Peek at the first non-comment, non-blank line to see whether it is
     a literal column-name header rather than numeric data."""
@@ -109,25 +137,20 @@ def load_simspec(infile: str) -> pd.DataFrame:
     }
 
     if _looks_like_ecsv(infile):
-        tb = QTable.read(infile, format="ascii.ecsv")
-        _quantity_to_unit(tb, "wavelength", u.nm)
-        _quantity_to_unit(tb, "WAVELENGTH", u.nm)
-        df = tb.to_pandas()
-        if not set(names).issubset(df.columns):
-            rename_map = {
+        df = _load_ecsv(
+            infile,
+            names,
+            dtype,
+            build_rename_map=lambda cols, infile: {
                 "WAVELENGTH": "wavelength",
                 "FLUX": "flux",
                 "ERROR": "error",
                 "MASK": "mask",
                 "SKY": "sky",
                 "ARM": "arm",
-            }
-            df = df.rename(columns=rename_map)
-        if not set(names).issubset(df.columns):
-            raise ValueError(
-                f"Unsupported simspec columns in {infile}: {list(df.columns)}"
-            )
-        df = _cast_columns(df[names], dtype, infile)
+            },
+            wavelength_columns=("wavelength", "WAVELENGTH"),
+        )
     else:
         df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
 
@@ -154,10 +177,7 @@ def load_snline(infile: str) -> pd.DataFrame:
         "snline_tot": float,
     }
 
-    if _looks_like_ecsv(infile):
-        tb = QTable.read(infile, format="ascii.ecsv")
-        _quantity_to_unit(tb, "wavelength", u.nm)
-        df = tb.to_pandas()
+    def _snline_rename_map(cols, infile):
         rename_map = {
             "effective_area": "effective_collecting_area",
             "snr_b": "snline_b",
@@ -168,21 +188,22 @@ def load_snline(infile: str) -> pd.DataFrame:
         # columns that both map onto snline_r; guard against a file that
         # unexpectedly carries both, which would otherwise collide into a
         # single duplicated column name after rename.
-        if "snr_r" in df.columns and "snr_m" in df.columns:
+        if "snr_r" in cols and "snr_m" in cols:
             raise ValueError(
                 f"Unsupported snline columns in {infile}: "
                 "both snr_r and snr_m are present"
             )
-        elif "snr_r" in df.columns:
+        elif "snr_r" in cols:
             rename_map["snr_r"] = "snline_r"
-        elif "snr_m" in df.columns:
+        elif "snr_m" in cols:
             rename_map["snr_m"] = "snline_r"
-        df = df.rename(columns=rename_map)
+        return rename_map
+
+    if _looks_like_ecsv(infile):
         # Fill missing arm columns in MR mode with NaN where needed.
-        for col in names:
-            if col not in df.columns:
-                df[col] = np.nan
-        df = _cast_columns(df[names], dtype, infile)
+        df = _load_ecsv(
+            infile, names, dtype, _snline_rename_map, fill_missing_with_nan=True
+        )
     else:
         df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
 
@@ -218,11 +239,11 @@ def load_sncont(infile: str) -> pd.DataFrame:
     }
 
     if _looks_like_ecsv(infile):
-        tb = QTable.read(infile, format="ascii.ecsv")
-        _quantity_to_unit(tb, "wavelength", u.nm)
-        df = tb.to_pandas()
-        df = df.rename(
-            columns={
+        df = _load_ecsv(
+            infile,
+            names,
+            dtype,
+            build_rename_map=lambda cols, infile: {
                 "snr": "sncont",
                 "signal": "signal_per_exp",
                 "noise_variance": "noise_wo_obj_per_exp",
@@ -230,13 +251,8 @@ def load_sncont(infile: str) -> pd.DataFrame:
                 "input_mag": "input_spec",
                 "conversion_factor": "convfac_flux2e",
                 "sampling_factor": "samplefac",
-            }
+            },
         )
-        if not set(names).issubset(df.columns):
-            raise ValueError(
-                f"Unsupported sn-continuum columns in {infile}: {list(df.columns)}"
-            )
-        df = _cast_columns(df[names], dtype, infile)
     else:
         df = _read_legacy_ascii_with_optional_header(infile, names, dtype)
 
