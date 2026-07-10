@@ -86,10 +86,13 @@ case "${RUNNER_TYPE}" in
         # Auto-detect: Priority: uv > pdm > venv
         if command -v uv &> /dev/null; then
             RUNNER="uv run"
+            RUNNER_TYPE="uv"
         elif command -v pdm &> /dev/null; then
             RUNNER="pdm run"
+            RUNNER_TYPE="pdm"
         elif [ -d "${PROJECT_ROOT}/.venv" ]; then
             RUNNER=""
+            RUNNER_TYPE="venv"
         else
             echo "Error: Cannot find a suitable package manager" >&2
             echo "Please install dependencies using 'uv sync' or 'pdm install'" >&2
