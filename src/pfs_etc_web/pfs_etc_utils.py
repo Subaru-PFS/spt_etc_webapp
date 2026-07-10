@@ -117,16 +117,26 @@ def load_snline(infile: str) -> pd.DataFrame:
     if _looks_like_ecsv(infile):
         tb = QTable.read(infile, format="ascii.ecsv")
         df = tb.to_pandas()
-        df = df.rename(
-            columns={
-                "effective_area": "effective_collecting_area",
-                "snr_b": "snline_b",
-                "snr_r": "snline_r",
-                "snr_m": "snline_r",
-                "snr_n": "snline_n",
-                "snr_tot": "snline_tot",
-            }
-        )
+        rename_map = {
+            "effective_area": "effective_collecting_area",
+            "snr_b": "snline_b",
+            "snr_n": "snline_n",
+            "snr_tot": "snline_tot",
+        }
+        # snr_r (LR mode) and snr_m (MR mode) are mutually exclusive arm
+        # columns that both map onto snline_r; guard against a file that
+        # unexpectedly carries both, which would otherwise collide into a
+        # single duplicated column name after rename.
+        if "snr_r" in df.columns and "snr_m" in df.columns:
+            raise ValueError(
+                f"Unsupported snline columns in {infile}: "
+                "both snr_r and snr_m are present"
+            )
+        elif "snr_r" in df.columns:
+            rename_map["snr_r"] = "snline_r"
+        elif "snr_m" in df.columns:
+            rename_map["snr_m"] = "snline_r"
+        df = df.rename(columns=rename_map)
         # Fill missing arm columns in MR mode with NaN where needed.
         for col in names:
             if col not in df.columns:
