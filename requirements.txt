@@ -5,7 +5,7 @@ alabaster==1.0.0
     # via sphinx
 annotated-doc==0.0.4
     # via typer
-anyio==4.14.1
+anyio==4.14.2
     # via watchfiles
 asdf==5.3.1
     # via
@@ -43,9 +43,9 @@ astropy==8.0.1
     #   pfsspecsim
     #   specutils
     #   synphot
-astropy-iers-data==0.2026.7.6.1.1.20
+astropy-iers-data==0.2026.7.13.0.54.2
     # via astropy
-asttokens==3.0.1
+asttokens==3.0.2
     # via stack-data
 attrs==26.1.0
     # via asdf
@@ -204,7 +204,7 @@ mypy-extensions==1.1.0
     # via black
 myst-parser==5.1.0
     # via pfs-etc-web
-narwhals==2.23.0
+narwhals==2.24.0
     # via
     #   bokeh
     #   panel
@@ -256,7 +256,7 @@ panel==1.9.3
     # via
     #   panel-material-ui
     #   pfs-etc-web
-panel-material-ui==0.13.0
+panel-material-ui==0.14.0
     # via panel
 param==2.4.1
     # via
@@ -273,7 +273,7 @@ pexpect==4.9.0 ; sys_platform != 'emscripten' and sys_platform != 'win32'
     # via ipython
 pfs-datamodel @ git+https://github.com/Subaru-PFS/datamodel.git@a5eb4c04878dd58b2dfeb1eeda9a15fee8e7e717
     # via pfsspecsim
-pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@d90958bf556fe4d5b86d4e96c387da017e164fc7
+pfsspecsim @ git+https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git@6057a5bbe15e90f0c3175dce46ee4aab1a160a56
     # via pfs-etc-web
 pillow==12.3.0
     # via
@@ -403,7 +403,7 @@ traitlets==5.15.1
     # via
     #   ipython
     #   matplotlib-inline
-ty==0.0.58
+ty==0.0.59
     # via pfs-etc-web
 typer==0.26.8
     # via pfsspecsim
@@ -411,7 +411,7 @@ typing-extensions==4.16.0
     # via
     #   anyio
     #   panel
-tzdata==2026.2 ; sys_platform == 'emscripten' or sys_platform == 'win32'
+tzdata==2026.3 ; sys_platform == 'emscripten' or sys_platform == 'win32'
     # via pandas
 uc-micro-py==2.0.0
     # via linkify-it-py
