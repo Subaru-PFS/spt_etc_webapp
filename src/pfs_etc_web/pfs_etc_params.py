@@ -47,11 +47,10 @@ class PfsSpecParameter:
     # output for ETC
     basedir: str = "tmp"
     sessiondir: str = "out"
-    tmpdir: str = "tmp"
-    outfile_noise: str = "noise.dat"
-    outfile_sn_continuum: str = "sn_continuum.dat"
-    outfile_sn_line: str = "sn_line.dat"
-    # outfile_sn_oii: str = "sn_oii.dat"
+    outfile_noise: str = "noise.ecsv"
+    outfile_sn_continuum: str = "sn_continuum.ecsv"
+    outfile_sn_line: str = "sn_line.ecsv"
+    # outfile_sn_oii: str = "sn_oii.ecsv"
     outfile_sn_oii: str = "-"
 
     # For Simulator
@@ -230,10 +229,6 @@ class OutputConf(param.Parameterized):
     sessiondir = param.String(
         label="Output Directory",
         default=default_parameters.sessiondir,
-    )
-    tmpdir = param.String(
-        label="Temporary Directory",
-        default=default_parameters.tmpdir,
     )
     noise = param.String(
         label="Noise spectrum",

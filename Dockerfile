@@ -2,7 +2,7 @@
 # https://hub.docker.com/_/python
 # https://pdm.fming.dev/latest/usage/advanced/#use-pdm-in-a-multi-stage-dockerfile
 
-FROM python:3.11-slim-bullseye
+FROM python:3.12-slim-bookworm
 
 # Allow statements and log messages to immediately appear in the Knative logs
 ENV PYTHONUNBUFFERED True
@@ -12,8 +12,7 @@ RUN apt-get -y update
 # Upgrade already installed packages:
 RUN apt-get -y upgrade
 # Install new packages:
-# RUN apt-get -y install git libomp-dev build-essential
-RUN apt-get -y install git libomp-dev make gcc libpangocairo-1.0-0
+RUN apt-get -y install git libpangocairo-1.0-0
 
 # install PDM
 RUN pip install -U pip setuptools wheel
@@ -35,6 +34,7 @@ RUN mkdir tmp
 RUN cd docs && mkdocs build
 
 # Run the web service on container startup.
+ENV ETC_N_WORKERS=8
 ENV OMP_NUM_THREADS=8
 CMD panel serve ./app.py --address 0.0.0.0 --port 8080 --allow-websocket-origin="*" --static-dirs doc="./docs/site/"
 

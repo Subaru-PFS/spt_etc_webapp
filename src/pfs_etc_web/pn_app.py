@@ -1,17 +1,14 @@
 #!/usr/bin/env python3
 
+import asyncio
 import datetime
 import os
 import secrets
-import threading
-import time
 
 import panel as pn
 import param
-from bokeh.resources import INLINE
 from dotenv import dotenv_values
 from loguru import logger
-from panel.io.state import set_curdoc
 
 from . import PfsArm
 from .pfs_etc_params import (
@@ -220,223 +217,147 @@ def pfs_etc_app():
     )
     template.main.append(main_column)
 
-    # setup threading
-    c_exec = threading.Condition()
-    c_reset = threading.Condition()
+    def _enable_inputs():
+        """Re-enable the run/reset buttons and the four input panels."""
+        panel_buttons.exec.name = "Run"
+        panel_buttons.exec.disabled = False
+        panel_buttons.reset.disabled = False
+        panel_target.disabled(disabled=False)
+        panel_environment.disabled(disabled=False)
+        panel_instrument.disabled(disabled=False)
+        panel_telescope.disabled(disabled=False)
 
-    queue_exec = []
-    queue_reset = []
+    async def on_click_exec(event):
+        # Re-entrancy guard: ignore clicks while a run is in flight. The
+        # disable below happens on the session's event loop before the first
+        # await, so there is no intra-session race.
+        if panel_buttons.exec.disabled:
+            return
 
-    # https://github.com/holoviz/panel/issues/5488
-    curdoc = pn.state.curdoc
-
-    # with set_curdoc(curdoc):
-    #     if is_recovered:
-    #         pn.state.notifications.info(
-    #             f"Recovering Simulation ID {simulation_id}",
-    #             duration=0,
-    #         )
-    #     else:
-    #         pn.state.notifications.warning(
-    #             f"Simulation ID {simulation_id} not found, use initial parameters",
-    #             duration=0,
-    #         )
-
-    def callback_exec():
-        while True:
-            c_exec.acquire()
-            for _ in queue_exec:
-                with set_curdoc(curdoc):
-
-                    # clear notifications
-                    pn.state.notifications.clear()
-
-                    logger.info("callback function is called")
-
-                    # Use UTC for session_id timestamp
-                    now_utc = datetime.datetime.now(datetime.timezone.utc)
-                    session_id = (
-                        now_utc.strftime("%Y%m%d-%H%M%S")
-                        + "-"
-                        # + "_"
-                        + secrets.token_hex(8)
-                    )
-
-                    simulation_id.simulation_id = session_id
-
-                    logger.info(f"Session ID: {session_id}")
-
-                    # Create nested directory path: YYYY/MM/session_id (UTC)
-                    year_month_path = now_utc.strftime("%Y/%m")
-                    conf_output.sessiondir = f"{year_month_path}/{session_id}"
-
-                    panel_buttons.exec.disabled = True
-                    panel_buttons.exec.name = "Running"
-
-                    panel_buttons.reset.disabled = True
-
-                    panel_target.disabled(disabled=True)
-                    panel_environment.disabled(disabled=True)
-                    panel_instrument.disabled(disabled=True)
-                    panel_telescope.disabled(disabled=True)
-
-                    panel_plots.plot_heading.visible = False
-                    panel_plots.plot.object = create_dummy_plot()
-
-                    panel_downloads.simulation_id_text.visible = False
-
-                    panel_downloads.download_heading.visible = False
-                    panel_downloads.download_pfsobject_fits.visible = False
-                    panel_downloads.download_simspec_fits.visible = False
-                    panel_downloads.download_simspec_csv.visible = False
-                    panel_downloads.download_snline_fits.visible = False
-                    panel_downloads.download_snline_csv.visible = False
-                    panel_downloads.download_tjtext.visible = False
-
-                    specsim = PfsSpecSim(
-                        target=conf_target,
-                        environment=conf_environment,
-                        instrument=conf_instrument,
-                        telescope=conf_telescope,
-                        output=conf_output,
-                    )
-
-                    try:
-                        with pn.param.set_values(panel_plots.pane, loading=True):
-                            logger.info("Running PFS Spectrum Simulator")
-                            specsim.exec(skip=False)
-
-                        logger.info("Plotting simulated spectrum")
-                        show_main_panel(
-                            panel_plots,
-                            panel_downloads,
-                            specsim,
-                            session_id,
-                            write=True,
-                        )
-
-                        # panel_plots.pane.visible = False
-                        # panel_plots.plot.object = specsim.show()
-
-                        # logger.info("Set download buttons")
-                        # panel_downloads.download_pfsobject_fits.file = (
-                        #     f"{specsim.outfile_pfsobject}"
-                        # )
-                        # panel_downloads.download_simspec_fits.file = (
-                        #     f"{specsim.outfile_simspec_prefix}.fits"
-                        # )
-                        # panel_downloads.download_simspec_csv.file = (
-                        #     f"{specsim.outfile_simspec_prefix}.ecsv"
-                        # )
-                        # panel_downloads.download_snline_fits.file = (
-                        #     f"{specsim.outfile_snline_prefix}.fits"
-                        # )
-                        # panel_downloads.download_snline_csv.file = (
-                        #     f"{specsim.outfile_snline_prefix}.ecsv"
-                        # )
-                        # panel_downloads.download_tjtext.file = (
-                        #     f"{specsim.outfile_tjtext}"
-                        # )
-
-                        # panel_downloads.download_heading.visible = True
-                        # panel_downloads.download_pfsobject_fits.visible = True
-                        # panel_downloads.download_simspec_fits.visible = True
-                        # panel_downloads.download_simspec_csv.visible = True
-                        # panel_downloads.download_snline_fits.visible = True
-                        # panel_downloads.download_snline_csv.visible = True
-                        # panel_downloads.download_tjtext.visible = True
-
-                        # panel_plots.plot_heading.visible = True
-                        # panel_plots.pane.visible = True
-
-                        logger.info("Enable the run button")
-                        panel_buttons.exec.name = "Run"
-                        panel_buttons.exec.disabled = False
-                        panel_buttons.reset.disabled = False
-                        panel_target.disabled(disabled=False)
-                        panel_environment.disabled(disabled=False)
-                        panel_instrument.disabled(disabled=False)
-                        panel_telescope.disabled(disabled=False)
-
-                        # panel_plots.pane.save(
-                        #     specsim.outfile_plot,
-                        #     resources=INLINE,
-                        #     title="Simulated PFS Spectrum",
-                        # )
-
-                    except ValueError as e:
-                        # pass
-                        # this does not work for panel 1.2.2
-                        # https://github.com/holoviz/panel/issues/5090
-                        pn.state.notifications.error(f"{str(e)}", duration=0)
-
-                        logger.info("Enable the run button")
-                        panel_buttons.exec.name = "Run"
-                        panel_buttons.exec.disabled = False
-                        panel_buttons.reset.disabled = False
-                        panel_target.disabled(disabled=False)
-                        panel_environment.disabled(disabled=False)
-                        panel_instrument.disabled(disabled=False)
-                        panel_telescope.disabled(disabled=False)
-
-                        simulation_id.simulation_id = None
-
-            queue_exec.clear()
-            c_exec.release()
-            time.sleep(1)
-
-    def callback_reset():
-        while True:
-            c_reset.acquire()
-            for _ in queue_reset:
-                with set_curdoc(curdoc):
-
-                    # clear notifications
-                    pn.state.notifications.clear()
-
-                    logger.info("Reset parameters")
-                    conf_target.reset()
-                    conf_environment.reset()
-                    conf_instrument.reset()
-                    conf_telescope.reset()
-
-                    simulation_id.simulation_id = None
-
-                    panel_plots.plot.object = None
-                    panel_plots.plot_heading.visible = False
-
-                    panel_downloads.simulation_id_text.visible = False
-
-                    panel_downloads.download_heading.visible = False
-                    panel_downloads.download_pfsobject_fits.file = None
-                    panel_downloads.download_pfsobject_fits.visible = False
-                    panel_downloads.download_simspec_fits.file = None
-                    panel_downloads.download_simspec_fits.visible = False
-                    panel_downloads.download_simspec_csv.file = None
-                    panel_downloads.download_simspec_csv.visible = False
-                    panel_downloads.download_snline_fits.file = None
-                    panel_downloads.download_snline_fits.visible = False
-                    panel_downloads.download_snline_csv.file = None
-                    panel_downloads.download_snline_csv.visible = False
-                    panel_downloads.download_tjtext.file = None
-                    panel_downloads.download_tjtext.visible = False
-            queue_reset.clear()
-            c_reset.release()
-            time.sleep(1)
-
-    thread_exec = threading.Thread(target=callback_exec, daemon=True)
-    thread_exec.start()
-
-    thread_reset = threading.Thread(target=callback_reset, daemon=True)
-    thread_reset.start()
-
-    def on_click_exec(event):
         pn.state.location.unsync(simulation_id, {"simulation_id": "id"})
-        queue_exec.append(event)
+
+        # clear notifications
+        pn.state.notifications.clear()
+
+        logger.info("callback function is called")
+
+        # Use UTC for session_id timestamp
+        now_utc = datetime.datetime.now(datetime.timezone.utc)
+        session_id = (
+            now_utc.strftime("%Y%m%d-%H%M%S")
+            + "-"
+            # + "_"
+            + secrets.token_hex(8)
+        )
+
+        simulation_id.simulation_id = session_id
+
+        logger.info(f"Session ID: {session_id}")
+
+        # Create nested directory path: YYYY/MM/session_id (UTC)
+        year_month_path = now_utc.strftime("%Y/%m")
+        conf_output.sessiondir = f"{year_month_path}/{session_id}"
+
+        panel_buttons.exec.disabled = True
+        panel_buttons.exec.name = "Running"
+
+        panel_buttons.reset.disabled = True
+
+        panel_target.disabled(disabled=True)
+        panel_environment.disabled(disabled=True)
+        panel_instrument.disabled(disabled=True)
+        panel_telescope.disabled(disabled=True)
+
+        panel_plots.plot_heading.visible = False
+        panel_plots.plot.object = create_dummy_plot()
+
+        panel_downloads.simulation_id_text.visible = False
+
+        panel_downloads.download_heading.visible = False
+        panel_downloads.download_pfsobject_fits.visible = False
+        panel_downloads.download_simspec_fits.visible = False
+        panel_downloads.download_simspec_csv.visible = False
+        panel_downloads.download_snline_fits.visible = False
+        panel_downloads.download_snline_csv.visible = False
+        panel_downloads.download_tjtext.visible = False
+
+        specsim = PfsSpecSim(
+            target=conf_target,
+            environment=conf_environment,
+            instrument=conf_instrument,
+            telescope=conf_telescope,
+            output=conf_output,
+        )
+
+        # The loading spinner must stay on across the await, which the
+        # `pn.param.set_values` context manager cannot span cleanly, so
+        # toggle it explicitly and clear it in `finally`.
+        panel_plots.pane.loading = True
+        try:
+            logger.info("Running PFS Spectrum Simulator")
+            # Run the blocking computation off the event loop.
+            await asyncio.to_thread(specsim.exec, skip=False)
+
+            logger.info("Plotting simulated spectrum")
+            show_main_panel(
+                panel_plots,
+                panel_downloads,
+                specsim,
+                session_id,
+                write=True,
+            )
+
+        except ValueError as e:
+            # this does not work for panel 1.2.2
+            # https://github.com/holoviz/panel/issues/5090
+            pn.state.notifications.error(f"{str(e)}", duration=0)
+            simulation_id.simulation_id = None
+
+        except Exception as e:
+            logger.exception(f"Unexpected error during simulation: {e}")
+            pn.state.notifications.error(
+                "An unexpected error occurred during the simulation.",
+                duration=0,
+            )
+            simulation_id.simulation_id = None
+
+        finally:
+            logger.info("Enable the run button")
+            _enable_inputs()
+            panel_plots.pane.loading = False
 
     def on_click_reset(event):
         pn.state.location.unsync(simulation_id, {"simulation_id": "id"})
-        queue_reset.append(event)
+
+        # clear notifications
+        pn.state.notifications.clear()
+
+        logger.info("Reset parameters")
+        conf_target.reset()
+        conf_environment.reset()
+        conf_instrument.reset()
+        conf_telescope.reset()
+
+        simulation_id.simulation_id = None
+
+        panel_plots.plot.object = None
+        panel_plots.plot_heading.visible = False
+
+        panel_downloads.simulation_id_text.visible = False
+
+        panel_downloads.download_heading.visible = False
+        panel_downloads.download_pfsobject_fits.file = None
+        panel_downloads.download_pfsobject_fits.visible = False
+        panel_downloads.download_simspec_fits.file = None
+        panel_downloads.download_simspec_fits.visible = False
+        panel_downloads.download_simspec_csv.file = None
+        panel_downloads.download_simspec_csv.visible = False
+        panel_downloads.download_snline_fits.file = None
+        panel_downloads.download_snline_fits.visible = False
+        panel_downloads.download_snline_csv.file = None
+        panel_downloads.download_snline_csv.visible = False
+        panel_downloads.download_tjtext.file = None
+        panel_downloads.download_tjtext.visible = False
 
     # Define an action on click
     panel_buttons.exec.on_click(on_click_exec)
