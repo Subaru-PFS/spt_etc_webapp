@@ -112,8 +112,7 @@ class TargetWidgets(param.Parameterized):
         self.custom_input = pn.Param(
             conf.param.custom_input,
             widgets={
-                "custom_input": {"type": pn.widgets.FileInput},
-                "accept": ".csv",
+                "custom_input": {"type": pn.widgets.FileInput, "accept": ".csv"},
             },
         )
         self.custom_input_help = pn.pane.Markdown(
@@ -174,6 +173,13 @@ class TargetWidgets(param.Parameterized):
             # width=400,
             # sizing_mode="stretch_width",
         )
+
+    def clear_custom_input(self):
+        # TargetConf.reset() clears the parameter value, but the FileInput widget keeps
+        # showing the uploaded file's name/type, so clear those explicitly.
+        w = self.custom_input.layout[0]
+        w.filename = None
+        w.mime_type = None
 
     def disabled(self, disabled=True):
         for w in [

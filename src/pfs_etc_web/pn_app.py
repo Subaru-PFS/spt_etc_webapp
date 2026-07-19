@@ -337,6 +337,7 @@ def pfs_etc_app():
         conf_environment.reset()
         conf_instrument.reset()
         conf_telescope.reset()
+        panel_target.clear_custom_input()
 
         simulation_id.simulation_id = None
 
