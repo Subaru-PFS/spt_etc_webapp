@@ -34,6 +34,10 @@ RUN mkdir tmp
 RUN cd docs && mkdocs build
 
 # Run the web service on container startup.
+# ETC_N_WORKERS sets the ETC engine's ThreadPoolExecutor worker count.
+# OMP_NUM_THREADS no longer drives the ETC itself (pfsspecsim v2 is pure
+# Python); it is kept to cap the BLAS/OpenMP pools underneath numpy, which
+# would otherwise spawn one thread per core inside each ETC worker.
 ENV ETC_N_WORKERS=8
 ENV OMP_NUM_THREADS=8
 CMD panel serve ./app.py --address 0.0.0.0 --port 8080 --allow-websocket-origin="*" --static-dirs doc="./docs/site/"
