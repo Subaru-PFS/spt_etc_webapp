@@ -35,16 +35,19 @@ class PfsSpecSim:
         environment=None,
         instrument=None,
         telescope=None,
-        output=OutputConf(),
-        simconf=SimulationConf(),
+        output=None,
+        simconf=None,
     ):
         self.target = target
         self.environment = environment
         self.instrument = instrument
         self.telescope = telescope
 
-        self.output = output
-        self.simconf = simconf
+        # Create fresh default instances per call: a `param.Parameterized`
+        # default argument would be instantiated once at import time and
+        # shared across every session in the process.
+        self.output = output if output is not None else OutputConf()
+        self.simconf = simconf if simconf is not None else SimulationConf()
 
         # Resolve the ETC worker-thread count: prefer ETC_N_WORKERS, fall
         # back to OMP_NUM_THREADS (deployment compatibility), else None
