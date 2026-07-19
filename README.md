@@ -170,18 +170,15 @@ cd docs && mkdocs build
 
 ### Performance Tuning
 
-You can specify the number of threads used by the ETC using `OMP_NUM_THREADS` environment variable. A larger number of threads will enable to achieve faster running time, but reduce the per-thread efficiency of the computation. My experiment with AMD EPYC 7542 is summarized as follows.
+The ETC engine (`pfsspecsim` v2, pure Python) runs its computation with a
+`ThreadPoolExecutor`. You can set the number of worker threads with the
+`ETC_N_WORKERS` environment variable (if unset, `OMP_NUM_THREADS` is used as a
+fallback for compatibility with older deployments; if neither is set, the
+engine defaults to `min(8, number of CPUs)`). Results are bit-identical
+regardless of the worker count — it only affects the running time.
 
-| OMP_NUM_THREADS | time (s) |
-|----------------:|---------:|
-|               1 |   274.09 |
-|               2 |   158.04 |
-|               4 |    82.05 |
-|               8 |    45.94 |
-|              16 |    23.91 |
-|              32 |    13.17 |
-|              64 |     7.99 |
-|             128 |     4.83 |
+Note: the OpenMP thread-count benchmark that used to be listed here was
+measured with the pre-v2 C implementation and no longer applies.
 
 ### Docker container
 
