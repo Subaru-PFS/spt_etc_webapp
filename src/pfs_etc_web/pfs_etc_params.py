@@ -15,10 +15,10 @@ class PfsSpecParameter:
     # target
     template: str = "Flat in frequency"
     mag: float = 20.0
-    mag_file: float | str = None
+    mag_file: str | None = None
     wavelength: float = 550.0
     redshift: float = 0.0
-    custom_input: str = None
+    custom_input: bytes | None = None
     r_eff: float = 0.3
     galactic_extinction: float = 0.0
     line_flux: float = 1e-17
@@ -30,7 +30,7 @@ class PfsSpecParameter:
     degrade: float = 0.9  # conservative value
     moon_zenith_angle: int = 60  # 30 degree elevation
     moon_target_angle: int = 60
-    moon_phase: int = 0.15  # or 0.10
+    moon_phase: float = 0.15  # or 0.10
 
     # instrument
     exp_time: int = 450
@@ -47,11 +47,10 @@ class PfsSpecParameter:
     # output for ETC
     basedir: str = "tmp"
     sessiondir: str = "out"
-    tmpdir: str = "tmp"
-    outfile_noise: str = "noise.dat"
-    outfile_sn_continuum: str = "sn_continuum.dat"
-    outfile_sn_line: str = "sn_line.dat"
-    # outfile_sn_oii: str = "sn_oii.dat"
+    outfile_noise: str = "noise.ecsv"
+    outfile_sn_continuum: str = "sn_continuum.ecsv"
+    outfile_sn_line: str = "sn_line.ecsv"
+    # outfile_sn_oii: str = "sn_oii.ecsv"
     outfile_sn_oii: str = "-"
 
     # For Simulator
@@ -141,6 +140,7 @@ class TargetConf(param.Parameterized):
         self.wavelength = default_parameters.wavelength
         self.redshift = default_parameters.redshift
         self.mag_file = default_parameters.mag_file
+        self.custom_input = default_parameters.custom_input
         self.galactic_extinction = default_parameters.galactic_extinction
         self.r_eff = default_parameters.r_eff
         self.line_flux = default_parameters.line_flux
@@ -230,10 +230,6 @@ class OutputConf(param.Parameterized):
     sessiondir = param.String(
         label="Output Directory",
         default=default_parameters.sessiondir,
-    )
-    tmpdir = param.String(
-        label="Temporary Directory",
-        default=default_parameters.tmpdir,
     )
     noise = param.String(
         label="Noise spectrum",

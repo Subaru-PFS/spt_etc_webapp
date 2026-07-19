@@ -2,13 +2,12 @@
 
 import glob
 import os
-import pprint
-import shutil
-import sys
+from pathlib import Path
 
 import numpy as np
 from loguru import logger
-from pfsspecsim import pfsetc, pfsspec
+from pfsspecsim.etc import EtcParams, run_etc_files
+from pfsspecsim.sim import SimSpecParams, run_sim_spec
 
 from . import PfsArm
 from .pfs_etc_params import OutputConf, SimulationConf
@@ -22,6 +21,13 @@ from .pfs_etc_utils import (
 )
 
 
+def _to_bool(value) -> bool:
+    """Interpret a "True"/"False"-style string (or bool) as a bool."""
+    if isinstance(value, bool):
+        return value
+    return str(value).strip().lower() in ("true", "1", "t", "yes", "y")
+
+
 class PfsSpecSim:
     def __init__(
         self,
@@ -29,68 +35,73 @@ class PfsSpecSim:
         environment=None,
         instrument=None,
         telescope=None,
-        output=OutputConf(),
-        simconf=SimulationConf(),
+        output=None,
+        simconf=None,
     ):
         self.target = target
         self.environment = environment
         self.instrument = instrument
         self.telescope = telescope
 
-        self.output = output
-        self.simconf = simconf
+        # Create fresh default instances per call: a `param.Parameterized`
+        # default argument would be instantiated once at import time and
+        # shared across every session in the process.
+        self.output = output if output is not None else OutputConf()
+        self.simconf = simconf if simconf is not None else SimulationConf()
 
-        if os.environ.get("OMP_NUM_THREADS") is not None:
-            omp_num_threads = int(os.environ.get("OMP_NUM_THREADS"))
+        # Resolve the ETC worker-thread count: prefer ETC_N_WORKERS, fall
+        # back to OMP_NUM_THREADS (deployment compatibility), else None
+        # (leave n_workers unset so EtcParams' own default applies).
+        n_workers_env = os.environ.get("ETC_N_WORKERS") or os.environ.get(
+            "OMP_NUM_THREADS"
+        )
+        if n_workers_env is not None:
+            self.n_workers = max(1, int(n_workers_env))
         else:
-            omp_num_threads = 4
-
-        self.etc = pfsetc.Etc(omp_num_threads=omp_num_threads)
-        self.sim = pfsspec.Pfsspec()
+            self.n_workers = None
 
         self.outfile_simspec_prefix = None
         self.outfile_snline_prefix = None
 
+        self.etc_results = None
+        self.sim_result = None
+
         self.flag_saturation = {"b": False, "r": False, "n": False, "m": False}
 
+    @property
+    def outdir(self) -> Path:
+        return Path(self.output.basedir) / self.output.sessiondir
+
+    def _mag_kwargs(self) -> dict:
+        """mag/mag_file kwargs for EtcParams/SimSpecParams (mutually exclusive)."""
+        if self.target.mag_file is None:
+            return {"mag": float(self.target.mag), "mag_file": None}
+        return {"mag": None, "mag_file": Path(self.target.mag_file)}
+
+    @staticmethod
+    def _outfile(name: str):
+        """ETC outfile: `None` for the '-' sentinel, else a `Path`."""
+        return None if name == "-" else Path(name)
+
+    def _resolve_infile(self, name: str) -> str:
+        """Resolve an ETC intermediate input file inside ``outdir``.
+
+        Prefer the configured name (new ``.ecsv``); if it does not exist,
+        fall back to the legacy ``.dat``-named sibling (same stem, ``.dat``
+        suffix) so pre-migration sessions can still be recovered.
+        """
+        path = self.outdir / name
+        if not path.exists():
+            legacy = self.outdir / (Path(name).stem + ".dat")
+            if legacy.exists():
+                return str(legacy)
+        return str(path)
+
     def run_etc(self):
-        self.etc.set_param(
-            "OUTDIR", os.path.join(self.output.basedir, self.output.sessiondir)
-        )
-        self.etc.set_param(
-            "TMPDIR",
-            os.path.join(
-                self.output.basedir, self.output.sessiondir, self.output.tmpdir
-            ),
-        )
-        for d in ["OUTDIR", "TMPDIR"]:
-            if not os.path.exists(self.etc.params[d]):
-                try:
-                    os.makedirs(self.etc.params[d], exist_ok=True)
-                except OSError as e:
-                    sys.exit("Unable to create outDir: %s" % e)
-
-        # environment
-        self.etc.set_param("SEEING", self.environment.seeing)
-        self.etc.set_param("degrade", self.environment.degrade)
-        self.etc.set_param("MOON_ZENITH_ANG", self.environment.moon_zenith_angle)
-        self.etc.set_param("MOON_TARGET_ANG", self.environment.moon_target_angle)
-        self.etc.set_param("MOON_PHASE", self.environment.moon_phase)
-
-        # instrument
-        self.etc.set_param("EXP_TIME", self.instrument.exp_time)
-        self.etc.set_param("EXP_NUM", self.instrument.exp_num)
-        self.etc.set_param("FIELD_ANG", self.instrument.field_angle)
-        self.etc.set_param("MR_MODE", "Y" if self.instrument.mr_mode else "N")
-
-        # telescope
-        self.etc.set_param("ZENITH_ANG", self.telescope.zenith_angle)
-
-        # target
-        self.etc.set_param("GALACTIC_EXT", self.target.galactic_extinction)
+        self.outdir.mkdir(parents=True, exist_ok=True)
 
         self.target, flag_good_lamnorm = create_template_spectrum(
-            self.target, tmpdir=self.etc.params["TMPDIR"]
+            self.target, tmpdir=str(self.outdir)
         )
 
         if flag_good_lamnorm is False:
@@ -98,99 +109,67 @@ class PfsSpecSim:
                 "Failed at normalizing the template. Check the wavelength range of the template and wavelength to normalize."
             )
 
-        # self.etc.set_param("MAG_FILE", f"{self.target.mag}")
-        self.etc.set_param("MAG_FILE", f"{self.target.mag_file}")
-        # self.target.mag_file = mag_file
-        # self.etc.set_param("MAG_FILE", self.target.mag_file)
-
         if self.target.custom_input is not None:
-            with open(
-                os.path.join(
-                    self.output.basedir, self.output.sessiondir, "custom_input.csv"
-                ),
-                "wb",
-            ) as f:
+            with open(self.outdir / "custom_input.csv", "wb") as f:
                 f.write(self.target.custom_input)
 
-        self.etc.set_param("REFF", self.target.r_eff)
-        self.etc.set_param("LINE_FLUX", self.target.line_flux)
-        self.etc.set_param("LINE_WIDTH", self.target.line_width)
-
-        # output
-        if self.output.noise != "-":
-            self.etc.set_param(
-                "OUTFILE_NOISE",
-                os.path.join(
-                    self.output.basedir, self.output.sessiondir, self.output.noise
-                ),
-            )
-        else:
-            self.etc.set_param("OUTFILE_NOISE", self.output.noise)
-
-        if self.output.sn_cont != "-":
-            self.etc.set_param(
-                "OUTFILE_SNC",
-                os.path.join(
-                    self.output.basedir, self.output.sessiondir, self.output.sn_cont
-                ),
-            )
-        else:
-            self.etc.set_param("OUTFILE_SNC", self.output.sn_cont)
-
-        if self.output.sn_line != "-":
-            self.etc.set_param(
-                "OUTFILE_SNL",
-                os.path.join(
-                    self.output.basedir, self.output.sessiondir, self.output.sn_line
-                ),
-            )
-        else:
-            self.etc.set_param("OUTFILE_SNL", self.output.sn_line)
-
-        if self.output.sn_oii != "-":
-            self.etc.set_param(
-                "OUTFILE_OII",
-                os.path.join(
-                    self.output.basedir, self.output.sessiondir, self.output.sn_oii
-                ),
-            )
-        else:
-            self.etc.set_param("OUTFILE_OII", self.output.sn_oii)
-
-        logger.info(
-            f"""Input parameters for gsetc\n{pprint.pformat(self.etc.params)}"""
+        params = EtcParams(
+            # environment
+            seeing=float(self.environment.seeing),
+            degrade=float(self.environment.degrade),
+            moon_zenith_ang=float(self.environment.moon_zenith_angle),
+            moon_target_ang=float(self.environment.moon_target_angle),
+            moon_phase=float(self.environment.moon_phase),
+            # instrument
+            exp_time=float(self.instrument.exp_time),
+            exp_num=int(self.instrument.exp_num),
+            field_ang=float(self.instrument.field_angle),
+            mr_mode=bool(self.instrument.mr_mode),
+            # telescope
+            zenith_ang=float(self.telescope.zenith_angle),
+            # target
+            galactic_ext=float(self.target.galactic_extinction),
+            reff=float(self.target.r_eff),
+            line_flux=float(self.target.line_flux),
+            line_width=float(self.target.line_width),
+            **self._mag_kwargs(),
+            # output
+            outdir=self.outdir,
+            outfile_noise=self._outfile(self.output.noise),
+            outfile_snc=self._outfile(self.output.sn_cont),
+            outfile_snl=self._outfile(self.output.sn_line),
+            outfile_oii=self._outfile(self.output.sn_oii),
+            **({"n_workers": self.n_workers} if self.n_workers is not None else {}),
         )
+        params.validate()
+
+        logger.info(f"Input parameters for ETC\n{params}")
 
         # execute PFS ETC
-        self.etc.run()
+        self.etc_results = run_etc_files(params)
 
     def run_sim(self):
-        # if self.target.mag_file is None:
-        self.sim.set_param("MAG_FILE", f"{self.target.mag_file}")
-        # else:
-        # self.sim.set_param("MAG_FILE", self.target.mag_file)
-
-        self.sim.set_param(
-            "etcFile",
-            os.path.join(
-                self.output.basedir, self.output.sessiondir, self.output.sn_cont
-            ),
+        params = SimSpecParams(
+            etc_file=self.outdir / self.output.sn_cont,
+            exp_num=int(self.instrument.exp_num),
+            **self._mag_kwargs(),
+            nrealize=int(self.simconf.nrealize),
+            out_dir=self.outdir,
+            ascii_table=self.output.simspec,
+            write_fits=_to_bool(self.output.write_fits),
+            write_pfs_arm=_to_bool(self.output.write_pfs_arm),
+            counts_min=float(self.simconf.counts_min),
+            tract=int(self.simconf.tract),
+            patch=self.simconf.patch,
+            visit0=int(self.simconf.visit0),
+            cat_id=int(self.simconf.catId),
+            obj_id=int(self.simconf.objId),
+            spectrograph=int(self.simconf.spectrograph),
         )
-
-        self.sim.set_param("EXP_NUM", self.instrument.exp_num)
-        self.sim.set_param("asciiTable", self.output.simspec)
-        self.sim.set_param("nrealize", self.simconf.nrealize)
-
-        self.sim.set_param(
-            "outDir",
-            os.path.join(self.output.basedir, self.output.sessiondir),
-        )
-
-        self.sim.set_param("writeFits", self.output.write_fits)
-        self.sim.set_param("writePfsArm", self.output.write_pfs_arm)
+        params.validate()
 
         # simulate spectrum
-        self.sim.make_sim_spec()
+        self.sim_result = run_sim_spec(params)
 
     def exec(self, skip: bool = False):
         if not skip:
@@ -202,8 +181,8 @@ class PfsSpecSim:
 
         if infile is None:
             infile_simspec = os.path.join(outdir, f"{self.output.simspec}.dat")
-            infile_snline = os.path.join(outdir, f"{self.output.sn_line}")
-            infile_sncont = os.path.join(outdir, f"{self.output.sn_cont}")
+            infile_snline = self._resolve_infile(self.output.sn_line)
+            infile_sncont = self._resolve_infile(self.output.sn_cont)
 
         df_simspec = load_simspec(infile_simspec)
         df_snline = load_snline(infile_snline)
@@ -289,11 +268,5 @@ class PfsSpecSim:
         self.p_simspec = create_simspec_plot(
             df_simspec, df_snline, df_sncont, self.instrument.mr_mode
         )
-
-        # self.outfile_plot = os.path.join(
-        #     outdir, f"pfs_etc_plot-{self.output.sessiondir}.html"
-        # )
-
-        # print(type(self.p_simspec))
 
         return self.p_simspec

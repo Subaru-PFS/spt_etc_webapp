@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 A Panel (HoloViz) web app that wraps the PFS (Prime Focus Spectrograph) Exposure Time
 Calculator and Spectrum Simulator. The heavy computation is delegated to the external
-`pfsspecsim` package (`Subaru-PFS/spt_ExposureTimeCalculator`, pinned to tag `v2.0.0a1` in
+`pfsspecsim` package (`Subaru-PFS/spt_ExposureTimeCalculator`, pinned to tag `v2.0.0` in
 `pyproject.toml`) — this repo is the UI/orchestration layer around it, not the simulator
 itself.
 
@@ -70,12 +70,15 @@ non-param helper classes for buttons, plot panes, and download links
 (`ExecButtonWidgets`, `BokehWidgets`, `DownloadWidgets`, `VersionInfoWidgets`). Each widget
 class is constructed with the matching `*Conf` instance and keeps it in sync with the UI.
 
-**Simulation engine (`pfs_etc_specsim.py`):** `PfsSpecSim` wraps the external
-`pfsspecsim.pfsetc.Etc` and `pfsspecsim.pfsspec.Pfsspec` engines. `run_etc()` sets ETC
-parameters from the `*Conf` objects and executes the throughput/noise calculation;
-`run_sim()` runs the spectrum simulator against the ETC output; `show()` loads the
-resulting files, builds the Bokeh plot, and writes the downloadable `pfsObject`/simspec/
-snline FITS+ECSV files. `exec()` is the `run_etc` + `run_sim` entry point called from the UI.
+**Simulation engine (`pfs_etc_specsim.py`):** `PfsSpecSim` wraps pfsspecsim's typed v2 API.
+`run_etc()` builds an `EtcParams` (mapping the `*Conf` objects; `mag` and `mag_file` are
+mutually exclusive — flat-in-frequency targets leave `target.mag_file` as `None`) and calls
+`run_etc_files()`, which writes the `noise`/`sn_continuum`/`sn_line` ECSV files; `run_sim()`
+builds a `SimSpecParams` pointing at the `sn_continuum.ecsv` output and calls
+`run_sim_spec()`; `show()` loads the resulting files (falling back to legacy `.dat` names so
+pre-migration sessions still recover), builds the Bokeh plot, and writes the downloadable
+`pfsObject`/simspec/snline FITS+ECSV files. `exec()` is the `run_etc` + `run_sim` entry
+point called from the UI. The compute is fully in-process pure Python (no subprocess).
 
 **Session/output model:** Each "Run" click generates a UTC-timestamped
 `simulation_id` (`YYYYMMDD-HHMMSS-<hex>`), which becomes the output subdirectory
@@ -85,11 +88,13 @@ sharing the URL) can recover a previous simulation via `recover_simulation()` in
 `pfs_etc_utils.py`, which re-reads the saved output files rather than re-running the
 simulation.
 
-**Threading:** Because Bokeh/Panel callbacks must run against the correct `curdoc`, button
-clicks don't execute inline — `on_click_exec`/`on_click_reset` just push onto
-`queue_exec`/`queue_reset`, which are drained by dedicated daemon threads
-(`callback_exec`, `callback_reset`) that wrap the work in `set_curdoc(curdoc)`. Follow this
-pattern for any new long-running action instead of running it directly in the click handler.
+**Async callbacks:** `on_click_exec` is an `async def` handler: all UI mutations run on the
+session's event loop (so `curdoc` is automatically correct), and only the blocking
+computation is pushed off the loop via `await asyncio.to_thread(specsim.exec)`. Widget
+re-enabling and the loading spinner are cleared in a `finally` block so the UI never sticks
+on errors, and a re-entrancy guard (`if panel_buttons.exec.disabled: return`) prevents
+double-clicks. Follow this pattern for any new long-running action: async handler +
+`asyncio.to_thread` for the blocking part, never a bare thread or polling loop.
 
 **`pfs_etc_utils.py`:** I/O and plotting helpers — loaders for the ETC's legacy
 whitespace-delimited ASCII output and newer ECSV output (`load_simspec`, `load_snline`,
@@ -98,8 +103,9 @@ whitespace-delimited ASCII output and newer ECSV output (`load_simspec`, `load_s
 `recover_simulation`.
 
 **`pfs_etc_spectemplates.py`:** Builds the magnitude/template spectrum file
-(`create_template_spectrum`) fed into the ETC as `MAG_FILE`, from the built-in template
-library or a user-uploaded custom spectrum.
+(`create_template_spectrum`) fed into the ETC as `EtcParams.mag_file`, from the built-in
+template library or a user-uploaded custom spectrum; for flat-in-frequency targets it sets
+`target.mag_file = None` and the ETC uses the scalar `mag` instead.
 
 **`PfsArm` enum** (`src/pfs_etc_web/__init__.py`): the four PFS arms (`b`/`r`/`n`/`m` =
 Blue/Red/Near-IR/Medium-resolution), each carrying a display `label`. Used wherever
@@ -112,8 +118,8 @@ console script, but it's a simplified launcher — prefer `scripts/serve-app.sh`
 
 ## Deployment
 
-`Dockerfile` builds a container that runs `panel serve` on port 8080 with
-`OMP_NUM_THREADS=8`; the app is also deployable directly to Google Cloud Run
-(`gcloud run deploy pfsetcweb --source .`). `OMP_NUM_THREADS` controls the ETC's thread
-count and trades per-thread efficiency for wall-clock time (see the benchmark table in
-README.md).
+`Dockerfile` builds a container that runs `panel serve` on port 8080; the app is also
+deployable directly to Google Cloud Run (`gcloud run deploy pfsetcweb --source .`).
+`ETC_N_WORKERS` (fallback: `OMP_NUM_THREADS`, kept for deployment compatibility) sets the
+ETC engine's `ThreadPoolExecutor` worker count (`EtcParams.n_workers`, results are
+bit-identical regardless of the value); unset, pfsspecsim defaults to `min(8, cpu)`.

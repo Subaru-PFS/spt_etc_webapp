@@ -118,7 +118,7 @@ def create_template_spectrum(target, tmpdir: str = ".", datadir: str | None = No
         return target, None
 
     if target.template == "Flat in frequency":
-        target.mag_file = target.mag
+        target.mag_file = None
         return target, None
     else:
         target.mag_file = os.path.join(tmpdir, "mag_file_template.txt")
