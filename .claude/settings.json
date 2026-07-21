@@ -9,6 +9,18 @@
             "command": "bash .claude/hooks/format_python.sh",
             "timeout": 30,
             "statusMessage": "Running ruff/black on edited file..."
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/format_markdown.sh",
+            "timeout": 30,
+            "statusMessage": "Running markdownlint-cli2 on edited file..."
+          },
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/format_toml.sh",
+            "timeout": 30,
+            "statusMessage": "Running tombi on edited file..."
           }
         ]
       }
