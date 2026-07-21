@@ -122,6 +122,9 @@ celerybeat.pid
 # Claude Code personal overrides (project-level .claude/settings.json is shared/committed)
 .claude/settings.local.json
 
+# Node tooling for Claude Code hooks (markdownlint-cli2), see package.json
+node_modules/
+
 # Environments
 .env
 .venv

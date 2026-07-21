@@ -1097,13 +1097,7 @@ name = "pfs-etc-web"
 source = { editable = "." }
 dependencies = [
     { name = "astropy" },
-    { name = "fontawesome-markdown" },
     { name = "loguru" },
-    { name = "mkdocs" },
-    { name = "mkdocs-macros-plugin" },
-    { name = "mkdocs-material", extra = ["imaging"] },
-    { name = "mkdocs-video" },
-    { name = "myst-parser" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "panel" },
@@ -1112,46 +1106,65 @@ dependencies = [
     { name = "synphot" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "black" },
     { name = "ipython" },
-    { name = "matplotlib" },
     { name = "pytest" },
     { name = "ruff" },
-    { name = "seaborn" },
-    { name = "specutils" },
     { name = "ty" },
     { name = "watchfiles" },
+]
+docs = [
+    { name = "fontawesome-markdown" },
+    { name = "mkdocs" },
+    { name = "mkdocs-macros-plugin" },
+    { name = "mkdocs-material", extra = ["imaging"] },
+    { name = "mkdocs-video" },
+    { name = "myst-parser" },
+]
+spectemplates = [
+    { name = "matplotlib" },
+    { name = "scipy" },
+    { name = "seaborn" },
+    { name = "specutils" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "astropy", specifier = ">=6.1.0" },
-    { name = "black", marker = "extra == 'dev'", specifier = ">=22.12.0" },
-    { name = "fontawesome-markdown", url = "https://github.com/bmcorser/fontawesome-markdown/archive/master.zip" },
-    { name = "ipython", marker = "extra == 'dev'", specifier = ">=8.9.0" },
     { name = "loguru", specifier = ">=0.7.2" },
-    { name = "matplotlib", marker = "extra == 'dev'", specifier = ">=3.8.4" },
+    { name = "numpy", specifier = ">=2.0.0" },
+    { name = "pandas", specifier = ">=2.2.2" },
+    { name = "panel", specifier = ">=1.5.0" },
+    { name = "pfsspecsim", git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git?rev=v2.0.0" },
+    { name = "python-dotenv", specifier = ">=1.2.2" },
+    { name = "synphot", specifier = ">=1.2.0" },
+]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "black", specifier = ">=22.12.0" },
+    { name = "ipython", specifier = ">=8.9.0" },
+    { name = "pytest", specifier = ">=9.1.1" },
+    { name = "ruff", specifier = ">=0.0.239" },
+    { name = "ty", specifier = ">=0.0.5" },
+    { name = "watchfiles", specifier = ">=0.21.0" },
+]
+docs = [
+    { name = "fontawesome-markdown", url = "https://github.com/bmcorser/fontawesome-markdown/archive/master.zip" },
     { name = "mkdocs", specifier = ">=1.4.3" },
     { name = "mkdocs-macros-plugin", specifier = ">=0.7.0" },
     { name = "mkdocs-material", extras = ["imaging"], specifier = ">=9.5.3" },
     { name = "mkdocs-video", specifier = ">=1.5.0" },
     { name = "myst-parser", specifier = ">=1.0.0" },
-    { name = "numpy", specifier = ">=2.0.0" },
-    { name = "pandas", specifier = ">=2.2.2" },
-    { name = "panel", specifier = ">=1.5.0" },
-    { name = "pfsspecsim", git = "https://github.com/Subaru-PFS/spt_ExposureTimeCalculator.git?rev=v2.0.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.1.1" },
-    { name = "python-dotenv", specifier = ">=1.2.2" },
-    { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.0.239" },
-    { name = "seaborn", marker = "extra == 'dev'", specifier = ">=0.13.2" },
-    { name = "specutils", marker = "extra == 'dev'", specifier = ">=1.10.0" },
-    { name = "synphot", specifier = ">=1.2.0" },
-    { name = "ty", marker = "extra == 'dev'", specifier = ">=0.0.5" },
-    { name = "watchfiles", marker = "extra == 'dev'", specifier = ">=0.21.0" },
 ]
-provides-extras = ["dev"]
+spectemplates = [
+    { name = "matplotlib", specifier = ">=3.8.4" },
+    { name = "scipy" },
+    { name = "seaborn", specifier = ">=0.13.2" },
+    { name = "specutils", specifier = ">=1.10.0" },
+]
 
 [[package]]
 name = "pfsspecsim"

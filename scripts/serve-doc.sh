@@ -3,13 +3,13 @@
 # serve-doc.sh - Start MkDocs development server for documentation
 #
 # Usage:
-#   ./scripts/serve-doc.sh [uv|pdm|venv]
+#   ./scripts/serve-doc.sh [uv|venv]
 #
 # This script starts the MkDocs development server for previewing
-# documentation changes. Auto-detects package manager (uv > pdm > venv).
+# documentation changes. Auto-detects package manager (uv > venv).
 #
 # Requirements:
-#   - mkdocs optional dependencies must be installed
+#   - the 'docs' dependency group must be installed
 #   - Working directory will be changed to docs/
 #
 # Default URL: http://127.0.0.1:8000
@@ -35,39 +35,29 @@ case "${RUNNER_TYPE}" in
         fi
         RUNNER="uv run"
         ;;
-    pdm)
-        if ! command -v pdm &> /dev/null; then
-            echo "Error: 'pdm' not found in PATH" >&2
-            echo "Please install pdm or use a different runner" >&2
-            exit 1
-        fi
-        RUNNER="pdm run"
-        ;;
     venv)
         if [ ! -d "${PROJECT_ROOT}/.venv" ]; then
             echo "Error: .venv directory not found" >&2
-            echo "Please run 'uv sync' or 'pdm install' first" >&2
+            echo "Please run 'uv sync' first" >&2
             exit 1
         fi
         RUNNER=""
         ;;
     auto)
-        # Auto-detect: Priority: uv > pdm > venv
+        # Auto-detect: Priority: uv > venv
         if command -v uv &> /dev/null; then
             RUNNER="uv run"
-        elif command -v pdm &> /dev/null; then
-            RUNNER="pdm run"
         elif [ -d "${PROJECT_ROOT}/.venv" ]; then
             RUNNER=""
         else
             echo "Error: Cannot find a suitable package manager" >&2
-            echo "Please install dependencies using 'uv sync' or 'pdm install'" >&2
+            echo "Please install dependencies using 'uv sync'" >&2
             exit 1
         fi
         ;;
     *)
         echo "Error: Invalid runner type '${RUNNER_TYPE}'" >&2
-        echo "Usage: $0 [uv|pdm|venv]" >&2
+        echo "Usage: $0 [uv|venv]" >&2
         exit 1
         ;;
 esac
@@ -76,11 +66,10 @@ esac
 if ! ${RUNNER} python -c "import mkdocs" 2>/dev/null; then
     echo "Error: mkdocs is not installed." >&2
     echo "" >&2
-    echo "This script requires the mkdocs optional dependencies." >&2
+    echo "This script requires the 'docs' dependency group." >&2
     echo "To install:" >&2
-    echo "  uv sync --extra mkdocs     (if using uv)" >&2
-    echo "  pdm install -G mkdocs      (if using pdm)" >&2
-    echo "  pip install -e .[mkdocs]   (if using venv)" >&2
+    echo "  uv sync --group docs   (if using uv)" >&2
+    echo "  pip install mkdocs mkdocs-material mkdocs-macros-plugin mkdocs-video myst-parser   (if using venv)" >&2
     exit 1
 fi
 

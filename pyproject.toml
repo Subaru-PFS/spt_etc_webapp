@@ -15,13 +15,7 @@ keywords = [
 ]
 dependencies = [
   "astropy>=6.1.0",
-  "fontawesome-markdown @ https://github.com/bmcorser/fontawesome-markdown/archive/master.zip",
   "loguru>=0.7.2",
-  "mkdocs>=1.4.3",
-  "mkdocs-macros-plugin>=0.7.0",
-  "mkdocs-material[imaging]>=9.5.3",
-  "mkdocs-video>=1.5.0",
-  "myst-parser>=1.0.0",
   "numpy>=2.0.0",
   "pandas>=2.2.2",
   "panel>=1.5.0",
@@ -42,19 +36,6 @@ Repository = "https://github.com/Subaru-PFS/spt_etc_webapp"
 # The CLI provides basic functionality but lacks some features (static dirs, prefix, etc.)
 run_pfs_etc_web = "pfs_etc_web.cli.run_panel_server:main"
 
-[project.optional-dependencies]
-dev = [
-  "black>=22.12.0",
-  "ipython>=8.9.0",
-  "matplotlib>=3.8.4",
-  "pytest>=9.1.1",
-  "ruff>=0.0.239",
-  "seaborn>=0.13.2",
-  "specutils>=1.10.0",
-  "ty>=0.0.5",
-  "watchfiles>=0.21.0",
-]
-
 [build-system]
 requires = ["setuptools>=64", "setuptools-scm>=8.0", "wheel"]
 build-backend = "setuptools.build_meta"
@@ -62,47 +43,6 @@ build-backend = "setuptools.build_meta"
 [tool.black]
 line-length = 88
 target-version = ["py312"]
-
-# ==============================================================================
-# DEPRECATED: PDM Scripts (Legacy)
-# ==============================================================================
-# NOTE: The PDM scripts below are deprecated and maintained for backward compatibility only.
-# For new development, use the shell scripts in scripts/ directory instead,
-# which support automatic detection of uv/pdm/venv runners.
-# See scripts/serve-app.sh, scripts/serve-doc.sh, scripts/build-doc.sh, scripts/gen-requirements.sh
-#
-# [tool.pdm.scripts]
-# serve-doc = { shell = "cd docs && mkdocs serve", help = "Start the dev server for doc preview" }
-# build-doc = { shell = "cd docs && mkdocs build", help = "Build documentation" }
-# gen-requirements = { cmd = [
-#     "pdm",
-#     "export",
-#     "--format",
-#     "requirements",
-#     "--without-hashes",
-#     "--pyproject",
-#     "--dev",
-#     "--group",
-#     "mkdocs",
-#     "--output",
-#     "requirements.txt",
-#     "--pyproject",
-#     "--editable-self",
-#     "--verbose",
-# ], help = "Generate requirements.txt" }
-# serve-app = { cmd = [
-#     "pdm",
-#     "run",
-#     "panel",
-#     "serve",
-#     "./app.py",
-#     "--static-dirs",
-#     "doc=docs/site",
-#     "--prefix=etc",
-#     "--websocket-max-message-size=104857600",
-#     "--port=5007",
-#     "--autoreload",
-# ], help = "Start the dev server for the ETC web application" }
 
 [tool.ruff]
 target-version = "py312"
@@ -137,3 +77,27 @@ version = { attr = "pfs_etc_web.__version__" }
 [tool.setuptools_scm]
 version_file = "src/pfs_etc_web/_version.py"
 fallback_version = "0.0.0+unknown"
+
+[dependency-groups]
+dev = [
+  "black>=22.12.0",
+  "ipython>=8.9.0",
+  "pytest>=9.1.1",
+  "ruff>=0.0.239",
+  "ty>=0.0.5",
+  "watchfiles>=0.21.0",
+]
+docs = [
+  "fontawesome-markdown @ https://github.com/bmcorser/fontawesome-markdown/archive/master.zip",
+  "mkdocs>=1.4.3",
+  "mkdocs-macros-plugin>=0.7.0",
+  "mkdocs-material[imaging]>=9.5.3",
+  "mkdocs-video>=1.5.0",
+  "myst-parser>=1.0.0",
+]
+spectemplates = [
+  "matplotlib>=3.8.4",
+  "scipy",
+  "seaborn>=0.13.2",
+  "specutils>=1.10.0",
+]
