@@ -1,6 +1,6 @@
 # Use the official lightweight Python image.
 # https://hub.docker.com/_/python
-# https://pdm.fming.dev/latest/usage/advanced/#use-pdm-in-a-multi-stage-dockerfile
+# https://docs.astral.sh/uv/guides/integration/docker/
 
 FROM python:3.12-slim-bookworm
 
@@ -14,18 +14,25 @@ RUN apt-get -y upgrade
 # Install new packages:
 RUN apt-get -y install git libpangocairo-1.0-0
 
-# install PDM
-RUN pip install -U pip setuptools wheel
-RUN pip install pdm
+# install uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Copy local code to the container image.
 ENV APP_HOME /app
 WORKDIR $APP_HOME
 COPY . ./
 
-# Install production dependencies.
-RUN pip install --no-cache-dir -r requirements.txt
-RUN python3 -m pip install --no-cache-dir -e .
+# Install runtime dependencies plus the docs group (needed to build the
+# static doc site below); dev/spectemplates groups are dev-only and are
+# excluded to keep the production image lean.
+RUN uv sync --frozen --no-default-groups --group docs
+
+# `uv run` (unlike this initial `uv sync`) re-syncs the environment against
+# uv's implicit default groups (which include "dev") every time it's
+# invoked, silently re-adding ruff/black/ty/pytest to the image. Put the
+# venv on PATH instead so later steps call tools directly without
+# triggering another sync.
+ENV PATH="$APP_HOME/.venv/bin:$PATH"
 
 # Create a temporary directory
 RUN mkdir tmp

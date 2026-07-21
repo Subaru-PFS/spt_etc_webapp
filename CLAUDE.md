@@ -12,9 +12,19 @@ itself.
 
 ## Commands
 
-The project supports uv, PDM, and pip+venv interchangeably; `./scripts/*.sh` auto-detect
-which one is available (priority: uv > pdm > venv) or accept an explicit
-`uv`/`pdm`/`venv` argument.
+The project uses uv as its package manager (PDM support has been dropped); pip+venv is
+supported as a fallback. `./scripts/*.sh` auto-detect which one is available (priority: uv >
+venv) or accept an explicit `uv`/`venv` argument.
+
+Non-runtime dependencies are split into `[dependency-groups]` in `pyproject.toml` by
+purpose: `dev` (lint/format/typecheck/test/autoreload), `docs` (MkDocs + plugins, needed to
+build `docs/site`), and `spectemplates` (matplotlib/seaborn/scipy/specutils, needed only by
+`scripts/generate_spectemplates.py` and `scripts/plot_spectemplates.py`). None of these are
+imported by the app itself (`src/` + `app.py`). Note that uv treats `dev` as an implicit
+default group: a bare `uv sync` or `uv run` installs it automatically (matching pre-PEP-735
+`--dev` behavior) even though nothing here requires it to run the app — use
+`uv sync --no-default-groups` for a truly minimal, runtime-only environment (see
+Deployment).
 
 ```sh
 # Run the dev server (autoreload, port 5007, prefix /etc)
@@ -27,11 +37,8 @@ uv run panel serve ./app.py --static-dirs doc=docs/site --prefix=etc --port=5007
 ./scripts/build-doc.sh     # cd docs && mkdocs build -> docs/site
 ./scripts/serve-doc.sh     # mkdocs serve (live preview)
 
-# Regenerate requirements.txt from lockfile (uv/pdm export)
-./scripts/gen-requirements.sh
-
-# Lint / format / typecheck (requires the dev extra)
-uv sync --extra dev
+# Lint / format / typecheck (requires the dev group)
+uv sync --group dev
 uv run ruff check .
 uv run black .
 uv run ty check
@@ -118,8 +125,15 @@ console script, but it's a simplified launcher — prefer `scripts/serve-app.sh`
 
 ## Deployment
 
-`Dockerfile` builds a container that runs `panel serve` on port 8080; the app is also
-deployable directly to Google Cloud Run (`gcloud run deploy pfsetcweb --source .`).
-`ETC_N_WORKERS` (fallback: `OMP_NUM_THREADS`, kept for deployment compatibility) sets the
-ETC engine's `ThreadPoolExecutor` worker count (`EtcParams.n_workers`, results are
-bit-identical regardless of the value); unset, pfsspecsim defaults to `min(8, cpu)`.
+`Dockerfile` is uv-native: it installs runtime + `docs` group dependencies with
+`uv sync --frozen --no-default-groups --group docs`, then puts `.venv/bin` on `PATH` and
+calls `mkdocs build` / `panel serve` directly rather than through `uv run`. This is
+deliberate: `uv run` re-syncs the environment against uv's default groups (which include
+`dev`) on every invocation, so using it after the initial sync would silently reintroduce
+ruff/black/ty/pytest into the image — keep any future `RUN`/`CMD` additions on the plain
+binaries, not `uv run`, once the initial `uv sync --no-default-groups` has run. The app is
+also deployable directly to Google Cloud Run (`gcloud run deploy pfsetcweb --source .`).
+`ETC_N_WORKERS` (fallback:
+`OMP_NUM_THREADS`, kept for deployment compatibility) sets the ETC engine's
+`ThreadPoolExecutor` worker count (`EtcParams.n_workers`, results are bit-identical
+regardless of the value); unset, pfsspecsim defaults to `min(8, cpu)`.

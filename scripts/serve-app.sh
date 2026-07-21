@@ -10,13 +10,12 @@
 # - Development mode enabled (--dev) for auto-reload
 #
 # Usage:
-#   ./scripts/serve-app.sh [uv|pdm|venv]
+#   ./scripts/serve-app.sh [uv|venv]
 #
 # Arguments:
 #   uv    - Use 'uv run' to execute the command
-#   pdm   - Use 'pdm run' to execute the command
 #   venv  - Use '.venv/bin/' to execute the command directly
-#   (none) - Auto-detect (priority: uv > pdm > venv)
+#   (none) - Auto-detect (priority: uv > venv)
 #
 # Requirements:
 #   - panel must be installed
@@ -42,13 +41,11 @@ ensure_watchfiles() {
 
     case "${RUNNER_TYPE}" in
         uv)
-            uv sync --extra dev
-            ;;
-        pdm)
-            pdm install -G dev
+            uv sync --group dev
             ;;
         venv|auto)
-            "${PROJECT_ROOT}/.venv/bin/python" -m pip install -e "${PROJECT_ROOT}[dev]"
+            "${PROJECT_ROOT}/.venv/bin/python" -m pip install -e "${PROJECT_ROOT}"
+            "${PROJECT_ROOT}/.venv/bin/python" -m pip install watchfiles
             ;;
     esac
 }
@@ -66,42 +63,31 @@ case "${RUNNER_TYPE}" in
         fi
         RUNNER="uv run"
         ;;
-    pdm)
-        if ! command -v pdm &> /dev/null; then
-            echo "Error: 'pdm' not found in PATH" >&2
-            echo "Please install pdm or use a different runner" >&2
-            exit 1
-        fi
-        RUNNER="pdm run"
-        ;;
     venv)
         if [ ! -d "${PROJECT_ROOT}/.venv" ]; then
             echo "Error: .venv directory not found" >&2
-            echo "Please run 'uv sync' or 'pdm install' first" >&2
+            echo "Please run 'uv sync' first" >&2
             exit 1
         fi
         RUNNER=""
         ;;
     auto)
-        # Auto-detect: Priority: uv > pdm > venv
+        # Auto-detect: Priority: uv > venv
         if command -v uv &> /dev/null; then
             RUNNER="uv run"
             RUNNER_TYPE="uv"
-        elif command -v pdm &> /dev/null; then
-            RUNNER="pdm run"
-            RUNNER_TYPE="pdm"
         elif [ -d "${PROJECT_ROOT}/.venv" ]; then
             RUNNER=""
             RUNNER_TYPE="venv"
         else
             echo "Error: Cannot find a suitable package manager" >&2
-            echo "Please install dependencies using 'uv sync' or 'pdm install'" >&2
+            echo "Please install dependencies using 'uv sync'" >&2
             exit 1
         fi
         ;;
     *)
         echo "Error: Invalid runner type '${RUNNER_TYPE}'" >&2
-        echo "Usage: $0 [uv|pdm|venv]" >&2
+        echo "Usage: $0 [uv|venv]" >&2
         exit 1
         ;;
 esac

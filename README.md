@@ -5,19 +5,19 @@ PFS spectral simulator web app using [PFS Exposure Time Calculator and Spectrum 
 
 ## Prerequisites
 
-This project supports multiple Python package managers:
+This project uses [**uv**](https://docs.astral.sh/uv/) as its package manager. A
+plain **pip + venv** install is also supported as a fallback for environments
+without uv.
 
-- **uv** (recommended) - Modern, fast package manager
-- **PDM** - Python Development Master
-- **pip + venv** - Traditional Python package management
+Dependencies are declared in `pyproject.toml`:
 
-Choose the one that best fits your workflow.
-
-See `requirements.txt` for the complete list of dependencies.
-
-## Installation
-
-First of all, please clone this repository. There are several ways to install the app.
+- `[project.dependencies]` - runtime dependencies needed to run the app
+- `[dependency-groups]` - non-runtime dependencies, split by purpose:
+  - `dev` - lint/format/typecheck/test tools (ruff, black, ty, pytest) and
+    Panel's autoreload dependency (watchfiles)
+  - `docs` - MkDocs and its plugins, needed to build `docs/site`
+  - `spectemplates` - matplotlib/seaborn/scipy/specutils, needed only by the
+    template-spectrum helper scripts under `scripts/`
 
 ### Using uv (Recommended)
 
@@ -25,30 +25,17 @@ First of all, please clone this repository. There are several ways to install th
 # Install uv if not already installed
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Sync dependencies
+# Sync dependencies (uv includes the "dev" group by default)
 uv sync
 
-# With documentation dependencies
-uv sync --extra mkdocs
+# With documentation dependencies too
+uv sync --group docs
 
-# With development autoreload dependencies
-uv sync --extra dev
-```
+# With everything (dev + docs + spectemplates)
+uv sync --all-groups
 
-### Using PDM
-
-```sh
-# Install PDM if not already installed
-pip install pdm
-
-# Install dependencies
-pdm install
-
-# With documentation dependencies
-pdm install -G mkdocs
-
-# With development autoreload dependencies
-pdm install -G dev
+# Runtime dependencies only, no groups at all (e.g. for a production image)
+uv sync --no-default-groups
 ```
 
 ### Using pip + venv
@@ -58,15 +45,14 @@ pdm install -G dev
 python3 -m venv .venv
 source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
-# Install dependencies
-pip install -r requirements.txt
+# Install runtime dependencies
 pip install -e .
 
-# With documentation dependencies
-pip install -e .[mkdocs]
-
-# With development autoreload dependencies
-pip install -e .[dev]
+# Documentation and development dependencies are declared as
+# dependency-groups (PEP 735), which `pip install -e .` does not resolve.
+# Install the packages directly instead, e.g.:
+pip install mkdocs mkdocs-material mkdocs-macros-plugin mkdocs-video myst-parser
+pip install ruff black ty pytest ipython watchfiles
 ```
 
 ### Building Documentation
@@ -112,9 +98,6 @@ The project includes helper scripts in the `scripts/` directory that automatical
 
 # Build documentation
 ./scripts/build-doc.sh
-
-# Generate requirements.txt
-./scripts/gen-requirements.sh
 ```
 
 `./scripts/serve-app.sh` enables Panel development autoreload and will ensure `watchfiles` is installed before startup. If you prefer to install it yourself, use the development dependency commands above.
@@ -123,7 +106,6 @@ You can force a specific package manager:
 
 ```sh
 ./scripts/serve-app.sh uv    # Force use of uv
-./scripts/serve-app.sh pdm   # Force use of PDM
 ./scripts/serve-app.sh venv  # Force use of venv
 ```
 
@@ -141,19 +123,6 @@ uv run panel serve ./app.py --static-dirs doc=docs/site --prefix=etc --port=5007
 
 # Build documentation
 cd docs && uv run mkdocs build
-```
-
-**With PDM:**
-
-```sh
-# Use PDM scripts (existing functionality)
-pdm run serve-app
-pdm run build-doc
-pdm run serve-doc
-pdm run gen-requirements
-
-# Or run directly
-pdm run panel serve ./app.py --static-dirs doc=docs/site --prefix=etc --port=5007
 ```
 
 **With venv:**
